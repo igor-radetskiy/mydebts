@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Debt</string>
+
+    <string name="activity_history_title">History</string>
+    
+    <string name="activity_event_title_new_event">New event</string>
+    <string name="activity_event_title_edit_event">Edit event</string>
+    <string name="activity_event_title_view_event">View event</string>
+    <string name="activity_event_item_title">Title</string>
+    <string name="activity_event_item_default_title">Event on %s</string>
+    <string name="date_info_title">Date</string>
+    <string name="cost_info_title">Cost</string>
+    <string name="buddies_info_title">Buddies</string>
+    <string name="default_buddies_content">Add buddies</string>
+    
+    <string name="activity_select_buddy_title">Select buddy</string>
+    
+    <string name="menu_add_event">Add event</string>
+    <string name="new_event_dialog_title">New event</string>
+    
+    <string name="menu_common_done">Done</string>
+    <string name="menu_common_view">View</string>
+    <string name="menu_common_edit">Edit</string>
+    <string name="menu_common_delete">Delete</string>
+    
+    <string name="dialog_common_ok">OK</string>
+    <string name="dialog_common_cancel">Cancel</string>
+    
+    <string name="action_common_select_all">Select all</string>
+    <string name="action_common_unselect_all">Unelect all</string>
+    
+    <string name="menu_add_buddy"></string>
+    
+    <string name="dialog_new_buddy_title">New buddy</string>
+    <string name="dialog_new_buddy_name">Name</string>
+    
+    <!-- fragment_buddy -->
+    <string name="fragment_buddy_tv_user_debts">Debts</string>
+    <string name="fragment_buddy_tv_credits">Credits</string>
+    
+    <string-array name="debt_navigation_items">
+        <item>My page</item>
+        <item>Events</item>
+        <item>Buddies</item>
+    </string-array>
+
+</resources>
