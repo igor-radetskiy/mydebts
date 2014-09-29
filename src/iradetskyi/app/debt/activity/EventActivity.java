@@ -1,8 +1,10 @@
 package iradetskyi.app.debt.activity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import iradetskyi.app.debt.R;
 import iradetskyi.app.debt.data.Buddy;
@@ -20,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +49,8 @@ public class EventActivity extends Activity {
 	private float mCost;
 	private long[] mBuddyIdList;
 	private long mEventId;
+	private long[] mPaidBuddyList;
+	private float[] mPaidBuddyPaymentList;
 	
 	private String mAction;
 	
@@ -68,6 +73,9 @@ public class EventActivity extends Activity {
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		
+		mPaidBuddyList = savedInstanceState.getLongArray(SelectBuddyActivity.CREDITORS_EXTRA);
+		mPaidBuddyPaymentList = savedInstanceState.getFloatArray(SelectBuddyActivity.PAYMENTS_EXTRA);
+		
 		displayEventData(
 				savedInstanceState.getString(TITLE_EXTRA), 
 				savedInstanceState.getString(DATE_EXTRA), 
@@ -78,6 +86,7 @@ public class EventActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putLongArray(SelectBuddyActivity.SELECTED_BUDDIES_EXTRA, mBuddyIdList);
+		outState.putLongArray(SelectBuddyActivity.CREDITORS_EXTRA, mPaidBuddyList);
 		outState.putString(TITLE_EXTRA, mTitle);
 		outState.putString(DATE_EXTRA, mDate);
 		outState.putString(ACTION_EXTRA, mAction);
@@ -161,7 +170,6 @@ public class EventActivity extends Activity {
 				   }
 			   })
 			   .create().show();
-		
 	}
 	
 	public void startEditBuddyList(View v) {
@@ -174,8 +182,11 @@ public class EventActivity extends Activity {
 	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
 			if (requestCode == SELECT_BUDDY_REQUEST_CODE) {
-				long[] selectedBuddies = data.getLongArrayExtra(SelectBuddyActivity.SELECTED_BUDDIES_EXTRA);
-				displaySelectedBuddies(selectedBuddies);
+				mBuddyIdList = data.getLongArrayExtra(SelectBuddyActivity.SELECTED_BUDDIES_EXTRA);
+				mPaidBuddyList = data.getLongArrayExtra(SelectBuddyActivity.CREDITORS_EXTRA);
+				mPaidBuddyPaymentList = data.getFloatArrayExtra(SelectBuddyActivity.PAYMENTS_EXTRA);
+				
+				displaySelectedBuddies();
 			}
 		}
 	}
@@ -266,15 +277,15 @@ public class EventActivity extends Activity {
 		mTitle = title;
 		mDate = date;
 		mCost = cost;
+		mBuddyIdList = buddies;
 		
 		((TextView)findViewById(R.id.title_info_content)).setText(mTitle);
 		((TextView)findViewById(R.id.date_info_content)).setText(mDate);
 		((TextView)findViewById(R.id.cost_info_content)).setText(Float.toString(mCost));
-		displaySelectedBuddies(buddies);
+		displaySelectedBuddies();
 	}
 	
-	private void displaySelectedBuddies(long[] selectedBuddies) {
-		mBuddyIdList = selectedBuddies;
+	private void displaySelectedBuddies() {
 		if (mBuddyIdList == null || mBuddyIdList.length < 1) {
 			TextView tvBuddiesList = (TextView) findViewById(R.id.buddies_info_content);
 			tvBuddiesList.setText(getString(R.string.default_buddies_content));
@@ -299,11 +310,53 @@ public class EventActivity extends Activity {
 		Event event = new Event(db);
 		long eventId = event.insert(mTitle, mDate, mCost);
 		if (eventId != -1 && mBuddyIdList != null && mBuddyIdList.length > 0) {
-			float buddyDebt = mCost / mBuddyIdList.length;
 			PersonalDebt personalDebt = new PersonalDebt(db);
-			for (long buddyId : mBuddyIdList) {
-				personalDebt.insert(eventId, buddyId, buddyDebt);
+			float fullPayment = getFullPayment();
+			float fullPartPayment = (float) (fullPayment / mBuddyIdList.length);
+			float fullDebt = 0;
+			float fullCredit = 0;
+			
+			List<Long> debtorList = new ArrayList<Long>();
+			List<Float> debtList = new ArrayList<Float>();
+			List<Long> creditorList = new ArrayList<Long>();
+			List<Float> creditList = new ArrayList<Float>();
+			
+			for (int i = 0; i < mBuddyIdList.length; i++) {
+				float paymnet = fullPartPayment;
+				for (int j = 0; j < mPaidBuddyList.length; j++) {
+					if (mPaidBuddyList[j] == mBuddyIdList[i]) {
+						paymnet -= mPaidBuddyPaymentList[j];
+					}
+				}
+				if (paymnet > 0) {
+					debtorList.add(mBuddyIdList[i]);
+					debtList.add(paymnet);
+					fullDebt += paymnet;
+				} else {
+					creditorList.add(mBuddyIdList[i]);
+					creditList.add(-paymnet);
+					fullCredit -= paymnet;
+				}
+			}
+			
+			if (fullDebt != fullCredit) {
+				Log.e("eerror", "fullDebt != fullCredit");
+			}
+			
+			for (int i = 0; i < debtorList.size(); i++) {
+				for (int j = 0; j < creditorList.size(); j++) {
+					Log.d("ddebug", debtorList.get(i) + " " + creditorList.get(j) + " " + creditList.get(j) * debtList.get(i) / fullDebt);
+					personalDebt.insert(eventId, debtorList.get(i), creditorList.get(j), creditList.get(j) * debtList.get(i) / fullDebt);
+				}
 			}
 		}
+	}
+	
+	private float getFullPayment() {
+		float fullPayment = 0.0f;
+		for (float payment : mPaidBuddyPaymentList) {
+			fullPayment += payment;
+		}
+		return fullPayment;
 	}
 }

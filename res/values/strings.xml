@@ -40,6 +40,12 @@
     <string name="fragment_buddy_tv_user_debts">Debts</string>
     <string name="fragment_buddy_tv_credits">Credits</string>
     
+    <string name="select_buddy_item_btn_pay">Pay</string>
+    
+    <!-- dialog_price_input -->
+    <string name="dialog_price_input_title">Payment</string>
+    <string name="dialog_price_input_tv_price">Price:</string>
+    
     <string-array name="debt_navigation_items">
         <item>My page</item>
         <item>Events</item>

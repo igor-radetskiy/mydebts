@@ -20,6 +20,9 @@ public class PersonalDebt {
 					PersonalDebtContract.BUDDY_ID + " integer not null " +
 						" references " + BuddyContract.TABLE_NAME + " ( " + BuddyContract.ID + " ) " + 
 						" on update cascade on delete restrict, " +
+					PersonalDebtContract.CREDITOR_ID + " integer not null " +
+						" references " + BuddyContract.TABLE_NAME + " ( " + BuddyContract.ID + " ) " + 
+						" on update cascade on delete restrict, " +
 					PersonalDebtContract.BUDDY_DEBT + " real not null " +
 			" ); ";
 	
@@ -31,12 +34,13 @@ public class PersonalDebt {
 		}
 	}
 	
-	public long insert(long eventId, long buddyId, float buddyDebt) {
+	public long insert(long eventId, long buddyId, long creditorId, float buddyDebt) {
 		Log.d(TAG, "insert: " + eventId + ", " + buddyId + ", " + buddyDebt);
 		if (mDatabase != null) {
 			ContentValues values = new ContentValues();
 			values.put(PersonalDebtContract.EVENT_ID, eventId);
 			values.put(PersonalDebtContract.BUDDY_ID, buddyId);
+			values.put(PersonalDebtContract.CREDITOR_ID, creditorId);
 			values.put(PersonalDebtContract.BUDDY_DEBT, buddyDebt);
 			long id = mDatabase.insert(PersonalDebtContract.TABLE_NAME, null, values);
 			Log.d(TAG, "insert: id = " + id);
@@ -75,7 +79,9 @@ public class PersonalDebt {
 		public static final String ID = "_id";
 		public static final String EVENT_ID = "event_id";
 		public static final String BUDDY_ID = "buddy_id";
+		public static final String CREDITOR_ID = "creditor_id";
 		public static final String BUDDY_DEBT = "buddy_debt";
+		
 	}
 	
 	public static class PersonalDebtModel {

@@ -3,9 +3,8 @@ package iradetskyi.app.debt.activity;
 import iradetskyi.app.debt.R;
 import iradetskyi.app.debt.data.Buddy;
 import iradetskyi.app.debt.data.BuddyLoader;
-import iradetskyi.app.debt.data.Buddy.BuddyContract;
 import iradetskyi.app.debt.data.DatabaseHandler;
-import iradetskyi.app.debt.list.adapter.SelectionCursorAdapter;
+import iradetskyi.app.debt.list.adapter.SelectBuddyAdapter;
 import iradetskyi.app.debt.utils.Utils;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +14,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +28,8 @@ import android.widget.ListView;
 public class SelectBuddyActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
 
 	public static final String SELECTED_BUDDIES_EXTRA = "selectedBuddiesExtra";
+	public static final String CREDITORS_EXTRA = "creditorsExtra";
+	public static final String PAYMENTS_EXTRA = "paymentsExtra";
 	
 	private static final int BUDDY_LOADER_ID = 0;
 	
@@ -47,7 +49,7 @@ public class SelectBuddyActivity extends Activity implements LoaderManager.Loade
 	};
 	
 	private ListView mBuddyList;
-	private SelectionCursorAdapter mAdapter;
+	private SelectBuddyAdapter mAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,12 +116,8 @@ public class SelectBuddyActivity extends Activity implements LoaderManager.Loade
 		mAdapter.changeCursor(null);
 	}
 	
-	private SelectionCursorAdapter setupAdapter() {
-		String[] from = {BuddyContract.NAME};
-		int[] to = {R.id.select_buddy_item_tv_name};
-		int listItemResourceId = R.layout.select_buddy_item;
-		SelectionCursorAdapter adapter = new SelectionCursorAdapter(getApplicationContext(), listItemResourceId, null, from, to, 0, R.id.select_buddy_item_checkbox);
-		
+	private SelectBuddyAdapter setupAdapter() {
+		SelectBuddyAdapter adapter = new SelectBuddyAdapter(this, null);
 		Intent intent = getIntent();
 		if (intent != null) {
 			long[] ids = intent.getLongArrayExtra(SELECTED_BUDDIES_EXTRA);
@@ -164,10 +162,53 @@ public class SelectBuddyActivity extends Activity implements LoaderManager.Loade
 	
 	private void returnBuddyList() {
 		long[] buddyList = Utils.toLongArray(mAdapter.getSelection());
+		SparseArray<Float> creditors = mAdapter.getPayments();
+		long[] creditorList = new long[creditors.size()];
+		float[] paymentList = new float[creditors.size()];
+		
+		int j = 0;
+		for (int i = 0; i < buddyList.length; i++) {
+			float payment = creditors.get((int)buddyList[i], -1.0f);
+			if (payment != -1.0f) {
+				creditorList[j] = buddyList[i];
+				paymentList[j] = payment;
+				j++;
+			}
+		}
 		
 		Intent intent = new Intent();
 		intent.putExtra(SELECTED_BUDDIES_EXTRA, buddyList);
+		intent.putExtra(CREDITORS_EXTRA, creditorList);
+		intent.putExtra(PAYMENTS_EXTRA, paymentList);
+		
 		setResult(RESULT_OK, intent);
 		finish();
+		/*SparseArray<Float> debtors = new SparseArray<Float>();
+		float fullPayment = mAdapter.getFullPayment();
+		float fullPartPayment = (float) (fullPayment / buddyList.length);
+		float fullDebt = 0.0f;
+		
+		for (long userId : buddyList) {
+			float payment = fullPartPayment - creditors.get((int)userId, 0.0f);
+			if (payment > 0) {
+				fullDebt += payment;
+				debtors.put((int)userId, payment);
+				creditors.remove((int)userId);
+			}
+		}
+		
+		PersonalDebt pd = new PersonalDebt(new DatabaseHandler(this));
+		for (long userId : buddyList) {
+			float payment = debtors.get((int)userId, 0.0f);
+			if (payment != 0.0) {
+				for (long creditorId : buddyList) {
+					float credit = creditors.get((int)creditorId, 0.0f) - fullPartPayment;
+					if (credit > 0.0) {
+						Log.d("ddebug", userId + " " + creditorId + " " + credit * payment / fullDebt);
+						//pd.insert(0L, userId, creditorId, credit * payment / fullDebt);
+					}
+				}
+			}
+		}*/
 	}
 }
