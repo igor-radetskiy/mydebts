@@ -17,6 +17,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("PRAGMA foreign_keys = ON;");
 		db.execSQL(Buddy.CREATE_TABLE);
+		db.execSQL(Buddy.INSERT_DEFAULT_USER);
 		db.execSQL(Event.CREATE_TABLE);
 		db.execSQL(PersonalDebt.CREATE_TABLE);
 	}

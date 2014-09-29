@@ -15,6 +15,11 @@ public class Buddy {
 					BuddyContract.NAME + " text not null " +
 			" ); ";
 	
+	public static final String INSERT_DEFAULT_USER = 
+			" insert into " + BuddyContract.TABLE_NAME + 
+			" ( " + BuddyContract.NAME + " ) " + 
+			" values ('me'); ";
+	
 	private SQLiteDatabase mDatabase;
 	
 	public Buddy (SQLiteOpenHelper dbHelper) {
