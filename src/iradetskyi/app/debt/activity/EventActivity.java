@@ -134,7 +134,9 @@ public class EventActivity extends Activity {
 			
 			@Override
 			public void onClick(DialogInterface iface, int id) {
-				((TextView)findViewById(R.id.title_info_content)).setText(entry.getText().toString());
+				mTitle = entry.getText().toString();
+				((TextView)findViewById(R.id.title_info_content)).setText(mTitle);
+				
 			}
 		});
 		builder.create().show();
@@ -147,8 +149,8 @@ public class EventActivity extends Activity {
 			
 			@Override
 			public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-				String date = String.format("%d.%d.%d", dayOfMonth, monthOfYear + 1, year);
-				((TextView)findViewById(R.id.date_info_content)).setText(date);
+				mDate = String.format("%d.%d.%d", dayOfMonth, monthOfYear + 1, year);
+				((TextView)findViewById(R.id.date_info_content)).setText(mDate);
 			}
 		}, date.getYear(), date.getMonth(), date.getDay());
 		dialog.getDatePicker().setCalendarViewShown(false);
