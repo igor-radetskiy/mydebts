@@ -1,9 +1,6 @@
 package iradetskyi.app.debt.activity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import iradetskyi.app.debt.R;
@@ -14,6 +11,7 @@ import iradetskyi.app.debt.data.Event;
 import iradetskyi.app.debt.data.Event.EventContract;
 import iradetskyi.app.debt.data.PersonalDebt;
 import iradetskyi.app.debt.data.PersonalDebt.PersonalDebtContract;
+import iradetskyi.app.debt.utils.DateUtil;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,7 +43,7 @@ public class EventActivity extends Activity {
 	private static final int SELECT_BUDDY_REQUEST_CODE = 0;
 	
 	private String mTitle;
-	private String mDate;
+	private DateUtil mDateUtil;
 	private float mCost;
 	private long[] mBuddyIdList;
 	private long mEventId = -1;
@@ -88,7 +86,7 @@ public class EventActivity extends Activity {
 		outState.putLongArray(SelectBuddyActivity.SELECTED_BUDDIES_EXTRA, mBuddyIdList);
 		outState.putLongArray(SelectBuddyActivity.CREDITORS_EXTRA, mPaidBuddyList);
 		outState.putString(TITLE_EXTRA, mTitle);
-		outState.putString(DATE_EXTRA, mDate);
+		outState.putString(DATE_EXTRA, mDateUtil.toString());
 		outState.putString(ACTION_EXTRA, mAction);
 		outState.putFloat(COST_EXTRA, mCost);
 		
@@ -143,16 +141,16 @@ public class EventActivity extends Activity {
 	}
 	
 	public void startDatePickerDialog(View v) {
-		Date date = Calendar.getInstance().getTime();
-		@SuppressWarnings("deprecation")
 		DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 			
 			@Override
 			public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-				mDate = String.format("%d.%d.%d", dayOfMonth, monthOfYear + 1, year);
-				((TextView)findViewById(R.id.date_info_content)).setText(mDate);
+				mDateUtil.day = dayOfMonth;
+				mDateUtil.month = monthOfYear;
+				mDateUtil.year = year;
+				((TextView)findViewById(R.id.date_info_content)).setText(mDateUtil.toString());
 			}
-		}, date.getYear(), date.getMonth(), date.getDay());
+		}, mDateUtil.year, mDateUtil.month, mDateUtil.day);
 		dialog.getDatePicker().setCalendarViewShown(false);
 		dialog.show();
 	}
@@ -213,12 +211,10 @@ public class EventActivity extends Activity {
 	
 	private void setupCreateActivity() {
 		setTitle(R.string.activity_event_title_new_event);
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat df = new SimpleDateFormat("dd.MM.yy");
-		String currentDate = df.format(calendar.getTime());
+		mDateUtil = DateUtil.getCurrentDate();
 		displayEventData(
-				getString(R.string.activity_event_item_default_title, currentDate), 
-				currentDate, 
+				getString(R.string.activity_event_item_default_title, mDateUtil.toString()), 
+				mDateUtil.toString(), 
 				0, 
 				null);
 	}
@@ -277,12 +273,12 @@ public class EventActivity extends Activity {
 	
 	private void displayEventData(String title, String date, float cost, long[] buddies) {
 		mTitle = title;
-		mDate = date;
+		mDateUtil = DateUtil.parse(date);
 		mCost = cost;
 		mBuddyIdList = buddies;
 		
 		((TextView)findViewById(R.id.title_info_content)).setText(mTitle);
-		((TextView)findViewById(R.id.date_info_content)).setText(mDate);
+		((TextView)findViewById(R.id.date_info_content)).setText(mDateUtil.toString());
 		((TextView)findViewById(R.id.cost_info_content)).setText(Float.toString(mCost));
 		displaySelectedBuddies();
 	}
@@ -311,10 +307,10 @@ public class EventActivity extends Activity {
 		DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 		Event event = new Event(db);
 		if (mEventId == -1) {
-			mEventId = event.insert(mTitle, mDate, mCost);
+			mEventId = event.insert(mTitle, mDateUtil.toString(), mCost);
 		} else {
 			event.updateTitle(mEventId, mTitle);
-			event.updateDate(mEventId, mDate);
+			event.updateDate(mEventId, mDateUtil.toString());
 		}
 		if (mEventId != -1 && mBuddyIdList != null && mPaidBuddyList != null && mBuddyIdList.length > 0) {
 			PersonalDebt personalDebt = new PersonalDebt(db);
