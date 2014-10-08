@@ -48,7 +48,7 @@ public class EventActivity extends Activity {
 	private String mDate;
 	private float mCost;
 	private long[] mBuddyIdList;
-	private long mEventId;
+	private long mEventId = -1;
 	private long[] mPaidBuddyList;
 	private float[] mPaidBuddyPaymentList;
 	
@@ -310,8 +310,13 @@ public class EventActivity extends Activity {
 	private void insertChangesToDb() {		
 		DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 		Event event = new Event(db);
-		long eventId = event.insert(mTitle, mDate, mCost);
-		if (eventId != -1 && mBuddyIdList != null && mBuddyIdList.length > 0) {
+		if (mEventId == -1) {
+			mEventId = event.insert(mTitle, mDate, mCost);
+		} else {
+			event.updateTitle(mEventId, mTitle);
+			event.updateDate(mEventId, mDate);
+		}
+		if (mEventId != -1 && mBuddyIdList != null && mPaidBuddyList != null && mBuddyIdList.length > 0) {
 			PersonalDebt personalDebt = new PersonalDebt(db);
 			float fullPayment = getFullPayment();
 			float fullPartPayment = (float) (fullPayment / mBuddyIdList.length);
@@ -348,7 +353,7 @@ public class EventActivity extends Activity {
 			for (int i = 0; i < debtorList.size(); i++) {
 				for (int j = 0; j < creditorList.size(); j++) {
 					Log.d("ddebug", debtorList.get(i) + " " + creditorList.get(j) + " " + creditList.get(j) * debtList.get(i) / fullDebt);
-					personalDebt.insert(eventId, debtorList.get(i), creditorList.get(j), creditList.get(j) * debtList.get(i) / fullDebt);
+					personalDebt.insert(mEventId, debtorList.get(i), creditorList.get(j), creditList.get(j) * debtList.get(i) / fullDebt);
 				}
 			}
 		}

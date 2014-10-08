@@ -36,9 +36,35 @@ public class Event {
 		}
 		return id;
 	}
+
+	public int updateTitle(long id, String title) {
+		int affectedRows = -1;
+		if (mDatabase != null) {
+			ContentValues values = new ContentValues();
+			values.put(EventContract.TITLE, title);
+			affectedRows = mDatabase.update(
+					EventContract.TABLE_NAME,
+					values,
+					EventContract.ID + "=?",
+					new String[]{Long.toString(id)});
+		}
+		Log.d(TAG, "updateTitle: id = " + id + " title = " + title + " affectedRows = " + affectedRows);
+		return affectedRows;
+	}
 	
-	public boolean update(int id) {
-		return true;
+	public int updateDate(long id, String date) {
+		int affectedRows = -1;
+		if (mDatabase != null) {
+			ContentValues values = new ContentValues();
+			values.put(EventContract.DATE, date);
+			affectedRows = mDatabase.update(
+					EventContract.TABLE_NAME,
+					values,
+					EventContract.ID + "=?",
+					new String[]{Long.toString(id)});
+		}
+		Log.d(TAG, "updateTitle: id = " + id + " date = " + date + " affectedRows = " + affectedRows);
+		return affectedRows;
 	}
 	
 	public int delete(long id) {
