@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 import iradetskyi.app.debt.data.Buddy.BuddyContract;
 import iradetskyi.app.debt.data.Event.EventContract;
@@ -69,6 +70,49 @@ public class PersonalDebt {
 					columns,
 					PersonalDebtContract.EVENT_ID + "=?", 
 					new String[] {Long.toString(eventId)}, 
+					null, null, null);
+		}
+		return cursor;
+	}
+	
+	public Cursor readDebts(long userId) {
+		Cursor cursor = null;
+		if (mDatabase != null) {
+			SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+			builder.setTables(
+					PersonalDebtContract.TABLE_NAME + 
+					" inner join " + 
+					EventContract.TABLE_NAME + 
+					" on " + PersonalDebtContract.EVENT_ID + "=" + EventContract.TABLE_NAME + "." + EventContract.ID + 
+					" inner join " + 
+					BuddyContract.TABLE_NAME + 
+					" on " + PersonalDebtContract.CREDITOR_ID + "=" + BuddyContract.TABLE_NAME + "." + BuddyContract.ID);
+			cursor = builder.query(
+					mDatabase, 
+					new String[] {PersonalDebtContract.TABLE_NAME + "." + PersonalDebtContract.ID, EventContract.TITLE, EventContract.DATE, PersonalDebtContract.BUDDY_DEBT, PersonalDebtContract.CREDITOR_ID, BuddyContract.NAME}, 
+					PersonalDebtContract.BUDDY_ID + "=?", 
+					new String[] {Long.toString(userId)}, 
+					null, null, null);
+		}
+		return cursor;
+	}
+	
+	public Cursor readCredits(long userId) {
+		Cursor cursor = null;
+		if (mDatabase != null) {
+			SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+			builder.setTables(
+					PersonalDebtContract.TABLE_NAME + 
+					" inner join " + 
+					EventContract.TABLE_NAME + 
+					" on " + PersonalDebtContract.EVENT_ID + "=" + EventContract.TABLE_NAME + "." + EventContract.ID + 
+					" inner join " + 
+					BuddyContract.TABLE_NAME + 
+					" on " + PersonalDebtContract.BUDDY_ID + "=" + BuddyContract.TABLE_NAME + "." + BuddyContract.ID);
+			cursor = builder.query(mDatabase, 
+					new String[] {PersonalDebtContract.TABLE_NAME + "." + PersonalDebtContract.ID, EventContract.TITLE, EventContract.DATE, PersonalDebtContract.BUDDY_DEBT, PersonalDebtContract.BUDDY_ID, BuddyContract.NAME}, 
+					PersonalDebtContract.CREDITOR_ID + "=?", 
+					new String[] {Long.toString(userId)}, 
 					null, null, null);
 		}
 		return cursor;

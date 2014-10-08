@@ -3,7 +3,7 @@ package iradetskyi.app.debt.data;
 import android.content.Context;
 import android.database.Cursor;
 
-public class BuddyLoader extends DataLoader{
+public class BuddyLoader extends DataLoader {
 
 	private Buddy mBuddy;
 	

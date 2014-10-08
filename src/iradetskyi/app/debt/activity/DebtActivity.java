@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ public class DebtActivity extends Activity {
 
 	private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private DebtNavigationAdapter mDrawerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private CharSequence mDrawerTitle;
@@ -42,7 +44,15 @@ public class DebtActivity extends Activity {
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new DebtNavigationAdapter(this));
+        mDrawerAdapter = new DebtNavigationAdapter(this);
+        mDrawerList.setAdapter(mDrawerAdapter);
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> listView, View view, int position, long id) {
+				selectItem(position);
+			}
+		});
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -79,6 +89,20 @@ public class DebtActivity extends Activity {
             return true;
         }
 		return super.onOptionsItemSelected(item);
+    }
+    
+    private void selectItem(int position) {
+        Fragment fragment = (Fragment)mDrawerAdapter.getItem(position);
+        /*Bundle args = new Bundle();
+        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+        fragment.setArguments(args);*/
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        mDrawerList.setItemChecked(position, true);
+        //setTitle(mPlanetTitles[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
     
     private class DebtNavigationAdapter extends BaseAdapter {
