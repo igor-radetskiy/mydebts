@@ -77,27 +77,36 @@ public class Buddy {
 		return retCursor;
 	}
 	
+	public Cursor readExceptFor(long[] exceptionId) {
+		Cursor retCursor = null;
+		if (mDatabase != null) {
+			String[] columns = {
+					BuddyContract.ID,
+					BuddyContract.NAME
+			};
+			StringBuilder whereClause = new StringBuilder();
+			String[] whereArgs = new String[exceptionId.length];
+			for (int i = 0; i < exceptionId.length; i++) {
+				if (i == exceptionId.length - 1) {
+					whereClause.append(BuddyContract.ID + " !=?");
+				} else {
+					whereClause.append(BuddyContract.ID + " !=? or ");
+				}
+				whereArgs[i] = Long.toString(exceptionId[i]);
+			}
+			retCursor = mDatabase.query(
+					BuddyContract.TABLE_NAME,
+					columns,
+					whereClause.toString(),
+					whereArgs,
+					null, null, null);
+		}
+		return retCursor;
+	}
+
 	public static class BuddyContract {
 		public static final String TABLE_NAME = "Buddy";
 		public static final String ID = "_id";
 		public static final String NAME = "name";
-	}
-
-	public static class BuddyModel {
-		private int mId;
-		private String mName;
-		
-		private BuddyModel(int id, String name) {
-			mId = id;
-			mName = name;
-		}
-		
-		public int getId() {
-			return mId;
-		}
-		
-		public String getName() {
-			return mName;
-		}
 	}
 }

@@ -100,7 +100,7 @@ public class SelectBuddyActivity extends Activity implements LoaderManager.Loade
 	public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
 		Loader<Cursor> retLoader = null;
 		if (loaderId == BUDDY_LOADER_ID) {
-			retLoader = new BuddyLoader(getApplicationContext());
+			retLoader = new BuddyLoader(getApplicationContext(), BuddyLoader.LOAD_ALL_BUDDIES);
 		}
 		return retLoader;
 	}
