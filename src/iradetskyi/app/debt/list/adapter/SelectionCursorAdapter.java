@@ -16,8 +16,8 @@ public class SelectionCursorAdapter extends SimpleCursorAdapter {
 	private static final String ID = "_id";
 	
 	private int mLayoutId;
-	private int mCheckBoxId;
-	
+	protected int mCheckBoxId;
+
 	private Set<Long> mSelection = new HashSet<Long>();
 	
 	public SelectionCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags, int checkBox) {
@@ -33,7 +33,7 @@ public class SelectionCursorAdapter extends SimpleCursorAdapter {
 		View v = inflater.inflate(mLayoutId, null);
 		return v;
 	}
-	
+
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		CheckBox cb = (CheckBox) view.findViewById(mCheckBoxId);		
@@ -42,7 +42,7 @@ public class SelectionCursorAdapter extends SimpleCursorAdapter {
 		
 		super.bindView(view, context, cursor);
 	}
-	
+
 	@Override
 	public long getItemId(int position){
 		long id = -1;
@@ -52,12 +52,12 @@ public class SelectionCursorAdapter extends SimpleCursorAdapter {
 		}
 		return id;
 	}
-	
+
 	public void selectItem(int position) {
 		long id = getItemId(position);
 		selectItemById(id);
 	}
-	
+
 	public void selectItemById(long id) {
 		if (mSelection.contains(id)) {
 			mSelection.remove(id);
@@ -66,7 +66,7 @@ public class SelectionCursorAdapter extends SimpleCursorAdapter {
 		}
 		notifyDataSetChanged();
 	}
-	
+
 	public void selectAll() {
 		Cursor cursor = getCursor();
 		int idColumnIndex = cursor.getColumnIndex(ID);
@@ -76,12 +76,16 @@ public class SelectionCursorAdapter extends SimpleCursorAdapter {
 		}
 		notifyDataSetChanged();
 	}
-	
+
 	public void unselectAll() {
 		mSelection.clear();
 		notifyDataSetChanged();
 	}
-	
+
+	public boolean isItemSelected(long id) {
+		return mSelection.contains(id);
+	}
+
 	public boolean areAllItemsSelected() {
 		Cursor cursor = getCursor();
 		if (cursor == null) {
@@ -96,7 +100,7 @@ public class SelectionCursorAdapter extends SimpleCursorAdapter {
 		}
 		return true;
 	}
-	
+
 	public Set<Long> getSelection() {
 		return mSelection;
 	}

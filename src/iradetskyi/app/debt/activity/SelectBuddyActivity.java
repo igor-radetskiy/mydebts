@@ -183,32 +183,5 @@ public class SelectBuddyActivity extends Activity implements LoaderManager.Loade
 		
 		setResult(RESULT_OK, intent);
 		finish();
-		/*SparseArray<Float> debtors = new SparseArray<Float>();
-		float fullPayment = mAdapter.getFullPayment();
-		float fullPartPayment = (float) (fullPayment / buddyList.length);
-		float fullDebt = 0.0f;
-		
-		for (long userId : buddyList) {
-			float payment = fullPartPayment - creditors.get((int)userId, 0.0f);
-			if (payment > 0) {
-				fullDebt += payment;
-				debtors.put((int)userId, payment);
-				creditors.remove((int)userId);
-			}
-		}
-		
-		PersonalDebt pd = new PersonalDebt(new DatabaseHandler(this));
-		for (long userId : buddyList) {
-			float payment = debtors.get((int)userId, 0.0f);
-			if (payment != 0.0) {
-				for (long creditorId : buddyList) {
-					float credit = creditors.get((int)creditorId, 0.0f) - fullPartPayment;
-					if (credit > 0.0) {
-						Log.d("ddebug", userId + " " + creditorId + " " + credit * payment / fullDebt);
-						//pd.insert(0L, userId, creditorId, credit * payment / fullDebt);
-					}
-				}
-			}
-		}*/
 	}
 }

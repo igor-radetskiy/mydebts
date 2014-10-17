@@ -18,40 +18,41 @@ public class SelectBuddyAdapter extends SelectionCursorAdapter {
 	private static final int sCheckBoxId = R.id.select_buddy_item_checkbox;
 	private static final String[] sFrom = {BuddyContract.NAME};
 	private static final int[] sTo = {R.id.select_buddy_item_tv_name};
-	
+
 	private Activity mActivity;
 	private SparseArray<Float> mPaymentArray = new SparseArray<Float>();
 	private float mFullPayment;
-	
+
 	public SelectBuddyAdapter(Activity activity, Cursor c) {
 		super(activity, sLayoutId, c, sFrom, sTo, 0, sCheckBoxId);
 		mActivity = activity;
 	}
-	
+
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		Button payBtn = (Button)view.findViewById(R.id.select_buddy_item_btn_pay);
 		int userId = cursor.getInt(cursor.getColumnIndex(BuddyContract.ID));
+		payBtn.setEnabled(isItemSelected(userId));
 		payBtn.setOnClickListener(new OnPayButtonClickListener(userId));
-		
+
 		super.bindView(view, context, cursor);
 	}
-	
+
 	public SparseArray<Float> getPayments() {
 		return mPaymentArray;
 	}
-	
+
 	public float getFullPayment() {
 		return mFullPayment;
 	}
-	
+
 	private class OnPayButtonClickListener implements View.OnClickListener {
 		private long mUserId;
-		
+
 		public OnPayButtonClickListener(long userId) {
 			mUserId = userId;
 		}
-		
+
 		@Override
 		public void onClick(View v) {
 			startPaymentDialog();
@@ -67,7 +68,7 @@ public class SelectBuddyAdapter extends SelectionCursorAdapter {
 				.setPositiveButton(
 						R.string.dialog_common_ok, 
 						new DialogInterface.OnClickListener() {
-							
+
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								EditText et = (EditText)view.findViewById(R.id.dialog_price_input_et_price);
@@ -79,6 +80,5 @@ public class SelectBuddyAdapter extends SelectionCursorAdapter {
 						})
 				.create().show();
 		}
-		
 	}
 }
