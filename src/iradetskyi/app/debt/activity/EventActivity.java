@@ -129,6 +129,7 @@ public class EventActivity extends Activity {
 		builder.setTitle("Set title");
 		final EditText entry = new EditText(EventActivity.this);
 		entry.setInputType(InputType.TYPE_CLASS_TEXT);
+		entry.setText(mTitle);
 		builder.setView(entry).setPositiveButton(R.string.dialog_common_ok, new DialogInterface.OnClickListener() {
 			
 			@Override
@@ -155,24 +156,7 @@ public class EventActivity extends Activity {
 		dialog.getDatePicker().setCalendarViewShown(false);
 		dialog.show();
 	}
-	
-	public void startChangeCostDialog(View v) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		final EditText entry = new EditText(EventActivity.this);
-		entry.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-		builder.setTitle("Set cost")
-			   .setView(entry)
-			   .setPositiveButton(R.string.dialog_common_ok, new DialogInterface.OnClickListener() {
 
-				   @Override
-				   public void onClick(DialogInterface arg0, int arg1) {
-					   String cost  = entry.getText().toString();
-					   ((TextView)findViewById(R.id.cost_info_content)).setText(cost);
-				   }
-			   })
-			   .create().show();
-	}
-	
 	public void startEditBuddyList(View v) {
 		Intent addBuddy = new Intent(this, SelectBuddyActivity.class);
 		addBuddy.putExtra(SelectBuddyActivity.SELECTED_BUDDIES_EXTRA, mBuddyIdList);
@@ -232,7 +216,6 @@ public class EventActivity extends Activity {
 			
 			findViewById(R.id.title_info).setClickable(false);
 			findViewById(R.id.date_info).setClickable(false);
-			findViewById(R.id.cost_info).setClickable(false);
 			findViewById(R.id.buddies_info).setClickable(false);
 		}
 	}
@@ -245,7 +228,6 @@ public class EventActivity extends Activity {
 		
 		findViewById(R.id.title_info).setClickable(true);
 		findViewById(R.id.date_info).setClickable(true);
-		findViewById(R.id.cost_info).setClickable(true);
 		findViewById(R.id.buddies_info).setClickable(true);
 	}
 
