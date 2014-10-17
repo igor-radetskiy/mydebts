@@ -1,7 +1,9 @@
 package iradetskyi.app.debt.activity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import iradetskyi.app.debt.R;
 import iradetskyi.app.debt.data.Buddy;
@@ -98,7 +100,6 @@ public class EventActivity extends Activity {
 		getMenuInflater().inflate(R.menu.event, menu);
 		mMenu = menu;
 		if (mAction.equals(VIEW_EVENT_ACTION)) {
-		
 			menu.setGroupVisible(R.id.menu_group_event_view, true);
 		} else {
 			menu.setGroupVisible(R.id.menu_group_event_edit, true);
@@ -208,7 +209,7 @@ public class EventActivity extends Activity {
 			}
 		}
 	}
-	
+
 	private void setupCreateActivity() {
 		setTitle(R.string.activity_event_title_new_event);
 		mDateUtil = DateUtil.getCurrentDate();
@@ -218,13 +219,13 @@ public class EventActivity extends Activity {
 				0, 
 				null);
 	}
-	
+
 	private void setupEditActivity(Bundle bundle) {
 		if (bundle != null) {
 			setEventId(bundle.getLong(EVENT_ID_EXTRA));
 		}
 	}
-	
+
 	private void setupViewActivity(Bundle bundle) {
 		if (bundle != null) {
 			setEventId(bundle.getLong(EVENT_ID_EXTRA));
@@ -235,7 +236,7 @@ public class EventActivity extends Activity {
 			findViewById(R.id.buddies_info).setClickable(false);
 		}
 	}
-	
+
 	private void transformForEdit() {
 		mAction = EDIT_EVENT_ACTION;
 		
@@ -247,7 +248,7 @@ public class EventActivity extends Activity {
 		findViewById(R.id.cost_info).setClickable(true);
 		findViewById(R.id.buddies_info).setClickable(true);
 	}
-	
+
 	private void setEventId(long eventId) {
 		mEventId = eventId;
 		Event event = new Event(new DatabaseHandler(getApplicationContext()));
@@ -256,21 +257,29 @@ public class EventActivity extends Activity {
 			String title = cursor.getString(cursor.getColumnIndex(EventContract.TITLE));
 			String date = cursor.getString(cursor.getColumnIndex(EventContract.DATE));
 			float cost = cursor.getFloat(cursor.getColumnIndex(EventContract.COST));
-			PersonalDebt pd = new PersonalDebt(new DatabaseHandler(getApplicationContext()));
-			cursor = pd.readByEventId(mEventId);
-			long[] buddies = null;
-			if (cursor != null && cursor.moveToFirst()) {
-				buddies = new long[cursor.getCount()];
-				int i = 0;
-				for ( ; !cursor.isAfterLast(); cursor.moveToNext()) {
-					buddies[i] = cursor.getLong(cursor.getColumnIndex(PersonalDebtContract.BUDDY_ID));
-					i++;
-				}
-			}
+			long[] buddies = getBuddyListFromEvent();
 			displayEventData(title, date, cost, buddies);
 		}
 	}
-	
+
+	private long[] getBuddyListFromEvent() {
+		PersonalDebt pd = new PersonalDebt(new DatabaseHandler(getApplicationContext()));
+		Cursor cursor = pd.readByEventId(mEventId);
+		Set<Long> buddySet = new HashSet<Long>();
+		if (cursor != null && cursor.moveToFirst()) {
+			long debtor = cursor.getLong(cursor.getColumnIndex(PersonalDebtContract.BUDDY_ID));
+			long creditor = cursor.getLong(cursor.getColumnIndex(PersonalDebtContract.CREDITOR_ID));
+			buddySet.add(debtor);
+			buddySet.add(creditor);
+		}
+		long[] result = new long[buddySet.size()];
+		int i = 0;
+		for (long item : buddySet) {
+			result[i++] = item;
+		}
+		return result;
+	}
+
 	private void displayEventData(String title, String date, float cost, long[] buddies) {
 		mTitle = title;
 		mDateUtil = DateUtil.parse(date);
@@ -348,7 +357,6 @@ public class EventActivity extends Activity {
 			
 			for (int i = 0; i < debtorList.size(); i++) {
 				for (int j = 0; j < creditorList.size(); j++) {
-					Log.d("ddebug", debtorList.get(i) + " " + creditorList.get(j) + " " + creditList.get(j) * debtList.get(i) / fullDebt);
 					personalDebt.insert(mEventId, debtorList.get(i), creditorList.get(j), creditList.get(j) * debtList.get(i) / fullDebt);
 				}
 			}

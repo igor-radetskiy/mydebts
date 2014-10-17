@@ -63,7 +63,8 @@ public class PersonalDebt {
 		if (mDatabase != null) {
 			String[] columns = {
 					PersonalDebtContract.BUDDY_ID,
-					PersonalDebtContract.BUDDY_DEBT
+					PersonalDebtContract.BUDDY_DEBT,
+					PersonalDebtContract.CREDITOR_ID
 			};
 			cursor = mDatabase.query(
 					PersonalDebtContract.TABLE_NAME, 
@@ -126,35 +127,5 @@ public class PersonalDebt {
 		public static final String CREDITOR_ID = "creditor_id";
 		public static final String BUDDY_DEBT = "buddy_debt";
 		
-	}
-	
-	public static class PersonalDebtModel {
-		private int mId;
-		private int mEventId;
-		private int mBuddyId;
-		private int mBuddyDebt;
-		
-		private PersonalDebtModel(int id, int eventId, int buddyId, int buddyDebt) {
-			mId = id;
-			mEventId = eventId;
-			mBuddyId = buddyId;
-			mBuddyDebt = buddyDebt;
-		}
-		
-		public int getId() { 
-			return mId;
-		}
-		
-		public int getEventId() { 
-			return mEventId;
-		}
-		
-		public int getBuddyId() { 
-			return mBuddyId;
-		}
-		
-		public int getBuddyDebt() { 
-			return mBuddyDebt;
-		}
 	}
 }
