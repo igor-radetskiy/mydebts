@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import android.widget.Toast;
 import iradetskyi.app.debt.R;
 import iradetskyi.app.debt.data.Buddy;
 import iradetskyi.app.debt.data.DatabaseHandler;
@@ -111,9 +112,7 @@ public class EventActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_done:
-			insertChangesToDb();
-			setResult(RESULT_OK);
-			finish();
+			showConfirmationDialog();
 			break;
 		case R.id.action_edit:
 			transformForEdit();
@@ -293,7 +292,34 @@ public class EventActivity extends Activity {
 			tvBuddiesList.setText(sb.toString());
 		}
 	}
-	
+
+    private void showConfirmationDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle(R.string.dialog_common_save_changes_title)
+                .setMessage(R.string.dialog_common_save_changes_message)
+                .setPositiveButton(R.string.dialog_common_ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                insertChangesToDb();
+                                setResult(RESULT_OK);
+                                finish();
+                            }
+                        })
+                .setNegativeButton(R.string.dialog_common_cancel,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getApplicationContext(),
+                                        R.string.dialog_common_save_changes_on_cancel,
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
 	private void insertChangesToDb() {		
 		DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 		Event event = new Event(db);

@@ -22,9 +22,14 @@
     <string name="menu_common_view">View</string>
     <string name="menu_common_edit">Edit</string>
     <string name="menu_common_delete">Delete</string>
-    
+
+    <!-- Dialog -->
     <string name="dialog_common_ok">OK</string>
     <string name="dialog_common_cancel">Cancel</string>
+    <string name="dialog_common_save_changes_title">Save changes</string>
+    <string name="dialog_common_save_changes_message">Are you sure you want to save changes?</string>
+    <string name="dialog_common_save_changes_on_cancel">Your changes did not save. You can edit again</string>
+
     
     <string name="action_common_select_all">Select all</string>
     <string name="action_common_unselect_all">Unelect all</string>
