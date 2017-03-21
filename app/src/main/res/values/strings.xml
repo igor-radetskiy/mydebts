@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">my debts</string>
+
+    <!-- Events -->
+    <string name="events_text_no_events">No events yet…</string>
 </resources>
