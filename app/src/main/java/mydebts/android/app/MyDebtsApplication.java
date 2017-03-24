@@ -1,20 +1,28 @@
 package mydebts.android.app;
 
+import android.app.Activity;
 import android.app.Application;
 
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import mydebts.android.app.di.SubcomponentBuilder;
+
 public class MyDebtsApplication extends Application {
-    private MyDebtsApplicationComponent component;
+
+    @Inject Map<Class<? extends Activity>, SubcomponentBuilder<? extends Activity>> subcomponentBuilders;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        component = DaggerMyDebtsApplicationComponent.builder()
+       DaggerMyDebtsApplicationComponent.builder()
                 .myDebtsApplicationModule(new MyDebtsApplicationModule(this))
-                .build();
+                .build().inject(this);
     }
 
-    public MyDebtsApplicationComponent getComponent() {
-        return component;
+    public <T extends Activity> SubcomponentBuilder<T> subcomponentBuilder(Class<T> tClass) {
+        return (SubcomponentBuilder<T>) subcomponentBuilders.get(tClass);
     }
 }

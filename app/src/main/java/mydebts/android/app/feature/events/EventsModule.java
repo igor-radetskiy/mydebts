@@ -9,10 +9,11 @@ import dagger.Provides;
 import mydebts.android.app.R;
 import mydebts.android.app.db.DaoSession;
 import mydebts.android.app.db.EventDao;
+import mydebts.android.app.di.ActivityModule;
 import mydebts.android.app.di.ActivityScope;
 
 @Module
-class EventsModule {
+public class EventsModule implements ActivityModule<EventsActivity> {
     private final EventsActivity activity;
 
     EventsModule(EventsActivity activity) {

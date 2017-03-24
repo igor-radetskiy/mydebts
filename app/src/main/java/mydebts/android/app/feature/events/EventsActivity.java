@@ -14,6 +14,7 @@ import io.reactivex.functions.Consumer;
 import mydebts.android.app.MyDebtsApplication;
 import mydebts.android.app.R;
 import mydebts.android.app.db.Event;
+import mydebts.android.app.di.SubcomponentBuilderResolver;
 
 public class EventsActivity extends Activity implements Consumer<List<Event>> {
 
@@ -28,11 +29,9 @@ public class EventsActivity extends Activity implements Consumer<List<Event>> {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        DaggerEventsComponent.builder()
-                .myDebtsApplicationComponent(((MyDebtsApplication) getApplication()).getComponent())
-                .eventsModule(new EventsModule(this))
-                .build()
-                .inject(this);
+        SubcomponentBuilderResolver.resolve(this)
+                .module(new EventsModule(this))
+                .build().inject(this);
 
         eventdsDisposable = viewModel.eventsSubject()
                 .subscribe(this);
