@@ -1,7 +1,8 @@
 package mydebts.android.app.feature.events;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -10,41 +11,43 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import mydebts.android.app.MyDebtsApplication;
 import mydebts.android.app.R;
 import mydebts.android.app.db.Event;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
+import mydebts.android.app.feature.addevent.AddEventActivity;
 
-public class EventsActivity extends Activity implements Consumer<List<Event>> {
+public class EventsActivity extends AppCompatActivity {
 
     @Inject EventsViewModel viewModel;
     @Inject RecyclerView eventsRecyclerView;
     @Inject View emptyView;
 
-    private Disposable eventdsDisposable;
+    private Disposable eventsDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        SubcomponentBuilderResolver.resolve(this)
+        ((EventsSubcomponent.Builder)SubcomponentBuilderResolver.resolve(this))
                 .module(new EventsModule(this))
                 .build().inject(this);
 
-        eventdsDisposable = viewModel.eventsSubject()
-                .subscribe(this);
+        eventsDisposable = viewModel.eventsSubject()
+                .subscribe(this::accept);
     }
 
     @Override
     protected void onDestroy() {
-        eventdsDisposable.dispose();
+        eventsDisposable.dispose();
         super.onDestroy();
     }
 
-    @Override
-    public void accept(List<Event> events) throws Exception {
+    void onAddEventClick() {
+        startActivity(new Intent(this, AddEventActivity.class));
+    }
+
+    private void accept(List<Event> events) {
         boolean isEmpty = events == null || events.size() == 0;
 
         emptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);

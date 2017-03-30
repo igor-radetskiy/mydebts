@@ -18,6 +18,9 @@ public class EventsModule implements ActivityModule<EventsActivity> {
 
     EventsModule(EventsActivity activity) {
         this.activity = activity;
+
+        activity.findViewById(R.id.activity_events_add)
+                .setOnClickListener(v -> activity.onAddEventClick());
     }
 
     @ActivityScope
