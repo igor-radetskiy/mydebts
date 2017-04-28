@@ -4,4 +4,7 @@
 
     <!-- Events -->
     <string name="events_text_no_events">No events yet…</string>
+
+    <string name="hint_name"><i>Name</i></string>
+    <string name="hint_amount"><i>$0.00</i></string>
 </resources>
