@@ -1,8 +1,8 @@
 package mydebts.android.app.feature.events;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,7 +19,7 @@ public class EventsModule implements ActivityModule<EventsActivity> {
     EventsModule(EventsActivity activity) {
         this.activity = activity;
 
-        activity.findViewById(R.id.activity_events_add)
+        activity.findViewById(R.id.button_add_event)
                 .setOnClickListener(v -> activity.onAddEventClick());
     }
 
@@ -32,20 +32,14 @@ public class EventsModule implements ActivityModule<EventsActivity> {
     @ActivityScope
     @Provides
     View provideEmptyView() {
-        TextView emptyTextView =
-                (TextView) activity.findViewById(R.id.text_empty);
-
-        emptyTextView.setText(R.string.events_text_no_events);
-
-        return emptyTextView;
+        return activity.findViewById(R.id.text_no_events);
     }
 
     @ActivityScope
     @Provides
     RecyclerView provideEventsRecyclerView() {
-        RecyclerView recyclerView =
-                (RecyclerView) activity.findViewById(R.id.list);
-
+        RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.list_events);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         return recyclerView;
     }
 }

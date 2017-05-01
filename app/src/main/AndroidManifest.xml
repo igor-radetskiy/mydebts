@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mydebts.android.app">
 
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
     <application
         android:name=".MyDebtsApplication"
         android:allowBackup="true"
@@ -14,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".feature.addevent.AddEventActivity"></activity>
+        <activity android:name=".feature.addevent.EventActivity"/>
+        <activity android:name=".feature.participant.ParticipantActivity"/>
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@ import io.reactivex.disposables.Disposable;
 import mydebts.android.app.R;
 import mydebts.android.app.db.Event;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
-import mydebts.android.app.feature.addevent.AddEventActivity;
+import mydebts.android.app.feature.addevent.EventActivity;
 
 public class EventsActivity extends AppCompatActivity {
 
@@ -44,7 +44,7 @@ public class EventsActivity extends AppCompatActivity {
     }
 
     void onAddEventClick() {
-        startActivity(new Intent(this, AddEventActivity.class));
+        startActivity(new Intent(this, EventActivity.class));
     }
 
     private void accept(List<Event> events) {

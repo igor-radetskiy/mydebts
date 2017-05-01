@@ -3,17 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/view_empty"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_events"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <include layout="@layout/view_list"/>
+    <TextView
+        android:id="@+id/text_no_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/events_text_no_events"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/activity_events_add"
+        android:id="@+id/button_add_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add"
-        android:clickable="true"
         android:layout_gravity="bottom|end"/>
 
 </FrameLayout>
