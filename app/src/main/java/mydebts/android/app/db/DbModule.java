@@ -20,4 +20,19 @@ public class DbModule {
 
         return daoMaster.newSession();
     }
+
+    @Provides
+    EventDao provideEventDao(DaoSession daoSession) {
+        return daoSession.getEventDao();
+    }
+
+    @Provides
+    PersonDao providePersonDao(DaoSession daoSession) {
+        return daoSession.getPersonDao();
+    }
+
+    @Provides
+    ParticipantDao provideParticipantDao(DaoSession daoSession) {
+        return daoSession.getParticipantDao();
+    }
 }

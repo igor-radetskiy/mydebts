@@ -1,4 +1,4 @@
-package mydebts.android.app.feature.addevent;
+package mydebts.android.app.feature.event;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import mydebts.android.app.R;
 import mydebts.android.app.db.DaoSession;
 import mydebts.android.app.db.Event;
-import mydebts.android.app.db.EventDao;
 import mydebts.android.app.db.Participant;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
 

@@ -3,11 +3,11 @@ package mydebts.android.app;
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
-import mydebts.android.app.di.ActivityKey;
-import mydebts.android.app.di.ActivitySubcomponent;
-import mydebts.android.app.feature.addevent.EventActivity;
-import mydebts.android.app.feature.addevent.EventSubcomponent;
-import mydebts.android.app.feature.events.EventsActivity;
+import mydebts.android.app.di.SubcomponentBuilder;
+import mydebts.android.app.di.SubcomponentBuilderKey;
+import mydebts.android.app.feature.event.EventFragment;
+import mydebts.android.app.feature.event.EventSubcomponent;
+import mydebts.android.app.feature.events.EventsFragment;
 import mydebts.android.app.feature.events.EventsSubcomponent;
 
 @Module(subcomponents = {
@@ -16,11 +16,11 @@ import mydebts.android.app.feature.events.EventsSubcomponent;
 interface MyDebtsApplicationBindingModule {
     @Binds
     @IntoMap
-    @ActivityKey(EventsActivity.class)
-    ActivitySubcomponent.Builder eventsSubcomponentBuilder(EventsSubcomponent.Builder impl);
+    @SubcomponentBuilderKey(EventsFragment.class)
+    SubcomponentBuilder eventsSubcomponentBuilder(EventsSubcomponent.Builder impl);
 
     @Binds
     @IntoMap
-    @ActivityKey(EventActivity.class)
-    ActivitySubcomponent.Builder eventSubcomponentBuilder(EventSubcomponent.Builder impl);
+    @SubcomponentBuilderKey(EventFragment.class)
+    SubcomponentBuilder eventSubcomponentBuilder(EventSubcomponent.Builder impl);
 }

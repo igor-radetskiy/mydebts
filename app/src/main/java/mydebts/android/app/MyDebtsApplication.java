@@ -1,17 +1,16 @@
 package mydebts.android.app;
 
-import android.app.Activity;
 import android.app.Application;
 
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import mydebts.android.app.di.ActivitySubcomponent;
+import mydebts.android.app.di.SubcomponentBuilder;
 
 public class MyDebtsApplication extends Application {
 
-    @Inject Map<Class<? extends Activity>, ActivitySubcomponent.Builder> subcomponentBuilders;
+    @Inject Map<Class<?>, SubcomponentBuilder> subcomponentBuilders;
 
     @Override
     public void onCreate() {
@@ -22,7 +21,7 @@ public class MyDebtsApplication extends Application {
                 .build().inject(this);
     }
 
-    public <T extends Activity> ActivitySubcomponent.Builder subcomponentBuilder(Class<T> tClass) {
+    public <T> SubcomponentBuilder subcomponentBuilder(Class<T> tClass) {
         return subcomponentBuilders.get(tClass);
     }
 }

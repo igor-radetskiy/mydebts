@@ -1,4 +1,4 @@
-package mydebts.android.app.feature.addevent;
+package mydebts.android.app.feature.event;
 
 import android.text.Editable;
 import android.text.TextUtils;

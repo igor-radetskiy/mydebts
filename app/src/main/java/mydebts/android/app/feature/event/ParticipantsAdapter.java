@@ -1,4 +1,4 @@
-package mydebts.android.app.feature.addevent;
+package mydebts.android.app.feature.event;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
