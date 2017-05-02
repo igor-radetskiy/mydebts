@@ -6,10 +6,10 @@ import javax.inject.Inject;
 
 import io.reactivex.Single;
 import mydebts.android.app.db.Event;
-import mydebts.android.app.di.ActivityScope;
+import mydebts.android.app.di.SingleIn;
 import mydebts.android.app.rx.RxUtil;
 
-@ActivityScope
+@SingleIn(EventsFragment.class)
 class EventsViewModel {
 
     private final EventsSource eventsSource;

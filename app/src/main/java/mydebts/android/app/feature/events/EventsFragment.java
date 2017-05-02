@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -52,7 +51,7 @@ public class EventsFragment extends Fragment {
     }
 
     void onEventClick(Event event) {
-        Toast.makeText(getActivity(), event.getDate().toString(), Toast.LENGTH_SHORT).show();
+        ((MainRouter)getActivity()).navigateToEvent(event);
     }
 
     private void setEvents(List<Event> events) {

@@ -9,7 +9,7 @@ import dagger.Module;
 import dagger.Provides;
 import mydebts.android.app.R;
 import mydebts.android.app.di.ActivityModule;
-import mydebts.android.app.di.ActivityScope;
+import mydebts.android.app.di.SingleIn;
 import mydebts.android.app.feature.main.MainActivity;
 
 @Module
@@ -25,13 +25,13 @@ public class EventsUiModule implements ActivityModule<MainActivity> {
                 .setOnClickListener(v -> fragment.onAddEventClick());
     }
 
-    @ActivityScope
+    @SingleIn(EventsFragment.class)
     @Provides
     View provideEmptyView() {
         return rootView.findViewById(R.id.text_no_events);
     }
 
-    @ActivityScope
+    @SingleIn(EventsFragment.class)
     @Provides
     RecyclerView provideEventsRecyclerView(EventsAdapter adapter) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.list_events);
@@ -40,7 +40,7 @@ public class EventsUiModule implements ActivityModule<MainActivity> {
         return recyclerView;
     }
 
-    @ActivityScope
+    @SingleIn(EventsFragment.class)
     @Provides
     EventsAdapter provideEventsAdapter() {
         EventsAdapter adapter = new EventsAdapter();

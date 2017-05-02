@@ -1,6 +1,7 @@
 package mydebts.android.app.feature.event;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.greendao.query.Join;
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -20,16 +24,23 @@ import java.util.List;
 import javax.inject.Inject;
 
 import mydebts.android.app.R;
-import mydebts.android.app.db.DaoSession;
 import mydebts.android.app.db.Event;
+import mydebts.android.app.db.EventDao;
 import mydebts.android.app.db.Participant;
+import mydebts.android.app.db.ParticipantDao;
+import mydebts.android.app.db.Person;
+import mydebts.android.app.db.PersonDao;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
 import mydebts.android.app.feature.main.MainRouter;
 
 public class EventFragment extends Fragment {
+    private static final String ARG_EVENT_ID = "ARG_EVENT_ID";
+
     private ParticipantsAdapter adapter;
 
-    @Inject DaoSession daoSession;
+    @Inject EventDao eventDao;
+    @Inject PersonDao personDao;
+    @Inject ParticipantDao participantDao;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +63,11 @@ public class EventFragment extends Fragment {
 
         adapter = new ParticipantsAdapter();
         listParticipants.setAdapter(adapter);
+
+        if (getArguments() != null && getArguments().containsKey(ARG_EVENT_ID)) {
+            List<Participant> participants = participantDao.queryRaw("WHERE " + ParticipantDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
+            adapter.setItems(participants);
+        }
 
         return rootView;
     }
@@ -94,14 +110,28 @@ public class EventFragment extends Fragment {
         event.setName(date.toString());
         event.setDate(date);
 
-        long eventId = daoSession.getEventDao().insert(event);
+        long eventId = eventDao.insert(event);
 
         for (Participant participant : participants) {
             participant.setEventId(eventId);
-            participant.setPersonId(daoSession.getPersonDao().insert(participant.peakPerson()));
-            daoSession.getParticipantDao().insert(participant);
+            participant.setPersonId(personDao.insert(participant.peakPerson()));
+            participantDao.insert(participant);
         }
 
         ((MainRouter)getActivity()).navigateBack();
+    }
+
+    public static EventFragment newInstance(@NonNull Event event) {
+        Bundle args = new Bundle();
+        args.putLong(ARG_EVENT_ID, event.getId());
+
+        EventFragment fragment = newInstance();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    public static EventFragment newInstance() {
+        return new EventFragment();
     }
 }

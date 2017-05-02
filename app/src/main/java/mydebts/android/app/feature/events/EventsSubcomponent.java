@@ -1,10 +1,10 @@
 package mydebts.android.app.feature.events;
 
 import dagger.Subcomponent;
-import mydebts.android.app.di.ActivityScope;
+import mydebts.android.app.di.SingleIn;
 import mydebts.android.app.di.SubcomponentBuilder;
 
-@ActivityScope
+@SingleIn(EventsFragment.class)
 @Subcomponent(modules = EventsUiModule.class)
 public interface EventsSubcomponent {
 

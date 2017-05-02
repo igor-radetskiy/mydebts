@@ -1,6 +1,7 @@
 package mydebts.android.app.feature.main;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -24,12 +25,12 @@ public class MainActivity extends AppCompatActivity implements MainRouter {
 
     @Override
     public void navigateToNewEvent() {
-        replaceFragment(new EventFragment(), true);
+        replaceFragment(EventFragment.newInstance(), true);
     }
 
     @Override
-    public void navigateToEvent(Event event) {
-
+    public void navigateToEvent(@NonNull Event event) {
+        replaceFragment(EventFragment.newInstance(event), true);
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import mydebts.android.app.R;
 import mydebts.android.app.db.Participant;
@@ -37,7 +38,11 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
     }
 
     @Override
-    public void onBindViewHolder(EventViewHolder holder, int position) {}
+    public void onBindViewHolder(EventViewHolder holder, int position) {
+        Participant participant = participants.get(position);
+        holder.name.setText(participant.peakPerson().getName());
+        holder.price.setText(String.format(Locale.getDefault(), "%f", participant.getDebt()));
+    }
 
     @Override
     public int getItemCount() {
@@ -46,6 +51,11 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
 
     List<Participant> getParticipants() {
         return participants;
+    }
+
+    void setItems(List<Participant> participants) {
+        this.participants = participants;
+        notifyDataSetChanged();
     }
 
     void removeItem(int position) {
