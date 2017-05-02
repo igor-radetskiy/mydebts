@@ -1,6 +1,5 @@
 package mydebts.android.app.feature.events;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,6 @@ import javax.inject.Inject;
 import mydebts.android.app.R;
 import mydebts.android.app.db.Event;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
-import mydebts.android.app.feature.event.EventActivity;
 import mydebts.android.app.feature.main.MainRouter;
 
 public class EventsFragment extends Fragment {
@@ -41,7 +39,7 @@ public class EventsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((EventsSubcomponent.Builder) SubcomponentBuilderResolver.resolve(getActivity()))
+        ((EventsSubcomponent.Builder) SubcomponentBuilderResolver.resolve(this))
                 .module(new EventsUiModule(this, view))
                 .build().inject(this);
 
@@ -51,7 +49,6 @@ public class EventsFragment extends Fragment {
 
     void onAddEventClick() {
         ((MainRouter)getActivity()).navigateToNewEvent();
-        //startActivity(new Intent(getActivity(), EventActivity.class));
     }
 
     void onEventClick(Event event) {

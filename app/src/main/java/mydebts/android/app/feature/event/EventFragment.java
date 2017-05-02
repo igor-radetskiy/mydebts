@@ -24,6 +24,7 @@ import mydebts.android.app.db.DaoSession;
 import mydebts.android.app.db.Event;
 import mydebts.android.app.db.Participant;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
+import mydebts.android.app.feature.main.MainRouter;
 
 public class EventFragment extends Fragment {
     private ParticipantsAdapter adapter;
@@ -36,7 +37,7 @@ public class EventFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        ((EventSubcomponent.Builder)SubcomponentBuilderResolver.resolve(getActivity()))
+        ((EventSubcomponent.Builder)SubcomponentBuilderResolver.resolve(this))
                 .build()
                 .inject(this);
     }
@@ -101,6 +102,6 @@ public class EventFragment extends Fragment {
             daoSession.getParticipantDao().insert(participant);
         }
 
-        getActivity().finish();
+        ((MainRouter)getActivity()).navigateBack();
     }
 }

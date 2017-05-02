@@ -21,7 +21,7 @@ public class MyDebtsApplication extends Application {
                 .build().inject(this);
     }
 
-    public <T> SubcomponentBuilder subcomponentBuilder(Class<T> tClass) {
-        return subcomponentBuilders.get(tClass);
+    public SubcomponentBuilder subcomponentBuilder(Class<?> keyClass) {
+        return subcomponentBuilders.get(keyClass);
     }
 }

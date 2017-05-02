@@ -9,4 +9,6 @@ public interface MainRouter {
     void navigateToNewEvent();
 
     void navigateToEvent(Event event);
+
+    void navigateBack();
 }

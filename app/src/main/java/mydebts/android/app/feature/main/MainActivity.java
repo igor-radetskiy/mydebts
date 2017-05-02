@@ -2,6 +2,7 @@ package mydebts.android.app.feature.main;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import mydebts.android.app.db.Event;
@@ -18,12 +19,12 @@ public class MainActivity extends AppCompatActivity implements MainRouter {
 
     @Override
     public void navigateToEvents() {
-        replaceFragment(new EventsFragment());
+        replaceFragment(new EventsFragment(), false);
     }
 
     @Override
     public void navigateToNewEvent() {
-        replaceFragment(new EventFragment());
+        replaceFragment(new EventFragment(), true);
     }
 
     @Override
@@ -31,9 +32,19 @@ public class MainActivity extends AppCompatActivity implements MainRouter {
 
     }
 
-    private void replaceFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, fragment)
-                .commit();
+    @Override
+    public void navigateBack() {
+        getSupportFragmentManager().popBackStack();
+    }
+
+    private void replaceFragment(Fragment fragment, boolean addToBackStack) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, fragment);
+
+        if (addToBackStack) {
+            transaction.addToBackStack(null);
+        }
+
+        transaction.commit();
     }
 }
