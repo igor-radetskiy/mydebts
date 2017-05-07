@@ -93,7 +93,7 @@ public class EventFragment extends Fragment {
     private void saveEvent(List<Participant> participants) {
         for (Iterator<Participant> iterator = participants.iterator(); iterator.hasNext();) {
             Participant participant = iterator.next();
-            if (TextUtils.isEmpty(participant.peakPerson().getName())
+            if (TextUtils.isEmpty(participant.getPerson().getName())
                     || Math.abs(participant.getDebt()) < 0.001) {
                 iterator.remove();
             }
@@ -114,7 +114,7 @@ public class EventFragment extends Fragment {
 
         for (Participant participant : participants) {
             participant.setEventId(eventId);
-            participant.setPersonId(personDao.insert(participant.peakPerson()));
+            participant.setPersonId(personDao.insert(participant.getPerson()));
             participantDao.insert(participant);
         }
 

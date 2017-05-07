@@ -16,10 +16,7 @@ public class Event {
     @Id private Long id;
     private String name;
 
-    @ToMany
-    @JoinEntity(entity = Participant.class,
-            sourceProperty = "eventId",
-            targetProperty = "personId")
+    @ToMany(referencedJoinProperty = "eventId")
     private List<Participant> participants;
 
     private Date date;

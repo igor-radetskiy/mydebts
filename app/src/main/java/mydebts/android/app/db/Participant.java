@@ -11,10 +11,10 @@ public class Participant {
     @Id private Long id;
 
     private Long personId;
-    @ToOne private Person person;
+    @ToOne(joinProperty = "personId") private Person person;
 
     private Long eventId;
-    @ToOne private Event event;
+    @ToOne(joinProperty = "eventId") private Event event;
 
     private double debt;
 
@@ -70,67 +70,67 @@ public class Participant {
         this.debt = debt;
     }
 
-    @Generated(hash = 1689085377)
-    private transient boolean person__refreshed;
-
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1413817282)
+    @Generated(hash = 1752520167)
     public Person getPerson() {
-        if (person != null || !person__refreshed) {
+        Long __key = this.personId;
+        if (person__resolvedKey == null || !person__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             PersonDao targetDao = daoSession.getPersonDao();
-            targetDao.refresh(person);
-            person__refreshed = true;
+            Person personNew = targetDao.load(__key);
+            synchronized (this) {
+                person = personNew;
+                person__resolvedKey = __key;
+            }
         }
-        return person;
-    }
-
-    /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
-    @Generated(hash = 1134129394)
-    public Person peakPerson() {
         return person;
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1432851435)
+    @Generated(hash = 1834876435)
     public void setPerson(Person person) {
         synchronized (this) {
             this.person = person;
-            person__refreshed = true;
+            personId = person == null ? null : person.getId();
+            person__resolvedKey = personId;
         }
     }
 
-    @Generated(hash = 1320491280)
-    private transient boolean event__refreshed;
+    @Generated(hash = 1154009267)
+    private transient Long person__resolvedKey;
+
+    @Generated(hash = 520039006)
+    private transient Long event__resolvedKey;
 
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1616166669)
+    @Generated(hash = 1904304788)
     public Event getEvent() {
-        if (event != null || !event__refreshed) {
+        Long __key = this.eventId;
+        if (event__resolvedKey == null || !event__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             EventDao targetDao = daoSession.getEventDao();
-            targetDao.refresh(event);
-            event__refreshed = true;
+            Event eventNew = targetDao.load(__key);
+            synchronized (this) {
+                event = eventNew;
+                event__resolvedKey = __key;
+            }
         }
         return event;
     }
 
-    /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
-    @Generated(hash = 1249143670)
-    public Event peakEvent() {
-        return event;
-    }
-
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 516084365)
+    @Generated(hash = 12102314)
     public void setEvent(Event event) {
         synchronized (this) {
             this.event = event;
-            event__refreshed = true;
+            eventId = event == null ? null : event.getId();
+            event__resolvedKey = eventId;
         }
     }
 

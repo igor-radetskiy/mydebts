@@ -1,6 +1,7 @@
 package mydebts.android.app.feature.event;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +41,16 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
     @Override
     public void onBindViewHolder(EventViewHolder holder, int position) {
         Participant participant = participants.get(position);
-        holder.name.setText(participant.peakPerson().getName());
-        holder.price.setText(String.format(Locale.getDefault(), "%f", participant.getDebt()));
+
+        if (!TextUtils.isEmpty(participant.getPerson().getName())) {
+            holder.name.setText(participant.getPerson().getName());
+        }
+
+        String debt = Math.abs(participant.getDebt()) < 0.001 ? "" :
+                String.format(Locale.getDefault(), "%f", participant.getDebt());
+        if (!TextUtils.isEmpty(debt)) {
+            holder.price.setText(debt);
+        }
     }
 
     @Override
@@ -74,7 +83,7 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
 
     void updateItemName(int position, String name) {
         Participant participant = participants.get(position);
-        participant.peakPerson().setName(name);
+        participant.getPerson().setName(name);
     }
 
     void updateItemPrice(int position, double debt) {
