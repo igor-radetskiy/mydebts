@@ -3,8 +3,10 @@ package mydebts.android.app.db;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Transient;
 
 @Entity
 public class Participant {
@@ -68,6 +70,11 @@ public class Participant {
 
     public void setDebt(double debt) {
         this.debt = debt;
+    }
+
+    @Keep
+    public Person peekPerson() {
+        return person;
     }
 
     /** To-one relationship, resolved on first access. */

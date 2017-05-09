@@ -42,7 +42,7 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
     public void onBindViewHolder(EventViewHolder holder, int position) {
         Participant participant = participants.get(position);
 
-        if (!TextUtils.isEmpty(participant.getPerson().getName())) {
+        if (participant.getPersonId() != null && !TextUtils.isEmpty(participant.getPerson().getName())) {
             holder.name.setText(participant.getPerson().getName());
         }
 
@@ -60,6 +60,10 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
 
     List<Participant> getParticipants() {
         return participants;
+    }
+
+    Participant getItem(int position) {
+        return participants.get(position);
     }
 
     void setItems(List<Participant> participants) {
@@ -83,7 +87,7 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
 
     void updateItemName(int position, String name) {
         Participant participant = participants.get(position);
-        participant.getPerson().setName(name);
+        participant.peekPerson().setName(name);
     }
 
     void updateItemPrice(int position, double debt) {

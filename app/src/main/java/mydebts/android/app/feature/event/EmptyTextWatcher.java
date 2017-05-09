@@ -6,6 +6,8 @@ import android.text.TextWatcher;
 
 import java.lang.ref.WeakReference;
 
+import mydebts.android.app.db.Participant;
+
 class EmptyTextWatcher implements TextWatcher {
     private final WeakReference<ParticipantsAdapter> adapterRef;
     private final WeakReference<ParticipantsAdapter.EventViewHolder> holderRef;
@@ -24,6 +26,12 @@ class EmptyTextWatcher implements TextWatcher {
         ParticipantsAdapter.EventViewHolder holder = holderRef.get();
 
         if (adapter == null || holder == null) {
+            return;
+        }
+
+        Participant participant = adapter.getItem(holder.getAdapterPosition());
+        if (participant.getPersonId() != null
+                && TextUtils.equals(participant.getPerson().getName(), holder.name.getText())) {
             return;
         }
 

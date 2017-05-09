@@ -14,9 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.greenrobot.greendao.query.Join;
-import org.greenrobot.greendao.query.QueryBuilder;
-
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -85,6 +82,9 @@ public class EventFragment extends Fragment {
             case R.id.action_save:
                 saveEvent(adapter.getParticipants());
                 return true;
+            case R.id.action_delete:
+                deleteEvent();
+                return true;
             default:
                 return false;
         }
@@ -93,7 +93,7 @@ public class EventFragment extends Fragment {
     private void saveEvent(List<Participant> participants) {
         for (Iterator<Participant> iterator = participants.iterator(); iterator.hasNext();) {
             Participant participant = iterator.next();
-            if (TextUtils.isEmpty(participant.getPerson().getName())
+            if (TextUtils.isEmpty(participant.peekPerson().getName())
                     || Math.abs(participant.getDebt()) < 0.001) {
                 iterator.remove();
             }
@@ -114,8 +114,20 @@ public class EventFragment extends Fragment {
 
         for (Participant participant : participants) {
             participant.setEventId(eventId);
-            participant.setPersonId(personDao.insert(participant.getPerson()));
+            participant.setPersonId(personDao.insert(participant.peekPerson()));
             participantDao.insert(participant);
+        }
+
+        ((MainRouter)getActivity()).navigateBack();
+    }
+
+    private void deleteEvent() {
+        if (getArguments().containsKey(ARG_EVENT_ID)) {
+            eventDao.deleteByKey(getArguments().getLong(ARG_EVENT_ID));
+            List<Participant> participants = participantDao.queryRaw("WHERE " + ParticipantDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
+            for (Participant participant : participants) {
+                participant.delete();
+            }
         }
 
         ((MainRouter)getActivity()).navigateBack();
