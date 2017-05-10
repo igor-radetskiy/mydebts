@@ -5,8 +5,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Single;
-import mydebts.android.app.db.Event;
-import mydebts.android.app.db.EventDao;
+import mydebts.android.app.data.db.EventsTable;
+import mydebts.android.app.data.db.EventDao;
 
 class EventsSource {
     private final EventDao dao;
@@ -16,7 +16,7 @@ class EventsSource {
         this.dao = dao;
     }
 
-    Single<List<Event>> fetch() {
+    Single<List<EventsTable>> fetch() {
         return Single.fromCallable(dao::loadAll);
     }
 }

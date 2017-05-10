@@ -5,7 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Single;
-import mydebts.android.app.db.Event;
+import mydebts.android.app.data.db.EventsTable;
 import mydebts.android.app.di.SingleIn;
 import mydebts.android.app.rx.RxUtil;
 
@@ -21,7 +21,7 @@ class EventsViewModel {
         this.rxUtil = rxUtil;
     }
 
-    Single<List<Event>> fetchEvents() {
+    Single<List<EventsTable>> fetchEvents() {
         return eventsSource.fetch()
                 .compose(rxUtil.singleSchedulersTransformer());
     }

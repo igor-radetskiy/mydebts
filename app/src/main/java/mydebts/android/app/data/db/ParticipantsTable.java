@@ -1,4 +1,4 @@
-package mydebts.android.app.db;
+package mydebts.android.app.data.db;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -6,17 +6,16 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.Transient;
 
-@Entity
-public class Participant {
+@Entity(nameInDb = "PARTICIPANTS")
+public class ParticipantsTable {
     @Id private Long id;
 
     private Long personId;
-    @ToOne(joinProperty = "personId") private Person person;
+    @ToOne(joinProperty = "personId") private PersonsTable person;
 
     private Long eventId;
-    @ToOne(joinProperty = "eventId") private Event event;
+    @ToOne(joinProperty = "eventId") private EventsTable event;
 
     private double debt;
 
@@ -29,7 +28,7 @@ public class Participant {
     private transient ParticipantDao myDao;
 
     @Generated(hash = 630828827)
-    public Participant(Long id, Long personId, Long eventId, double debt) {
+    public ParticipantsTable(Long id, Long personId, Long eventId, double debt) {
         this.id = id;
         this.personId = personId;
         this.eventId = eventId;
@@ -37,7 +36,7 @@ public class Participant {
     }
 
     @Generated(hash = 1200154759)
-    public Participant() {
+    public ParticipantsTable() {
     }
 
     public Long getId() {
@@ -73,13 +72,13 @@ public class Participant {
     }
 
     @Keep
-    public Person peekPerson() {
+    public PersonsTable peekPerson() {
         return person;
     }
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1752520167)
-    public Person getPerson() {
+    public PersonsTable getPerson() {
         Long __key = this.personId;
         if (person__resolvedKey == null || !person__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
@@ -87,7 +86,7 @@ public class Participant {
                 throw new DaoException("Entity is detached from DAO context");
             }
             PersonDao targetDao = daoSession.getPersonDao();
-            Person personNew = targetDao.load(__key);
+            PersonsTable personNew = targetDao.load(__key);
             synchronized (this) {
                 person = personNew;
                 person__resolvedKey = __key;
@@ -98,7 +97,7 @@ public class Participant {
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1834876435)
-    public void setPerson(Person person) {
+    public void setPerson(PersonsTable person) {
         synchronized (this) {
             this.person = person;
             personId = person == null ? null : person.getId();
@@ -114,7 +113,7 @@ public class Participant {
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1904304788)
-    public Event getEvent() {
+    public EventsTable getEvent() {
         Long __key = this.eventId;
         if (event__resolvedKey == null || !event__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
@@ -122,7 +121,7 @@ public class Participant {
                 throw new DaoException("Entity is detached from DAO context");
             }
             EventDao targetDao = daoSession.getEventDao();
-            Event eventNew = targetDao.load(__key);
+            EventsTable eventNew = targetDao.load(__key);
             synchronized (this) {
                 event = eventNew;
                 event__resolvedKey = __key;
@@ -133,7 +132,7 @@ public class Participant {
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 12102314)
-    public void setEvent(Event event) {
+    public void setEvent(EventsTable event) {
         synchronized (this) {
             this.event = event;
             eventId = event == null ? null : event.getId();

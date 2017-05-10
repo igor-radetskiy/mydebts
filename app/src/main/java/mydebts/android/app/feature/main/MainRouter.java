@@ -2,7 +2,7 @@ package mydebts.android.app.feature.main;
 
 import android.support.annotation.NonNull;
 
-import mydebts.android.app.db.Event;
+import mydebts.android.app.data.db.EventsTable;
 
 public interface MainRouter {
 
@@ -10,7 +10,7 @@ public interface MainRouter {
 
     void navigateToNewEvent();
 
-    void navigateToEvent(@NonNull Event event);
+    void navigateToEvent(@NonNull EventsTable event);
 
     void navigateBack();
 }

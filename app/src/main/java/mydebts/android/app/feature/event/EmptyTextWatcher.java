@@ -6,7 +6,7 @@ import android.text.TextWatcher;
 
 import java.lang.ref.WeakReference;
 
-import mydebts.android.app.db.Participant;
+import mydebts.android.app.data.db.ParticipantsTable;
 
 class EmptyTextWatcher implements TextWatcher {
     private final WeakReference<ParticipantsAdapter> adapterRef;
@@ -29,7 +29,7 @@ class EmptyTextWatcher implements TextWatcher {
             return;
         }
 
-        Participant participant = adapter.getItem(holder.getAdapterPosition());
+        ParticipantsTable participant = adapter.getItem(holder.getAdapterPosition());
         if (participant.getPersonId() != null
                 && TextUtils.equals(participant.getPerson().getName(), holder.name.getText())) {
             return;

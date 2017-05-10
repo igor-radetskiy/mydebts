@@ -21,12 +21,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import mydebts.android.app.R;
-import mydebts.android.app.db.Event;
-import mydebts.android.app.db.EventDao;
-import mydebts.android.app.db.Participant;
-import mydebts.android.app.db.ParticipantDao;
-import mydebts.android.app.db.Person;
-import mydebts.android.app.db.PersonDao;
+import mydebts.android.app.data.db.EventsTable;
+import mydebts.android.app.data.db.EventDao;
+import mydebts.android.app.data.db.ParticipantsTable;
+import mydebts.android.app.data.db.ParticipantDao;
+import mydebts.android.app.data.db.PersonDao;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
 import mydebts.android.app.feature.main.MainRouter;
 
@@ -62,7 +61,7 @@ public class EventFragment extends Fragment {
         listParticipants.setAdapter(adapter);
 
         if (getArguments() != null && getArguments().containsKey(ARG_EVENT_ID)) {
-            List<Participant> participants = participantDao.queryRaw("WHERE " + ParticipantDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
+            List<ParticipantsTable> participants = participantDao.queryRaw("WHERE " + ParticipantDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
             adapter.setItems(participants);
         }
 
@@ -90,9 +89,9 @@ public class EventFragment extends Fragment {
         }
     }
 
-    private void saveEvent(List<Participant> participants) {
-        for (Iterator<Participant> iterator = participants.iterator(); iterator.hasNext();) {
-            Participant participant = iterator.next();
+    private void saveEvent(List<ParticipantsTable> participants) {
+        for (Iterator<ParticipantsTable> iterator = participants.iterator(); iterator.hasNext();) {
+            ParticipantsTable participant = iterator.next();
             if (TextUtils.isEmpty(participant.peekPerson().getName())
                     || Math.abs(participant.getDebt()) < 0.001) {
                 iterator.remove();
@@ -106,13 +105,13 @@ public class EventFragment extends Fragment {
         Date date = new Date();
         date.setTime(System.currentTimeMillis());
 
-        Event event = new Event();
+        EventsTable event = new EventsTable();
         event.setName(date.toString());
         event.setDate(date);
 
         long eventId = eventDao.insert(event);
 
-        for (Participant participant : participants) {
+        for (ParticipantsTable participant : participants) {
             participant.setEventId(eventId);
             participant.setPersonId(personDao.insert(participant.peekPerson()));
             participantDao.insert(participant);
@@ -124,8 +123,8 @@ public class EventFragment extends Fragment {
     private void deleteEvent() {
         if (getArguments().containsKey(ARG_EVENT_ID)) {
             eventDao.deleteByKey(getArguments().getLong(ARG_EVENT_ID));
-            List<Participant> participants = participantDao.queryRaw("WHERE " + ParticipantDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
-            for (Participant participant : participants) {
+            List<ParticipantsTable> participants = participantDao.queryRaw("WHERE " + ParticipantDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
+            for (ParticipantsTable participant : participants) {
                 participant.delete();
             }
         }
@@ -133,7 +132,7 @@ public class EventFragment extends Fragment {
         ((MainRouter)getActivity()).navigateBack();
     }
 
-    public static EventFragment newInstance(@NonNull Event event) {
+    public static EventFragment newInstance(@NonNull EventsTable event) {
         Bundle args = new Bundle();
         args.putLong(ARG_EVENT_ID, event.getId());
 

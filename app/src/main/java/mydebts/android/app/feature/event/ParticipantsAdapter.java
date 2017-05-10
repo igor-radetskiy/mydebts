@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Locale;
 
 import mydebts.android.app.R;
-import mydebts.android.app.db.Participant;
-import mydebts.android.app.db.Person;
+import mydebts.android.app.data.db.ParticipantsTable;
+import mydebts.android.app.data.db.PersonsTable;
 
 class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.EventViewHolder> {
-    private List<Participant> participants = new ArrayList<>();
+    private List<ParticipantsTable> participants = new ArrayList<>();
 
     ParticipantsAdapter() {
         insertNewEmptyItem();
@@ -40,7 +40,7 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
 
     @Override
     public void onBindViewHolder(EventViewHolder holder, int position) {
-        Participant participant = participants.get(position);
+        ParticipantsTable participant = participants.get(position);
 
         if (participant.getPersonId() != null && !TextUtils.isEmpty(participant.getPerson().getName())) {
             holder.name.setText(participant.getPerson().getName());
@@ -58,15 +58,15 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
         return participants.size();
     }
 
-    List<Participant> getParticipants() {
+    List<ParticipantsTable> getParticipants() {
         return participants;
     }
 
-    Participant getItem(int position) {
+    ParticipantsTable getItem(int position) {
         return participants.get(position);
     }
 
-    void setItems(List<Participant> participants) {
+    void setItems(List<ParticipantsTable> participants) {
         this.participants = participants;
         notifyDataSetChanged();
     }
@@ -77,8 +77,8 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
     }
 
     void insertNewEmptyItem() {
-        Participant participant = new Participant();
-        participant.setPerson(new Person());
+        ParticipantsTable participant = new ParticipantsTable();
+        participant.setPerson(new PersonsTable());
         participant.setDebt(0);
 
         participants.add(participant);
@@ -86,12 +86,12 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
     }
 
     void updateItemName(int position, String name) {
-        Participant participant = participants.get(position);
+        ParticipantsTable participant = participants.get(position);
         participant.peekPerson().setName(name);
     }
 
     void updateItemPrice(int position, double debt) {
-        Participant participant = participants.get(position);
+        ParticipantsTable participant = participants.get(position);
         participant.setDebt(debt);
     }
 

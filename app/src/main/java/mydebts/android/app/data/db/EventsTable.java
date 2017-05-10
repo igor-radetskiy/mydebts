@@ -1,81 +1,95 @@
-package mydebts.android.app.db;
+package mydebts.android.app.data.db;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.JoinEntity;
-import org.greenrobot.greendao.annotation.ToMany;
 
+import java.util.Date;
 import java.util.List;
+
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.DaoException;
 
-@Entity
-public class Person {
-
+@Entity(nameInDb = "EVENTS")
+public class EventsTable {
     @Id private Long id;
-
     private String name;
 
-    @ToMany
-    @JoinEntity(entity = Participant.class,
-            sourceProperty = "personId",
-            targetProperty = "eventId")
-    private List<Event> events;
+    @ToMany(referencedJoinProperty = "eventId")
+    private List<ParticipantsTable> participants;
 
+    private Date date;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-
     /** Used for active entity operations. */
-    @Generated(hash = 778611619)
-    private transient PersonDao myDao;
+    @Generated(hash = 1542254534)
+    private transient EventDao myDao;
 
-    @Generated(hash = 628813901)
-    public Person(Long id, String name) {
+    @Generated(hash = 605031532)
+    public EventsTable(Long id, String name, Date date) {
         this.id = id;
         this.name = name;
+        this.date = date;
     }
-    @Generated(hash = 1024547259)
-    public Person() {
+
+    @Generated(hash = 344677835)
+    public EventsTable() {
     }
+
     public Long getId() {
         return this.id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getName() {
         return this.name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
+    public Date getDate() {
+        return this.date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 1670372303)
-    public List<Event> getEvents() {
-        if (events == null) {
+    @Generated(hash = 11358865)
+    public List<ParticipantsTable> getParticipants() {
+        if (participants == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            EventDao targetDao = daoSession.getEventDao();
-            List<Event> eventsNew = targetDao._queryPerson_Events(id);
+            ParticipantDao targetDao = daoSession.getParticipantDao();
+            List<ParticipantsTable> participantsNew = targetDao
+                    ._queryEvent_Participants(id);
             synchronized (this) {
-                if (events == null) {
-                    events = eventsNew;
+                if (participants == null) {
+                    participants = participantsNew;
                 }
             }
         }
-        return events;
+        return participants;
     }
+
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 1830105409)
-    public synchronized void resetEvents() {
-        events = null;
+    @Generated(hash = 1007775216)
+    public synchronized void resetParticipants() {
+        participants = null;
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -87,6 +101,7 @@ public class Person {
         }
         myDao.delete(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -98,6 +113,7 @@ public class Person {
         }
         myDao.refresh(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -109,10 +125,11 @@ public class Person {
         }
         myDao.update(this);
     }
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 2056799268)
+    @Generated(hash = 1459865304)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getPersonDao() : null;
+        myDao = daoSession != null ? daoSession.getEventDao() : null;
     }
 }

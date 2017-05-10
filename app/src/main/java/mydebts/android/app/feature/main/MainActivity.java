@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import mydebts.android.app.db.Event;
+import mydebts.android.app.data.db.EventsTable;
 import mydebts.android.app.feature.event.EventFragment;
 import mydebts.android.app.feature.events.EventsFragment;
 
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements MainRouter {
     }
 
     @Override
-    public void navigateToEvent(@NonNull Event event) {
+    public void navigateToEvent(@NonNull EventsTable event) {
         replaceFragment(EventFragment.newInstance(event), true);
     }
 

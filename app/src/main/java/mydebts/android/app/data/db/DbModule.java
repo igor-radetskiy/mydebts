@@ -1,4 +1,4 @@
-package mydebts.android.app.db;
+package mydebts.android.app.data.db;
 
 import android.content.Context;
 
