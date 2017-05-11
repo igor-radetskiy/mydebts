@@ -9,10 +9,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import mydebts.android.app.R;
-import mydebts.android.app.data.db.EventsTable;
+import mydebts.android.app.data.model.Event;
 
 class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
-    private List<EventsTable> events;
+    private List<Event> events;
     private OnEventClickListener listener;
 
     @Override
@@ -39,7 +39,7 @@ class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> 
         return events == null ? 0 : events.size();
     }
 
-    void setEvents(List<EventsTable> events) {
+    void setEvents(List<Event> events) {
         this.events = events;
         notifyDataSetChanged();
     }
@@ -63,6 +63,6 @@ class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> 
     }
 
     interface OnEventClickListener {
-        void onEventClick(EventsTable event);
+        void onEventClick(Event event);
     }
 }

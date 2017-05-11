@@ -24,10 +24,12 @@ public class ParticipantsTable {
     private transient DaoSession daoSession;
 
     /** Used for active entity operations. */
-    @Generated(hash = 1537769566)
-    private transient ParticipantDao myDao;
+    @Generated(hash = 279985025)
+    private transient ParticipantsTableDao myDao;
 
-    @Generated(hash = 630828827)
+
+
+    @Generated(hash = 473971503)
     public ParticipantsTable(Long id, Long personId, Long eventId, double debt) {
         this.id = id;
         this.personId = personId;
@@ -35,49 +37,79 @@ public class ParticipantsTable {
         this.debt = debt;
     }
 
-    @Generated(hash = 1200154759)
+
+
+    @Generated(hash = 2066322617)
     public ParticipantsTable() {
     }
 
-    public Long getId() {
-        return this.id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Long getPersonId() {
-        return this.personId;
-    }
+    @Generated(hash = 1154009267)
+    private transient Long person__resolvedKey;
 
-    public void setPersonId(Long personId) {
-        this.personId = personId;
-    }
+    @Generated(hash = 520039006)
+    private transient Long event__resolvedKey;
 
-    public Long getEventId() {
-        return this.eventId;
-    }
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
-
-    public double getDebt() {
-        return this.debt;
-    }
-
-    public void setDebt(double debt) {
-        this.debt = debt;
-    }
 
     @Keep
     public PersonsTable peekPerson() {
         return person;
     }
 
+
+
+    public Long getId() {
+        return this.id;
+    }
+
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+
+    public Long getPersonId() {
+        return this.personId;
+    }
+
+
+
+    public void setPersonId(Long personId) {
+        this.personId = personId;
+    }
+
+
+
+    public Long getEventId() {
+        return this.eventId;
+    }
+
+
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
+
+
+
+    public double getDebt() {
+        return this.debt;
+    }
+
+
+
+    public void setDebt(double debt) {
+        this.debt = debt;
+    }
+
+
+
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1752520167)
+    @Generated(hash = 791311809)
     public PersonsTable getPerson() {
         Long __key = this.personId;
         if (person__resolvedKey == null || !person__resolvedKey.equals(__key)) {
@@ -85,7 +117,7 @@ public class ParticipantsTable {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            PersonDao targetDao = daoSession.getPersonDao();
+            PersonsTableDao targetDao = daoSession.getPersonsTableDao();
             PersonsTable personNew = targetDao.load(__key);
             synchronized (this) {
                 person = personNew;
@@ -95,8 +127,10 @@ public class ParticipantsTable {
         return person;
     }
 
+
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1834876435)
+    @Generated(hash = 1530064136)
     public void setPerson(PersonsTable person) {
         synchronized (this) {
             this.person = person;
@@ -105,14 +139,10 @@ public class ParticipantsTable {
         }
     }
 
-    @Generated(hash = 1154009267)
-    private transient Long person__resolvedKey;
 
-    @Generated(hash = 520039006)
-    private transient Long event__resolvedKey;
 
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1904304788)
+    @Generated(hash = 1836273066)
     public EventsTable getEvent() {
         Long __key = this.eventId;
         if (event__resolvedKey == null || !event__resolvedKey.equals(__key)) {
@@ -120,7 +150,7 @@ public class ParticipantsTable {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            EventDao targetDao = daoSession.getEventDao();
+            EventsTableDao targetDao = daoSession.getEventsTableDao();
             EventsTable eventNew = targetDao.load(__key);
             synchronized (this) {
                 event = eventNew;
@@ -130,8 +160,10 @@ public class ParticipantsTable {
         return event;
     }
 
+
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 12102314)
+    @Generated(hash = 700771234)
     public void setEvent(EventsTable event) {
         synchronized (this) {
             this.event = event;
@@ -139,6 +171,8 @@ public class ParticipantsTable {
             event__resolvedKey = eventId;
         }
     }
+
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -152,6 +186,8 @@ public class ParticipantsTable {
         myDao.delete(this);
     }
 
+
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -163,6 +199,8 @@ public class ParticipantsTable {
         }
         myDao.refresh(this);
     }
+
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -176,10 +214,14 @@ public class ParticipantsTable {
         myDao.update(this);
     }
 
+
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1996592993)
+    @Generated(hash = 1197250900)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getParticipantDao() : null;
+        myDao = daoSession != null ? daoSession.getParticipantsTableDao() : null;
     }
+
+    
 }

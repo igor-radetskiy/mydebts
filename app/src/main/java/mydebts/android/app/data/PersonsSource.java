@@ -14,6 +14,12 @@ public interface PersonsSource {
 
     Single<Person> get(@NonNull Long id);
 
+    Single<Person> insert(@NonNull Person person);
+
+    Single<Person> update(@NonNull Person person);
+
+    Single<Person> delete(@NonNull Person person);
+
     Observable<Person> inserted();
 
     Observable<Person> updated();

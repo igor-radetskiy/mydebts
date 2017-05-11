@@ -70,7 +70,7 @@ public class Event {
             return this;
         }
 
-        Event build() {
+        public Event build() {
             return new Event(id, name, date);
         }
     }

@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import mydebts.android.app.R;
 import mydebts.android.app.data.db.EventsTable;
+import mydebts.android.app.data.model.Event;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
 import mydebts.android.app.feature.main.MainRouter;
 
@@ -50,11 +51,11 @@ public class EventsFragment extends Fragment {
         ((MainRouter)getActivity()).navigateToNewEvent();
     }
 
-    void onEventClick(EventsTable event) {
+    void onEventClick(Event event) {
         ((MainRouter)getActivity()).navigateToEvent(event);
     }
 
-    private void setEvents(List<EventsTable> events) {
+    private void setEvents(List<Event> events) {
         boolean isEmpty = events == null || events.size() == 0;
 
         emptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);

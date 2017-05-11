@@ -22,17 +22,17 @@ public class DbModule {
     }
 
     @Provides
-    EventDao provideEventDao(DaoSession daoSession) {
-        return daoSession.getEventDao();
+    EventsTableDao provideEventDao(DaoSession daoSession) {
+        return daoSession.getEventsTableDao();
     }
 
     @Provides
-    PersonDao providePersonDao(DaoSession daoSession) {
-        return daoSession.getPersonDao();
+    PersonsTableDao providePersonDao(DaoSession daoSession) {
+        return daoSession.getPersonsTableDao();
     }
 
     @Provides
-    ParticipantDao provideParticipantDao(DaoSession daoSession) {
-        return daoSession.getParticipantDao();
+    ParticipantsTableDao provideParticipantDao(DaoSession daoSession) {
+        return daoSession.getParticipantsTableDao();
     }
 }

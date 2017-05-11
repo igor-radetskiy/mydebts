@@ -23,17 +23,17 @@ public class EventsTable {
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
     /** Used for active entity operations. */
-    @Generated(hash = 1542254534)
-    private transient EventDao myDao;
+    @Generated(hash = 1412976406)
+    private transient EventsTableDao myDao;
 
-    @Generated(hash = 605031532)
+    @Generated(hash = 2026527010)
     public EventsTable(Long id, String name, Date date) {
         this.id = id;
         this.name = name;
         this.date = date;
     }
 
-    @Generated(hash = 344677835)
+    @Generated(hash = 135118107)
     public EventsTable() {
     }
 
@@ -65,16 +65,16 @@ public class EventsTable {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 11358865)
+    @Generated(hash = 1031956007)
     public List<ParticipantsTable> getParticipants() {
         if (participants == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            ParticipantDao targetDao = daoSession.getParticipantDao();
+            ParticipantsTableDao targetDao = daoSession.getParticipantsTableDao();
             List<ParticipantsTable> participantsNew = targetDao
-                    ._queryEvent_Participants(id);
+                    ._queryEventsTable_Participants(id);
             synchronized (this) {
                 if (participants == null) {
                     participants = participantsNew;
@@ -127,9 +127,9 @@ public class EventsTable {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1459865304)
+    @Generated(hash = 618261465)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getEventDao() : null;
+        myDao = daoSession != null ? daoSession.getEventsTableDao() : null;
     }
 }

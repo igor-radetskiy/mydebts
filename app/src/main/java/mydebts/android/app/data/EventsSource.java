@@ -14,6 +14,12 @@ public interface EventsSource {
 
     Single<Event> get(@NonNull Long id);
 
+    Single<Event> insert(@NonNull Event event);
+
+    Single<Event> update(@NonNull Event event);
+
+    Single<Event> delete(@NonNull Event event);
+
     Observable<Event> inserted();
 
     Observable<Event> updated();

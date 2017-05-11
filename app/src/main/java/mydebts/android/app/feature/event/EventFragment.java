@@ -22,10 +22,11 @@ import javax.inject.Inject;
 
 import mydebts.android.app.R;
 import mydebts.android.app.data.db.EventsTable;
-import mydebts.android.app.data.db.EventDao;
+import mydebts.android.app.data.db.EventsTableDao;
 import mydebts.android.app.data.db.ParticipantsTable;
-import mydebts.android.app.data.db.ParticipantDao;
-import mydebts.android.app.data.db.PersonDao;
+import mydebts.android.app.data.db.ParticipantsTableDao;
+import mydebts.android.app.data.db.PersonsTableDao;
+import mydebts.android.app.data.model.Event;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
 import mydebts.android.app.feature.main.MainRouter;
 
@@ -34,9 +35,9 @@ public class EventFragment extends Fragment {
 
     private ParticipantsAdapter adapter;
 
-    @Inject EventDao eventDao;
-    @Inject PersonDao personDao;
-    @Inject ParticipantDao participantDao;
+    @Inject EventsTableDao eventDao;
+    @Inject PersonsTableDao personDao;
+    @Inject ParticipantsTableDao participantDao;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class EventFragment extends Fragment {
         listParticipants.setAdapter(adapter);
 
         if (getArguments() != null && getArguments().containsKey(ARG_EVENT_ID)) {
-            List<ParticipantsTable> participants = participantDao.queryRaw("WHERE " + ParticipantDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
+            List<ParticipantsTable> participants = participantDao.queryRaw("WHERE " + ParticipantsTableDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
             adapter.setItems(participants);
         }
 
@@ -123,7 +124,7 @@ public class EventFragment extends Fragment {
     private void deleteEvent() {
         if (getArguments().containsKey(ARG_EVENT_ID)) {
             eventDao.deleteByKey(getArguments().getLong(ARG_EVENT_ID));
-            List<ParticipantsTable> participants = participantDao.queryRaw("WHERE " + ParticipantDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
+            List<ParticipantsTable> participants = participantDao.queryRaw("WHERE " + ParticipantsTableDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
             for (ParticipantsTable participant : participants) {
                 participant.delete();
             }
@@ -132,7 +133,7 @@ public class EventFragment extends Fragment {
         ((MainRouter)getActivity()).navigateBack();
     }
 
-    public static EventFragment newInstance(@NonNull EventsTable event) {
+    public static EventFragment newInstance(@NonNull Event event) {
         Bundle args = new Bundle();
         args.putLong(ARG_EVENT_ID, event.getId());
 
