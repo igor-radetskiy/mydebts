@@ -13,22 +13,29 @@ import java.util.List;
 import javax.inject.Inject;
 
 import mydebts.android.app.R;
-import mydebts.android.app.data.db.EventsTable;
+import mydebts.android.app.data.EventsSource;
 import mydebts.android.app.data.model.Event;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
 import mydebts.android.app.feature.main.MainRouter;
+import mydebts.android.app.rx.RxUtil;
 
 public class EventsFragment extends Fragment {
 
-    @Inject EventsViewModel viewModel;
-    @Inject RecyclerView eventsRecyclerView;
-    @Inject View emptyView;
-    @Inject EventsAdapter adapter;
+    @Inject EventsSource eventsSource;
+    @Inject RxUtil rxUtil;
+
+    RecyclerView eventsRecyclerView;
+    View emptyView;
+
+    EventsAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        ((EventsSubcomponent.Builder) SubcomponentBuilderResolver.resolve(this))
+                .build().inject(this);
     }
 
     @Nullable
@@ -39,11 +46,10 @@ public class EventsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((EventsSubcomponent.Builder) SubcomponentBuilderResolver.resolve(this))
-                .module(new EventsUiModule(this, view))
-                .build().inject(this);
+        ViewBinder.bind(this);
 
-        viewModel.fetchEvents()
+        eventsSource.getAll()
+                .compose(rxUtil.singleSchedulersTransformer())
                 .subscribe(this::setEvents, this::setError);
     }
 

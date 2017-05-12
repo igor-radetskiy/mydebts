@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.subjects.PublishSubject;
 import mydebts.android.app.data.EventsSource;
@@ -28,7 +27,7 @@ public class EventsSourceImpl implements EventsSource {
     private final PublishSubject<Event> deletedEventSubject;
 
     @Inject
-    public EventsSourceImpl(EventsTableDao dao, @InsertSubject PublishSubject<Event> insertedEventSubject,
+    EventsSourceImpl(EventsTableDao dao, @InsertSubject PublishSubject<Event> insertedEventSubject,
                             @UpdateSubject PublishSubject<Event> updatedEventSubject,
                             @DeleteSubject PublishSubject<Event> deletedEventSubject) {
         this.dao = dao;
@@ -76,21 +75,6 @@ public class EventsSourceImpl implements EventsSource {
                 .flatMap(this::deleteFromDb)
                 .map(obj -> event)
                 .doOnSuccess(deletedEventSubject::onNext);
-    }
-
-    @Override
-    public Observable<Event> inserted() {
-        return insertedEventSubject;
-    }
-
-    @Override
-    public Observable<Event> updated() {
-        return updatedEventSubject;
-    }
-
-    @Override
-    public Observable<Event> deleted() {
-        return deletedEventSubject;
     }
 
     private Single<Long> insertToDb(EventsTable eventsTable) {

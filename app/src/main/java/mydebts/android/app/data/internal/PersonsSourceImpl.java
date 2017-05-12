@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.subjects.PublishSubject;
 import mydebts.android.app.data.PersonsSource;
@@ -76,21 +75,6 @@ public class PersonsSourceImpl implements PersonsSource {
                 .flatMap(this::deleteFromDb)
                 .map(obj -> person)
                 .doOnSuccess(deletedPersonSubject::onNext);
-    }
-
-    @Override
-    public Observable<Person> inserted() {
-        return insertedPersonSubject;
-    }
-
-    @Override
-    public Observable<Person> updated() {
-        return updatedPersonSubject;
-    }
-
-    @Override
-    public Observable<Person> deleted() {
-        return deletedPersonSubject;
     }
 
     private Single<Long> insertToDb(PersonsTable personsTable) {

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import mydebts.android.app.data.model.Person;
 
@@ -19,10 +18,4 @@ public interface PersonsSource {
     Single<Person> update(@NonNull Person person);
 
     Single<Person> delete(@NonNull Person person);
-
-    Observable<Person> inserted();
-
-    Observable<Person> updated();
-
-    Observable<Person> deleted();
 }

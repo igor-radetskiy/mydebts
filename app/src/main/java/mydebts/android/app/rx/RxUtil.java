@@ -9,7 +9,7 @@ import io.reactivex.schedulers.Schedulers;
 public class RxUtil {
 
     @Inject
-    public RxUtil() {}
+    RxUtil() {}
 
     public <T> SingleTransformer<T, T> singleSchedulersTransformer() {
         return single -> single.subscribeOn(Schedulers.io())
