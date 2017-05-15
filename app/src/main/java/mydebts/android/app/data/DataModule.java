@@ -7,6 +7,7 @@ import dagger.Provides;
 import io.reactivex.subjects.PublishSubject;
 import mydebts.android.app.data.db.DbModule;
 import mydebts.android.app.data.internal.EventsSourceImpl;
+import mydebts.android.app.data.internal.ParticipantsSourceImpl;
 import mydebts.android.app.data.internal.PersonsSourceImpl;
 import mydebts.android.app.data.model.Event;
 import mydebts.android.app.data.model.Person;
@@ -25,6 +26,12 @@ public class DataModule {
     @Provides
     @Singleton
     PersonsSource providePersonsSource(PersonsSourceImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @Singleton
+    ParticipantsSource provideParticipantsSource(ParticipantsSourceImpl impl) {
         return impl;
     }
 

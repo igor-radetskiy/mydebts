@@ -81,17 +81,17 @@ public class EventsSourceImpl implements EventsSource {
         return Single.fromCallable(() -> dao.insert(eventsTable));
     }
 
-    private Single<Void> updateInDb(EventsTable eventsTable) {
+    private Single<Boolean> updateInDb(EventsTable eventsTable) {
         return Single.fromCallable(() -> {
             dao.update(eventsTable);
-            return null;
+            return true;
         });
     }
 
-    private Single<Void> deleteFromDb(EventsTable eventsTable) {
+    private Single<Boolean> deleteFromDb(EventsTable eventsTable) {
         return Single.fromCallable(() -> {
             dao.delete(eventsTable);
-            return null;
+            return true;
         });
     }
 }

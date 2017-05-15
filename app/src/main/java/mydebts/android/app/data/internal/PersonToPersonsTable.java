@@ -7,6 +7,6 @@ import mydebts.android.app.data.model.Person;
 public class PersonToPersonsTable implements Function<Person, PersonsTable> {
     @Override
     public PersonsTable apply(Person person) throws Exception {
-        return null;
+        return new PersonsTable(person.getId(), person.getName());
     }
 }

@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Locale;
 
 import mydebts.android.app.R;
-import mydebts.android.app.data.db.ParticipantsTable;
-import mydebts.android.app.data.db.PersonsTable;
+import mydebts.android.app.data.model.Participant;
+import mydebts.android.app.data.model.Person;
 
 class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.EventViewHolder> {
-    private List<ParticipantsTable> participants = new ArrayList<>();
+    private List<Participant> participants = new ArrayList<>();
 
     ParticipantsAdapter() {
         insertNewEmptyItem();
@@ -40,9 +40,9 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
 
     @Override
     public void onBindViewHolder(EventViewHolder holder, int position) {
-        ParticipantsTable participant = participants.get(position);
+        Participant participant = participants.get(position);
 
-        if (participant.getPersonId() != null && !TextUtils.isEmpty(participant.getPerson().getName())) {
+        if (participant.getPerson() != null && !TextUtils.isEmpty(participant.getPerson().getName())) {
             holder.name.setText(participant.getPerson().getName());
         }
 
@@ -58,15 +58,15 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
         return participants.size();
     }
 
-    List<ParticipantsTable> getParticipants() {
+    List<Participant> getParticipants() {
         return participants;
     }
 
-    ParticipantsTable getItem(int position) {
+    Participant getItem(int position) {
         return participants.get(position);
     }
 
-    void setItems(List<ParticipantsTable> participants) {
+    void setItems(List<Participant> participants) {
         this.participants = participants;
         notifyDataSetChanged();
     }
@@ -77,21 +77,22 @@ class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapter.Event
     }
 
     void insertNewEmptyItem() {
-        ParticipantsTable participant = new ParticipantsTable();
-        participant.setPerson(new PersonsTable());
-        participant.setDebt(0);
+        participants.add(Participant.builder()
+                .person(Person.builder()
+                        .build())
+                .debt(0.0)
+                .build());
 
-        participants.add(participant);
         notifyItemInserted(participants.size() - 1);
     }
 
     void updateItemName(int position, String name) {
-        ParticipantsTable participant = participants.get(position);
-        participant.peekPerson().setName(name);
+        Participant participant = participants.get(position);
+        participant.getPerson().setName(name);
     }
 
     void updateItemPrice(int position, double debt) {
-        ParticipantsTable participant = participants.get(position);
+        Participant participant = participants.get(position);
         participant.setDebt(debt);
     }
 

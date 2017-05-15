@@ -20,24 +20,26 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import mydebts.android.app.R;
-import mydebts.android.app.data.db.EventsTable;
-import mydebts.android.app.data.db.EventsTableDao;
-import mydebts.android.app.data.db.ParticipantsTable;
-import mydebts.android.app.data.db.ParticipantsTableDao;
-import mydebts.android.app.data.db.PersonsTableDao;
+import mydebts.android.app.data.EventsSource;
+import mydebts.android.app.data.ParticipantsSource;
+import mydebts.android.app.data.PersonsSource;
 import mydebts.android.app.data.model.Event;
+import mydebts.android.app.data.model.Participant;
 import mydebts.android.app.di.SubcomponentBuilderResolver;
 import mydebts.android.app.feature.main.MainRouter;
+import mydebts.android.app.rx.RxUtil;
 
 public class EventFragment extends Fragment {
     private static final String ARG_EVENT_ID = "ARG_EVENT_ID";
 
     private ParticipantsAdapter adapter;
 
-    @Inject EventsTableDao eventDao;
-    @Inject PersonsTableDao personDao;
-    @Inject ParticipantsTableDao participantDao;
+    @Inject RxUtil rxUtil;
+    @Inject EventsSource eventsSource;
+    @Inject PersonsSource personsSource;
+    @Inject ParticipantsSource participantsSource;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,8 +64,9 @@ public class EventFragment extends Fragment {
         listParticipants.setAdapter(adapter);
 
         if (getArguments() != null && getArguments().containsKey(ARG_EVENT_ID)) {
-            List<ParticipantsTable> participants = participantDao.queryRaw("WHERE " + ParticipantsTableDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
-            adapter.setItems(participants);
+            participantsSource.getByEventId(getArguments().getLong(ARG_EVENT_ID))
+                    .compose(rxUtil.singleSchedulersTransformer())
+                    .subscribe(adapter::setItems);
         }
 
         return rootView;
@@ -90,10 +93,10 @@ public class EventFragment extends Fragment {
         }
     }
 
-    private void saveEvent(List<ParticipantsTable> participants) {
-        for (Iterator<ParticipantsTable> iterator = participants.iterator(); iterator.hasNext();) {
-            ParticipantsTable participant = iterator.next();
-            if (TextUtils.isEmpty(participant.peekPerson().getName())
+    private void saveEvent(List<Participant> participants) {
+        for (Iterator<Participant> iterator = participants.iterator(); iterator.hasNext();) {
+            Participant participant = iterator.next();
+            if (TextUtils.isEmpty(participant.getPerson().getName())
                     || Math.abs(participant.getDebt()) < 0.001) {
                 iterator.remove();
             }
@@ -106,31 +109,41 @@ public class EventFragment extends Fragment {
         Date date = new Date();
         date.setTime(System.currentTimeMillis());
 
-        EventsTable event = new EventsTable();
-        event.setName(date.toString());
-        event.setDate(date);
+        Observable<Event> eventObservable = eventsSource.insert(Event.builder()
+                .name(date.toString())
+                .date(date)
+                .build())
+                .toObservable();
 
-        long eventId = eventDao.insert(event);
+        Observable<Participant> participantObservable = Observable.fromIterable(participants);
 
-        for (ParticipantsTable participant : participants) {
-            participant.setEventId(eventId);
-            participant.setPersonId(personDao.insert(participant.peekPerson()));
-            participantDao.insert(participant);
-        }
-
-        ((MainRouter)getActivity()).navigateBack();
+        Observable.combineLatest(eventObservable, participantObservable,
+                    (event, participant) -> Participant.builder(participant)
+                        .event(event)
+                        .build())
+                .flatMap(participant -> personsSource.insert(participant.getPerson())
+                        .map(person -> Participant.builder(participant)
+                                        .person(person)
+                                        .build())
+                        .toObservable())
+                .flatMap(participant -> participantsSource.insert(participant)
+                                            .toObservable())
+                .compose(rxUtil.observableSchedulersTransformer())
+                .doOnComplete(() -> ((MainRouter)getActivity()).navigateBack())
+                .subscribe();
     }
 
     private void deleteEvent() {
         if (getArguments().containsKey(ARG_EVENT_ID)) {
-            eventDao.deleteByKey(getArguments().getLong(ARG_EVENT_ID));
-            List<ParticipantsTable> participants = participantDao.queryRaw("WHERE " + ParticipantsTableDao.Properties.EventId.columnName + "=?", Long.toString(getArguments().getLong(ARG_EVENT_ID)));
-            for (ParticipantsTable participant : participants) {
-                participant.delete();
-            }
+            eventsSource.delete(Event.builder()
+                                    .id(getArguments().getLong(ARG_EVENT_ID))
+                                    .build())
+                    .flatMap(event -> participantsSource.deleteByEventId(event.getId()))
+                    .compose(rxUtil.singleSchedulersTransformer())
+                    .subscribe(obj -> ((MainRouter) getActivity()).navigateBack());
+        } else {
+            ((MainRouter) getActivity()).navigateBack();
         }
-
-        ((MainRouter)getActivity()).navigateBack();
     }
 
     public static EventFragment newInstance(@NonNull Event event) {
