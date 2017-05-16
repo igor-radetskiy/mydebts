@@ -15,5 +15,7 @@ public interface ParticipantsSource {
 
     Single<Participant> insert(@NonNull Participant participant);
 
-    Single<Integer> deleteByEventId(@NonNull Long eventId);
+    Single<Participant> update(@NonNull Participant participant);
+
+    Single<Participant> delete(@NonNull Participant participant);
 }

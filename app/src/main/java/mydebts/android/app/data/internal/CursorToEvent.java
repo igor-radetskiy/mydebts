@@ -1,13 +1,14 @@
-package mydebts.android.app.data.db;
+package mydebts.android.app.data.internal;
 
 import android.database.Cursor;
 
 import java.util.Date;
 
 import io.reactivex.functions.Function;
+import mydebts.android.app.data.db.EventContract;
 import mydebts.android.app.data.model.Event;
 
-public class CursorToEvent implements Function<Cursor, Event> {
+class CursorToEvent implements Function<Cursor, Event> {
     @Override
     public Event apply(Cursor cursor) throws Exception {
         return Event.builder()

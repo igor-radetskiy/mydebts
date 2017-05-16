@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class MyDebtsDbOpenHelper extends SQLiteOpenHelper {
+class MyDebtsDbOpenHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "my_debts.db";
     private static final int DB_VERSION = 1;
 
@@ -35,13 +35,11 @@ public class MyDebtsDbOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(
                 "CREATE TABLE " + ParticipantContract.TABLE_NAME + " ( " +
                         ParticipantContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        ParticipantContract.COLUMN_EVENT_ID + " INTEGER NOT NULL, " +
-                        ParticipantContract.COLUMN_PERSON_ID + " INTEGER NOT NULL, " +
-                        ParticipantContract.COLUMN_DEBT + " REAL NOT NULL, " +
-                        "FOREIGN KEY ( " + ParticipantContract.COLUMN_EVENT_ID + " ) " +
-                            "REFERENCES " + EventContract.TABLE_NAME + " ( " + EventContract._ID + " ), " +
-                        "FOREIGN KEY ( " + ParticipantContract.COLUMN_PERSON_ID + " ) " +
-                            "REFERENCES " + PersonContract.TABLE_NAME + " ( " + PersonContract._ID + " ) )");
+                        ParticipantContract.COLUMN_EVENT_ID + " INTEGER NOT NULL " +
+                            "REFERENCES " + EventContract.TABLE_NAME + " ( " + EventContract._ID + " ) ON DELETE CASCADE, " +
+                        ParticipantContract.COLUMN_PERSON_ID + " INTEGER NOT NULL " +
+                            "REFERENCES " + PersonContract.TABLE_NAME + " ( " + PersonContract._ID + " ) ON DELETE CASCADE, " +
+                        ParticipantContract.COLUMN_DEBT + " REAL NOT NULL)");
     }
 
     @Override

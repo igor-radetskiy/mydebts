@@ -9,28 +9,29 @@ import javax.inject.Inject;
 import io.reactivex.Single;
 import io.reactivex.subjects.PublishSubject;
 import mydebts.android.app.data.PersonsSource;
-import mydebts.android.app.data.db.PersonsTableDao;
-import mydebts.android.app.data.db.PersonsTable;
+import mydebts.android.app.data.db.PersonTable;
 import mydebts.android.app.data.model.Person;
 import mydebts.android.app.di.DeleteSubject;
 import mydebts.android.app.di.InsertSubject;
 import mydebts.android.app.di.UpdateSubject;
 
 public class PersonsSourceImpl implements PersonsSource {
-    private static final PersonToPersonsTable TO_DB_MAPPER = new PersonToPersonsTable();
-    private static final PersonsTableToPerson FROM_DB_MAPPER = new PersonsTableToPerson();
-    private static final ListToList<PersonsTable, Person> FROM_DB_LIST_MAPPER = new ListToList<>(FROM_DB_MAPPER);
+    private static final CursorToPerson CURSOR_TO_PERSON = new CursorToPerson();
+    private static final ClosableCursorToEntity<Person> CLOSABLE_CURSOR_TO_PERSON
+            = new ClosableCursorToEntity<>(CURSOR_TO_PERSON);
+    private static final ClosableCursorToList<Person> CLOSABLE_CURSOR_TO_PERSONS =
+            new ClosableCursorToList<>(CURSOR_TO_PERSON);
 
-    private final PersonsTableDao dao;
+    private final PersonTable personTable;
     private final PublishSubject<Person> insertedPersonSubject;
     private final PublishSubject<Person> updatedPersonSubject;
     private final PublishSubject<Person> deletedPersonSubject;
 
     @Inject
-    PersonsSourceImpl(PersonsTableDao dao, @InsertSubject PublishSubject<Person> insertedPersonSubject,
+    PersonsSourceImpl(PersonTable personTable, @InsertSubject PublishSubject<Person> insertedPersonSubject,
                       @UpdateSubject PublishSubject<Person> updatedPersonSubject,
                       @DeleteSubject PublishSubject<Person> deletedPersonSubject) {
-        this.dao = dao;
+        this.personTable = personTable;
         this.insertedPersonSubject = insertedPersonSubject;
         this.updatedPersonSubject = updatedPersonSubject;
         this.deletedPersonSubject = deletedPersonSubject;
@@ -38,21 +39,19 @@ public class PersonsSourceImpl implements PersonsSource {
 
     @Override
     public Single<List<Person>> getAll() {
-        return Single.fromCallable(dao::loadAll)
-                .map(FROM_DB_LIST_MAPPER);
+        return Single.fromCallable(personTable::queryAll)
+                .map(CLOSABLE_CURSOR_TO_PERSONS);
     }
 
     @Override
     public Single<Person> get(@NonNull Long id) {
-        return Single.fromCallable(() -> dao.load(id))
-                .map(FROM_DB_MAPPER);
+        return Single.fromCallable(() -> personTable.queryById(id))
+                .map(CLOSABLE_CURSOR_TO_PERSON);
     }
 
     @Override
     public Single<Person> insert(@NonNull Person person) {
-        return Single.just(person)
-                .map(TO_DB_MAPPER)
-                .flatMap(this::insertToDb)
+        return Single.fromCallable(() -> personTable.insert(person))
                 .map(id -> Person.builder()
                         .id(id)
                         .build())
@@ -61,37 +60,15 @@ public class PersonsSourceImpl implements PersonsSource {
 
     @Override
     public Single<Person> update(@NonNull Person person) {
-        return Single.just(person)
-                .map(TO_DB_MAPPER)
-                .flatMap(this::updateInDb)
-                .map(obj -> person)
+        return Single.fromCallable(() -> personTable.update(person))
+                .map(affectedRows -> person)
                 .doOnSuccess(updatedPersonSubject::onNext);
     }
 
     @Override
     public Single<Person> delete(@NonNull Person person) {
-        return Single.just(person)
-                .map(TO_DB_MAPPER)
-                .flatMap(this::deleteFromDb)
-                .map(obj -> person)
+        return Single.fromCallable(() -> personTable.delete(person))
+                .map(affectedRows -> person)
                 .doOnSuccess(deletedPersonSubject::onNext);
-    }
-
-    private Single<Long> insertToDb(PersonsTable personsTable) {
-        return Single.fromCallable(() -> dao.insert(personsTable));
-    }
-
-    private Single<Void> updateInDb(PersonsTable personsTable) {
-        return Single.fromCallable(() -> {
-            dao.update(personsTable);
-            return null;
-        });
-    }
-
-    private Single<Void> deleteFromDb(PersonsTable personsTable) {
-        return Single.fromCallable(() -> {
-            dao.delete(personsTable);
-            return null;
-        });
     }
 }

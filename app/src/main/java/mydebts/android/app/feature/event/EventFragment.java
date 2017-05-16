@@ -138,7 +138,6 @@ public class EventFragment extends Fragment {
             eventsSource.delete(Event.builder()
                                     .id(getArguments().getLong(ARG_EVENT_ID))
                                     .build())
-                    .flatMap(event -> participantsSource.deleteByEventId(event.getId()))
                     .compose(rxUtil.singleSchedulersTransformer())
                     .subscribe(obj -> ((MainRouter) getActivity()).navigateBack());
         } else {

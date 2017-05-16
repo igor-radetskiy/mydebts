@@ -8,56 +8,50 @@ import javax.inject.Inject;
 
 import io.reactivex.Single;
 import mydebts.android.app.data.ParticipantsSource;
-import mydebts.android.app.data.db.ParticipantsTable;
-import mydebts.android.app.data.db.ParticipantsTableDao;
+import mydebts.android.app.data.db.ParticipantTable;
 import mydebts.android.app.data.model.Participant;
 
 public class ParticipantsSourceImpl implements ParticipantsSource {
-    private static final ParticipantToParticipantsTable TO_DB_MAPPER = new ParticipantToParticipantsTable();
-    private static final ParticipantsTableToParticipants FROM_DB_MAPPER = new ParticipantsTableToParticipants();
-    private static final ListToList<ParticipantsTable, Participant> FROM_DB_LIST_MAPPER
-            = new ListToList<>(FROM_DB_MAPPER);
+    private static final CursorToParticipant CURSOR_TO_PARTICIPANT = new CursorToParticipant();
+    private static final ClosableCursorToList<Participant> CLOSABLE_CURSOR_TO_PARTICIPANTS
+            = new ClosableCursorToList<>(CURSOR_TO_PARTICIPANT);
 
-    private final ParticipantsTableDao dao;
+    private final ParticipantTable participantTable;
 
     @Inject
-    ParticipantsSourceImpl(ParticipantsTableDao dao) {
-        this.dao = dao;
+    ParticipantsSourceImpl(ParticipantTable participantTable) {
+        this.participantTable = participantTable;
     }
 
     @Override
     public Single<List<Participant>> getByEventId(@NonNull Long eventId) {
-        return Single.fromCallable(() -> dao.queryRaw("WHERE " + ParticipantsTableDao.Properties.EventId.columnName + "=?", Long.toString(eventId)))
-                .map(FROM_DB_LIST_MAPPER);
+        return Single.fromCallable(() -> participantTable.queryByEventId(eventId))
+                .map(CLOSABLE_CURSOR_TO_PARTICIPANTS);
     }
 
     @Override
     public Single<List<Participant>> getByPersonId(@NonNull Long personId) {
-        return null;
+        return Single.fromCallable(() -> participantTable.queryByPersonId(personId))
+                .map(CLOSABLE_CURSOR_TO_PARTICIPANTS);
     }
 
     @Override
     public Single<Participant> insert(@NonNull Participant participant) {
-        return Single.just(participant)
-                .map(TO_DB_MAPPER)
-                .flatMap(this::insertToDb)
+        return Single.fromCallable(() -> participantTable.insert(participant))
                 .map(id -> Participant.builder(participant)
                                 .id(id)
                                 .build());
     }
 
     @Override
-    public Single<Integer> deleteByEventId(@NonNull Long eventId) {
-        return Single.fromCallable(() -> {
-            List<ParticipantsTable> participants = dao.queryRaw("WHERE " + ParticipantsTableDao.Properties.EventId.columnName + "=?", Long.toString(eventId));
-            for (ParticipantsTable participant : participants) {
-                participant.delete();
-            }
-            return participants.size();
-        });
+    public Single<Participant> update(@NonNull Participant participant) {
+        return Single.fromCallable(() -> participantTable.update(participant))
+                .map(affectedRows -> participant);
     }
 
-    private Single<Long> insertToDb(ParticipantsTable participantsTable) {
-        return Single.fromCallable(() -> dao.insert(participantsTable));
+    @Override
+    public Single<Participant> delete(@NonNull Participant participant) {
+        return Single.fromCallable(() -> participantTable.delete(participant))
+                .map(affectedRows -> participant);
     }
 }

@@ -1,4 +1,4 @@
-package mydebts.android.app.data.db;
+package mydebts.android.app.data.internal;
 
 import android.database.Cursor;
 
@@ -7,10 +7,10 @@ import java.util.List;
 
 import io.reactivex.functions.Function;
 
-public class CursorToList<T> implements Function<Cursor, List<T>> {
+class ClosableCursorToList<T> implements Function<Cursor, List<T>> {
     private final Function<Cursor, T> itemMapper;
 
-    public CursorToList(Function<Cursor, T> itemMapper) {
+    ClosableCursorToList(Function<Cursor, T> itemMapper) {
         this.itemMapper = itemMapper;
     }
 

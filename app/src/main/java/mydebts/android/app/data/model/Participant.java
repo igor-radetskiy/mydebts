@@ -47,6 +47,16 @@ public class Participant {
         this.debt = debt;
     }
 
+    @Override
+    public String toString() {
+        return "Participant{" +
+                "id=" + id +
+                ", event=" + event +
+                ", person=" + person +
+                ", debt=" + debt +
+                '}';
+    }
+
     public static Builder builder() {
         return new Builder();
     }
