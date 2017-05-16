@@ -4,7 +4,7 @@ import io.reactivex.functions.Function;
 import mydebts.android.app.data.db.ParticipantsTable;
 import mydebts.android.app.data.model.Participant;
 
-public class ParticipantsTableToParticipants implements Function<ParticipantsTable, Participant> {
+class ParticipantsTableToParticipants implements Function<ParticipantsTable, Participant> {
     private static final EventsTableToEvent EVENTS_TABLE_MAPPER = new EventsTableToEvent();
     private static final PersonsTableToPerson PERSONS_TABLE_MAPPER = new PersonsTableToPerson();
 

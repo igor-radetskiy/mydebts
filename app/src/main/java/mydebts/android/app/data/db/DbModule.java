@@ -1,6 +1,7 @@
 package mydebts.android.app.data.db;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import javax.inject.Singleton;
 
@@ -34,5 +35,10 @@ public class DbModule {
     @Provides
     ParticipantsTableDao provideParticipantDao(DaoSession daoSession) {
         return daoSession.getParticipantsTableDao();
+    }
+
+    @Provides
+    SQLiteDatabase provideSqliteDatabase(MyDebtsDbOpenHelper dbOpenHelper) {
+        return dbOpenHelper.getWritableDatabase();
     }
 }
