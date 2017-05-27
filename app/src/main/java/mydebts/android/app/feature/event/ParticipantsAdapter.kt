@@ -74,12 +74,7 @@ internal class ParticipantsAdapter : RecyclerView.Adapter<ParticipantsAdapter.Ev
     }
 
     fun insertNewEmptyItem() {
-        participants.add(Participant.builder()
-                .person(Person.builder()
-                        .build())
-                .debt(0.0)
-                .build())
-
+        participants.add(Participant( person = Person(), debt = 0.0))
         notifyItemInserted(participants.size - 1)
     }
 

@@ -10,12 +10,10 @@ internal class CursorToParticipant : Function<Cursor, Participant> {
 
     @Throws(Exception::class)
     override fun apply(cursor: Cursor): Participant {
-        return Participant.builder()
-                .id(cursor.getLong(cursor.getColumnIndex(ParticipantContract._ID)))
-                .event(CURSOR_TO_EVENT.apply(cursor))
-                .person(CURSOR_TO_PERSON.apply(cursor))
-                .debt(cursor.getDouble(cursor.getColumnIndex(ParticipantContract.COLUMN_DEBT)))
-                .build()
+        return Participant(cursor.getLong(cursor.getColumnIndex(ParticipantContract._ID)),
+                CURSOR_TO_EVENT.apply(cursor),
+                CURSOR_TO_PERSON.apply(cursor),
+                cursor.getDouble(cursor.getColumnIndex(ParticipantContract.COLUMN_DEBT)))
     }
 
     companion object {

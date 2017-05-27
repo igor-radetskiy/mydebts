@@ -21,21 +21,17 @@ internal constructor(private val participantTable: ParticipantTable) : Participa
     }
 
     override fun insert(participant: Participant): Single<Participant> {
-        return Single.fromCallable<Any> { participantTable.insert(participant) }
-                .map { id ->
-                    Participant.builder(participant)
-                            .id(id as Long)
-                            .build()
-                }
+        return Single.fromCallable { participantTable.insert(participant) }
+                .map { id -> Participant(id, participant.event, participant.person, participant.debt) }
     }
 
     override fun update(participant: Participant): Single<Participant> {
-        return Single.fromCallable<Any> { participantTable.update(participant) }
+        return Single.fromCallable { participantTable.update(participant) }
                 .map { _ -> participant }
     }
 
     override fun delete(participant: Participant): Single<Participant> {
-        return Single.fromCallable<Any> { participantTable.delete(participant) }
+        return Single.fromCallable { participantTable.delete(participant) }
                 .map { _ -> participant }
     }
 

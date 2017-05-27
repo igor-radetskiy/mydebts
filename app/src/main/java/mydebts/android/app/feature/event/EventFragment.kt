@@ -58,8 +58,8 @@ class EventFragment : Fragment() {
         listParticipants.adapter = adapter
 
         if (arguments != null && arguments.containsKey(ARG_EVENT_ID)) {
-            participantsSource!!.getByEventId(arguments.getLong(ARG_EVENT_ID))
-                    .compose(rxUtil!!.singleSchedulersTransformer())
+            participantsSource.getByEventId(arguments.getLong(ARG_EVENT_ID))
+                    .compose(rxUtil.singleSchedulersTransformer())
                     .subscribe(Consumer { adapter!!.setItems(it.toMutableList()) })
         }
 
@@ -97,44 +97,31 @@ class EventFragment : Fragment() {
         val date = Date()
         date.time = System.currentTimeMillis()
 
-        val eventObservable = eventsSource!!.insert(Event.builder()
-                .name(date.toString())
-                .date(date)
-                .build())
+        val eventObservable = eventsSource.insert(Event(name = date.toString(), date = date))
                 .toObservable()
 
         val participantObservable = Observable.fromIterable(participants)
 
         Observable.combineLatest(eventObservable, participantObservable,
                 BiFunction { event: Event, participant: Participant ->
-                    Participant.builder(participant)
-                            .event(event)
-                            .build()
-                })
+                    Participant(participant.id, event, participant.person, participant.debt) })
                 .flatMap({ participant ->
-                    personsSource!!.insert(participant.person!!)
+                    personsSource.insert(participant.person!!)
                             .map { person ->
-                                Participant.builder(participant)
-                                        .person(person)
-                                        .build()
-                            }
-                            .toObservable()
-                })
+                                Participant(participant.id, participant.event, person, participant.debt) }
+                            .toObservable() })
                 .flatMap({ participant ->
-                    participantsSource!!.insert(participant as Participant)
-                            .toObservable()
-                })
-                .compose(rxUtil!!.observableSchedulersTransformer())
+                    participantsSource.insert(participant)
+                            .toObservable() })
+                .compose(rxUtil.observableSchedulersTransformer())
                 .doOnComplete({ (activity as MainRouter).navigateBack() })
                 .subscribe()
     }
 
     private fun deleteEvent() {
         if (arguments.containsKey(ARG_EVENT_ID)) {
-            eventsSource!!.delete(Event.builder()
-                    .id(arguments.getLong(ARG_EVENT_ID))
-                    .build())
-                    .compose(rxUtil!!.singleSchedulersTransformer())
+            eventsSource.delete(Event(arguments.getLong(ARG_EVENT_ID)))
+                    .compose(rxUtil.singleSchedulersTransformer())
                     .subscribe { _ -> (activity as MainRouter).navigateBack() }
         } else {
             (activity as MainRouter).navigateBack()

@@ -17,10 +17,8 @@ internal class CursorToEvent : Function<Cursor, Event> {
         else
             cursor.getColumnIndex(EventContract._ID)
 
-        return Event.builder()
-                .id(cursor.getLong(idColumnIndex))
-                .name(cursor.getString(cursor.getColumnIndex(EventContract.COLUMN_NAME)))
-                .date(Date(cursor.getLong(cursor.getColumnIndex(EventContract.COLUMN_DATE))))
-                .build()
+        return Event(cursor.getLong(idColumnIndex),
+                cursor.getString(cursor.getColumnIndex(EventContract.COLUMN_NAME)),
+                Date(cursor.getLong(cursor.getColumnIndex(EventContract.COLUMN_DATE))))
     }
 }

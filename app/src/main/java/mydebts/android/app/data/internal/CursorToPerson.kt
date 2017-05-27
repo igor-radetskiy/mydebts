@@ -15,9 +15,7 @@ internal class CursorToPerson : Function<Cursor, Person> {
         else
             cursor.getColumnIndex(PersonContract._ID)
 
-        return Person.builder()
-                .id(cursor.getLong(idColumnIndex))
-                .name(cursor.getString(cursor.getColumnIndex(PersonContract.COLUMN_NAME)))
-                .build()
+        return Person(cursor.getLong(idColumnIndex),
+                cursor.getString(cursor.getColumnIndex(PersonContract.COLUMN_NAME)))
     }
 }

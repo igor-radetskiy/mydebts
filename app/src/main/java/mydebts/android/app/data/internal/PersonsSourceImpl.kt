@@ -28,11 +28,7 @@ internal constructor(private val personTable: PersonTable, @param:InsertSubject 
 
     override fun insert(person: Person): Single<Person> {
         return Single.fromCallable { personTable.insert(person) }
-                .map { id ->
-                    Person.builder()
-                            .id(id)
-                            .build()
-                }
+                .map { id -> Person(id, person.name) }
                 .doOnSuccess { insertedPersonSubject.onNext(it) }
     }
 

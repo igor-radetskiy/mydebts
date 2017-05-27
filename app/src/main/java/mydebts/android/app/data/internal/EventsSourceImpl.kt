@@ -28,11 +28,7 @@ internal constructor(private val eventTable: EventTable, @param:InsertSubject pr
 
     override fun insert(event: Event): Single<Event> {
         return Single.fromCallable { eventTable.insert(event) }
-                .map { id ->
-                    Event.builder(event)
-                            .id(id.toLong())
-                            .build()
-                }
+                .map { id -> Event(id, event.name, event.date) }
                 .doOnSuccess { insertedEventSubject.onNext(it) }
     }
 
