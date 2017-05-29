@@ -1,6 +1,6 @@
 package mydebts.android.app.data.model
 
-class Participant(
+data class Participant(
         var id: Long? = null,
         var event: Event? = null,
         var person: Person? = null,

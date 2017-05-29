@@ -132,12 +132,9 @@ class EventFragment : Fragment() {
         private val ARG_EVENT_ID = "ARG_EVENT_ID"
 
         fun newInstance(event: Event): EventFragment {
-            val args = Bundle()
-            args.putLong(ARG_EVENT_ID, event.id!!)
-
             val fragment = newInstance()
-            fragment.arguments = args
-
+            fragment.arguments = Bundle()
+            fragment.arguments.putLong(ARG_EVENT_ID, event.id!!)
             return fragment
         }
 

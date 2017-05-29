@@ -9,8 +9,16 @@ import mydebts.android.app.feature.event.EventFragment
 import mydebts.android.app.feature.event.EventSubcomponent
 import mydebts.android.app.feature.events.EventsFragment
 import mydebts.android.app.feature.events.EventsSubcomponent
+import mydebts.android.app.feature.person.PersonFragment
+import mydebts.android.app.feature.person.PersonSubcomonent
+import mydebts.android.app.feature.persons.PersonsFragment
+import mydebts.android.app.feature.persons.PersonsSubcomponent
 
-@Module(subcomponents = arrayOf(EventsSubcomponent::class, EventSubcomponent::class))
+@Module(subcomponents = arrayOf(
+        EventsSubcomponent::class,
+        EventSubcomponent::class,
+        PersonsSubcomponent::class,
+        PersonSubcomonent::class))
 internal interface MyDebtsApplicationBindingModule {
     @Binds
     @IntoMap
@@ -21,4 +29,14 @@ internal interface MyDebtsApplicationBindingModule {
     @IntoMap
     @SubcomponentBuilderKey(EventFragment::class)
     fun eventSubcomponentBuilder(impl: EventSubcomponent.Builder): SubcomponentBuilder
+
+    @Binds
+    @IntoMap
+    @SubcomponentBuilderKey(PersonsFragment::class)
+    fun personsSubcomponentBuilder(impl: PersonsSubcomponent.Builder): SubcomponentBuilder
+
+    @Binds
+    @IntoMap
+    @SubcomponentBuilderKey(PersonFragment::class)
+    fun personSubcomponentBuilder(impl: PersonSubcomonent.Builder): SubcomponentBuilder
 }

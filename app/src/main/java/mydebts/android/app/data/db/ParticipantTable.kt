@@ -1,5 +1,6 @@
 package mydebts.android.app.data.db
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
@@ -73,6 +74,7 @@ constructor(private val db: SQLiteDatabase) {
         return affectedRows
     }
 
+    @SuppressLint("Recycle")
     private fun query(selection: String, selectionArgs: Array<String>): Cursor {
         val joinTables = ParticipantContract.TABLE_NAME + " INNER JOIN " + EventContract.TABLE_NAME + " ON " +
                 ParticipantContract.COLUMN_EVENT_ID + " = " + EventContract.TABLE_NAME + "." + EventContract._ID +

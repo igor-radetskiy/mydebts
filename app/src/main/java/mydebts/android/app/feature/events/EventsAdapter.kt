@@ -44,13 +44,13 @@ internal class EventsAdapter : RecyclerView.Adapter<EventsAdapter.EventViewHolde
     }
 
     internal class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val date: TextView = itemView.findViewById(R.id.date) as TextView
+        var date: TextView = itemView.findViewById(R.id.text1) as TextView
 
         companion object {
 
             fun create(parent: ViewGroup): EventViewHolder {
                 return EventViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_event, parent, false))
+                        .inflate(R.layout.item_one_line, parent, false))
             }
         }
     }

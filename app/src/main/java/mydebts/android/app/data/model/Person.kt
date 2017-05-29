@@ -1,5 +1,5 @@
 package mydebts.android.app.data.model
 
-class Person(
+data class Person(
         var id: Long? = null,
         var name: String? = null)

@@ -45,6 +45,6 @@ constructor(context: Context) : SQLiteOpenHelper(context, MyDebtsDbOpenHelper.DB
 
     companion object {
         private val DB_NAME = "my_debts.db"
-        private val DB_VERSION = 1
+        private val DB_VERSION = 2
     }
 }

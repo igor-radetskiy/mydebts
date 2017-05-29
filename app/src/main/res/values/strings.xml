@@ -5,6 +5,11 @@
 
     <!-- Events -->
     <string name="events_text_no_events">No events yet…</string>
+    <string name="menu_events_switch_to_persons">Persons</string>
+
+    <!-- Persons -->
+    <string name="menu_persons_switch_to_events">Events</string>
+    <string name="person_no_events">No events yet…</string>
 
     <!-- Event -->
     <string name="set_date">Set Date</string>
