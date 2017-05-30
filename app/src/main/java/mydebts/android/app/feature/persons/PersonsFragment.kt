@@ -34,6 +34,8 @@ class PersonsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        activity.setTitle(R.string.title_people)
+
         val recyclerView = view!!.findViewById(R.id.list_persons) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity.applicationContext)
         adapter.setOnPersonClickListener(object: PersonsAdapter.OnPersonClickListener {

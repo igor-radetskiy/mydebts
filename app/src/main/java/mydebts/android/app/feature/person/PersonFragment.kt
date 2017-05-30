@@ -20,8 +20,10 @@ class PersonFragment : Fragment() {
     @Inject lateinit var participantsSource: ParticipantsSource
     @Inject lateinit var rxUtil: RxUtil
 
-    private var eventsListView: RecyclerView? = null
-    private var emptyView: View? = null
+    private lateinit var person: Person
+
+    private lateinit var eventsListView: RecyclerView
+    private lateinit var emptyView: View
 
     private val adapter: EventsAdapter = EventsAdapter()
 
@@ -38,34 +40,37 @@ class PersonFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        person = arguments.getParcelable(ARG_PERSON)
+        activity.title = person.name
+
         eventsListView = view!!.findViewById(R.id.list_events) as RecyclerView
         emptyView = view.findViewById(R.id.text_no_events)
 
-        eventsListView!!.layoutManager = LinearLayoutManager(activity.applicationContext)
-        eventsListView!!.adapter = adapter
-        participantsSource.getByPersonId(arguments.getLong(ARG_PERSON_ID))
+        eventsListView.layoutManager = LinearLayoutManager(activity.applicationContext)
+        eventsListView.adapter = adapter
+        participantsSource.getByPersonId(person.id!!)
                 .compose(rxUtil.singleSchedulersTransformer())
                 .subscribe { participants -> setParticipants(participants) }
     }
 
     private fun setParticipants(participants: List<Participant>) {
         if (participants.isEmpty()) {
-            eventsListView?.visibility = View.GONE
-            emptyView?.visibility = View.VISIBLE
+            eventsListView.visibility = View.GONE
+            emptyView.visibility = View.VISIBLE
         } else {
-            eventsListView?.visibility = View.VISIBLE
-            emptyView?.visibility = View.GONE
+            eventsListView.visibility = View.VISIBLE
+            emptyView.visibility = View.GONE
             adapter.participants = participants
         }
     }
 
     companion object {
-        private val ARG_PERSON_ID = "ARG_PERSON_ID"
+        private val ARG_PERSON = "ARG_PERSON"
 
         fun newInstance(person: Person): PersonFragment {
             val fragment: PersonFragment = PersonFragment()
             fragment.arguments = Bundle()
-            fragment.arguments.putLong(ARG_PERSON_ID, person.id!!)
+            fragment.arguments.putParcelable(ARG_PERSON, person)
             return fragment
         }
     }

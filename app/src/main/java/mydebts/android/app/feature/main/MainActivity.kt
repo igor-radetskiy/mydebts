@@ -3,6 +3,7 @@ package mydebts.android.app.feature.main
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Person
@@ -15,7 +16,20 @@ class MainActivity : AppCompatActivity(), MainRouter {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportFragmentManager.addOnBackStackChangedListener {
+            supportActionBar?.setDisplayHomeAsUpEnabled(supportFragmentManager.backStackEntryCount > 0)
+        }
         navigateToEvents()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return false
+        }
     }
 
     override fun navigateToEvents() {
@@ -39,7 +53,7 @@ class MainActivity : AppCompatActivity(), MainRouter {
     }
 
     override fun navigateBack() {
-        supportFragmentManager.popBackStack()
+        onBackPressed()
     }
 
     private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {

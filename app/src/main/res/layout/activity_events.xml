@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textAppearance="?android:textAppearanceMedium"
         android:text="@string/events_text_no_events"/>
 
     <android.support.design.widget.FloatingActionButton

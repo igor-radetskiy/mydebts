@@ -36,6 +36,8 @@ class EventFragment : Fragment() {
     @Inject lateinit var personsSource: PersonsSource
     @Inject lateinit var participantsSource: ParticipantsSource
 
+    private lateinit var event: Event
+
     private var adapter: ParticipantsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,10 +59,14 @@ class EventFragment : Fragment() {
         adapter = ParticipantsAdapter()
         listParticipants.adapter = adapter
 
-        if (arguments != null && arguments.containsKey(ARG_EVENT_ID)) {
-            participantsSource.getByEventId(arguments.getLong(ARG_EVENT_ID))
+        if (arguments != null && arguments.containsKey(ARG_EVENT)) {
+            event = arguments.getParcelable(ARG_EVENT)
+            activity.title = event.name
+            participantsSource.getByEventId(event.id!!)
                     .compose(rxUtil.singleSchedulersTransformer())
                     .subscribe(Consumer { adapter!!.setItems(it.toMutableList()) })
+        } else {
+            activity.setTitle(R.string.title_new_event)
         }
 
         return rootView
@@ -119,8 +125,8 @@ class EventFragment : Fragment() {
     }
 
     private fun deleteEvent() {
-        if (arguments.containsKey(ARG_EVENT_ID)) {
-            eventsSource.delete(Event(arguments.getLong(ARG_EVENT_ID)))
+        if (arguments.containsKey(ARG_EVENT)) {
+            eventsSource.delete(Event(arguments.getLong(ARG_EVENT)))
                     .compose(rxUtil.singleSchedulersTransformer())
                     .subscribe { _ -> (activity as MainRouter).navigateBack() }
         } else {
@@ -129,12 +135,12 @@ class EventFragment : Fragment() {
     }
 
     companion object {
-        private val ARG_EVENT_ID = "ARG_EVENT_ID"
+        private val ARG_EVENT = "ARG_EVENT"
 
         fun newInstance(event: Event): EventFragment {
             val fragment = newInstance()
             fragment.arguments = Bundle()
-            fragment.arguments.putLong(ARG_EVENT_ID, event.id!!)
+            fragment.arguments.putParcelable(ARG_EVENT, event)
             return fragment
         }
 

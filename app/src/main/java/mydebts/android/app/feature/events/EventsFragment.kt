@@ -46,6 +46,8 @@ class EventsFragment : Fragment(), ActionMode.Callback {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        activity.setTitle(R.string.title_events)
+
         ViewBinder.bind(this)
 
         eventsSource.getAll()

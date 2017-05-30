@@ -4,14 +4,17 @@
     <string name="app_name">my debts</string>
 
     <!-- Events -->
+    <string name="title_events">Events</string>
     <string name="events_text_no_events">No _events yet…</string>
     <string name="menu_events_switch_to_persons">Persons</string>
 
     <!-- Persons -->
+    <string name="title_people">People</string>
     <string name="menu_persons_switch_to_events">Events</string>
     <string name="person_no_events">No _events yet…</string>
 
     <!-- Event -->
+    <string name="title_new_event">New Event</string>
     <string name="set_date">Set Date</string>
     <string name="hint_name"><i>Name</i></string>
     <string name="hint_amount"><i>$0.00</i></string>
