@@ -44,6 +44,12 @@ internal constructor(private val eventTable: EventTable, @param:InsertSubject pr
                 .doOnSuccess { deletedEventSubject.onNext(it) }
     }
 
+    override fun delete(events: List<Event>): Single<List<Event>> {
+        return Single.fromCallable { eventTable.delete(events) }
+                .map { _ -> events }
+                .doOnSuccess { deletedEvents -> deletedEvents.forEach { deletedEventSubject.onNext(it) } }
+    }
+
     companion object {
         private val ITEM_MAPPER = CursorToEvent()
         private val FROMD_MAPPER = ClosableCursorToEntity(ITEM_MAPPER)

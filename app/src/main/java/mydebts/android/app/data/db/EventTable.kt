@@ -73,6 +73,29 @@ internal constructor(private val db: SQLiteDatabase) {
         return affectedRows
     }
 
+    fun delete(events: List<Event>): Int {
+        if (events.isEmpty()) {
+            Log.d(TAG, "No events to be deleted")
+            return 0
+        }
+
+        val whereClause: StringBuilder = StringBuilder(EventContract._ID + " IN (")
+        for (i in 1..events.size) {
+            whereClause.append("?,")
+        }
+        if (whereClause[whereClause.lastIndex] == ',') {
+            whereClause.deleteCharAt(whereClause.lastIndex)
+        }
+        whereClause.append(")")
+
+        val affectedRows = db.delete(EventContract.TABLE_NAME, whereClause.toString(),
+                Array(events.size, { position -> events[position].id.toString()}))
+
+        Log.d(TAG, "Delete events " + events)
+
+        return affectedRows
+    }
+
     companion object {
         private val TAG = "EventTable"
     }

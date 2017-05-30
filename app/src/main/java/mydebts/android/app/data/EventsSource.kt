@@ -14,4 +14,6 @@ interface EventsSource {
     fun update(event: Event): Single<Event>
 
     fun delete(event: Event): Single<Event>
+
+    fun delete(events: List<Event>): Single<List<Event>>
 }
