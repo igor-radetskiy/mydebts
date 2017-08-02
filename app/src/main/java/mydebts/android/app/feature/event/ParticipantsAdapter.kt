@@ -5,99 +5,73 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.widget.TextView
 
-import java.util.ArrayList
 import java.util.Locale
 
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Participant
-import mydebts.android.app.data.model.Person
 
 internal class ParticipantsAdapter : RecyclerView.Adapter<ParticipantsAdapter.EventViewHolder>() {
-    private var participants: MutableList<Participant> = ArrayList()
-
-    init {
-        insertNewEmptyItem()
-    }
+    private var participants: MutableList<Participant>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val holder = EventViewHolder.create(parent)
-
-        val emptyTextWatcher = EmptyTextWatcher(this, holder)
-
-        holder.name.addTextChangedListener(NameTextWatcher(this, holder))
-        holder.name.addTextChangedListener(emptyTextWatcher)
-
-        holder.price.addTextChangedListener(PriceTextWatcher(this, holder))
-        holder.price.addTextChangedListener(emptyTextWatcher)
-
-        return holder
+        return EventViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val participant = participants[position]
+        participants?.get(position)?.let {
 
-        if (participant.person != null && !TextUtils.isEmpty(participant.person!!.name)) {
-            holder.name.setText(participant.person!!.name)
-        }
+            holder.name.text = it.person?.name.takeUnless { TextUtils.isEmpty(it) } ?: "Unknown"
 
-        val debt = if (Math.abs(participant.debt!!) < 0.001)
-            ""
-        else
-            String.format(Locale.getDefault(), "%f", participant.debt)
-        if (!TextUtils.isEmpty(debt)) {
-            holder.price.setText(debt)
+            holder.debt.text = it.debt?.takeUnless { Math.abs(it) < 0.001 }
+                    ?.let { String.format(Locale.getDefault(), "%f", it) } ?: "0"
         }
     }
 
     override fun getItemCount(): Int {
-        return participants.size
+        return participants?.size ?: 0
     }
 
-    fun getParticipants(): MutableList<Participant> {
+    fun getParticipants(): List<Participant>? {
         return participants
     }
 
-    fun getItem(position: Int): Participant {
-        return participants[position]
+    fun getParticipant(position: Int): Participant? {
+        return participants?.get(position)
     }
 
-    fun setItems(participants: MutableList<Participant>) {
-        this.participants = participants
+    fun setParticipants(participants: List<Participant>) {
+        this.participants = participants.toMutableList()
         notifyDataSetChanged()
     }
 
-    fun removeItem(position: Int) {
-        participants.removeAt(position)
-        notifyItemRemoved(position)
+    fun removeParticipantAt(position: Int) {
+        participants?.let {
+            it.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
-    fun insertNewEmptyItem() {
-        participants.add(Participant( person = Person(), debt = 0.0))
-        notifyItemInserted(participants.size - 1)
-    }
+    fun addParticipant(participant: Participant) {
+        val list = participants ?: ArrayList()
 
-    fun updateItemName(position: Int, name: String) {
-        val participant = participants[position]
-        participant.person!!.name = name
-    }
+        list.add(participant)
+        notifyItemInserted(list.size - 1)
 
-    fun updateItemPrice(position: Int, debt: Double) {
-        val participant = participants[position]
-        participant.debt = debt
+        participants = list
     }
 
     internal class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val name: EditText = itemView.findViewById(R.id.name) as EditText
-        val price: EditText = itemView.findViewById(R.id.price) as EditText
+        val name: TextView = itemView.findViewById(R.id.text1) as TextView
+        val debt: TextView = itemView.findViewById(R.id.text2) as TextView
 
         companion object {
 
             fun create(parent: ViewGroup): EventViewHolder {
                 return EventViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_participant, parent, false))
+                        .inflate(R.layout.item_two_spans, parent, false))
             }
         }
     }

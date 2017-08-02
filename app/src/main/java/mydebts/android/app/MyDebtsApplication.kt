@@ -13,8 +13,8 @@ class MyDebtsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        DaggerMyDebtsApplicationComponent.builder()
-                .myDebtsApplicationModule(MyDebtsApplicationModule(this))
+        DaggerMyDebtsComponent.builder()
+                .applicationContext(applicationContext)
                 .build().inject(this)
     }
 

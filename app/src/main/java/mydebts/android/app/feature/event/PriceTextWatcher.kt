@@ -29,7 +29,7 @@ internal class PriceTextWatcher(adapter: ParticipantsAdapter, holder: Participan
 
         if (charSequence.isNotEmpty()) {
             val price = java.lang.Double.parseDouble(charSequence.toString())
-            adapter.updateItemPrice(holder.adapterPosition, price)
+            //adapter.updateItemPrice(holder.adapterPosition, price)
         }
     }
 

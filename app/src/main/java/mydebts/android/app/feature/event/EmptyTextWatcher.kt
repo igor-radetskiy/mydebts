@@ -21,20 +21,20 @@ internal class EmptyTextWatcher(adapter: ParticipantsAdapter, holder: Participan
             return
         }
 
-        val participant = adapter.getItem(holder.adapterPosition)
+        /*val participant = adapter.getItem(holder.adapterPosition)
         if (participant.person != null && TextUtils.equals(participant.person!!.name, holder.name.text)) {
             return
         }
 
         if (TextUtils.isEmpty(holder.name.text)
-                && TextUtils.isEmpty(holder.price.text)
+                && TextUtils.isEmpty(holder.debt.text)
                 && adapter.itemCount > 1) {
             adapter.removeItem(holder.adapterPosition)
         } else if (!TextUtils.isEmpty(holder.name.text)
-                && !TextUtils.isEmpty(holder.price.text)
+                && !TextUtils.isEmpty(holder.debt.text)
                 && holder.adapterPosition == adapter.itemCount - 1) {
             adapter.insertNewEmptyItem()
-        }
+        }*/
     }
 
     override fun afterTextChanged(s: Editable) {}

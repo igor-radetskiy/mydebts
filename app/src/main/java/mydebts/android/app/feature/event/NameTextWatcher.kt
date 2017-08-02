@@ -19,7 +19,7 @@ internal class NameTextWatcher(adapter: ParticipantsAdapter, holder: Participant
             return
         }
 
-        adapter.updateItemName(holder.adapterPosition, charSequence.toString())
+        //adapter.updateItemName(holder.adapterPosition, charSequence.toString())
     }
 
     override fun afterTextChanged(editable: Editable) {}
