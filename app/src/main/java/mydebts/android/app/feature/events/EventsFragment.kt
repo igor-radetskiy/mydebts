@@ -41,9 +41,8 @@ class EventsFragment : Fragment(), ActionMode.Callback {
                 .build().inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.activity_events, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater?.inflate(R.layout.activity_events, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         activity.setTitle(R.string.title_events)

@@ -6,6 +6,8 @@ interface EventScreen {
 
     fun showTitle(title: CharSequence)
 
+    fun setDeleteMenuItemVisible(visible: Boolean)
+
     fun showDatePicker(year: Int, month: Int, day: Int)
 
     fun showParticipants(participants: List<Participant>)
@@ -15,4 +17,6 @@ interface EventScreen {
     fun showParticipant(participant: Participant)
 
     fun showNewParticipant()
+
+    fun navigateBack()
 }

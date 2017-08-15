@@ -21,12 +21,14 @@ import mydebts.android.app.R
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.di.SubcomponentBuilderResolver
+import mydebts.android.app.feature.main.MainRouter
 import mydebts.android.app.feature.participant.ParticipantActivity
 
 class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListener {
 
     @Inject lateinit var viewModel: EventViewModel
 
+    private var deleteMenuItem: MenuItem? = null
     private val adapter = ParticipantsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,24 +64,29 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu_event, menu)
+        deleteMenuItem = menu?.findItem(R.id.action_delete)
+
+        viewModel.onCreateOptionsMenu()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         item?.let {
-            when (it.itemId) {
+            return when (it.itemId) {
                 R.id.action_set_date -> {
                     viewModel.onSetDateClick()
-                    return true
+                    true
                 }
                 R.id.action_save -> {
                     //adapter.getParticipants()?.let { saveEvent(it) }
-                    return true
+                    true
                 }
                 R.id.action_delete -> {
-                    //deleteEvent()
-                    return true
+                    viewModel.onActionDeleteClick()
+                    true
                 }
-                else -> { return false }
+                else -> {
+                    false
+                }
             }
         }
         return false
@@ -93,6 +100,10 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     override fun showTitle(title: CharSequence) {
         activity.title = title
+    }
+
+    override fun setDeleteMenuItemVisible(visible: Boolean) {
+        deleteMenuItem?.isVisible = visible
     }
 
     override fun showDatePicker(year: Int, month: Int, day: Int) {
@@ -114,6 +125,10 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     override fun showNewParticipant() {
         startActivityForResult(ParticipantActivity.newIntent(activity), REQUEST_CODE_PARTICIPANT)
+    }
+
+    override fun navigateBack() {
+        (activity as MainRouter).navigateBack()
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {

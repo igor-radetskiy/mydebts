@@ -38,6 +38,10 @@ class EventViewModel @Inject constructor(
                     screen.showParticipants(participants) }) }
     }
 
+    fun onCreateOptionsMenu() {
+        screen.setDeleteMenuItemVisible(event != null)
+    }
+
     fun onDestroyView() {
 
     }
@@ -55,6 +59,14 @@ class EventViewModel @Inject constructor(
 
     fun onAddNewParticipantClick() {
         screen.showNewParticipant()
+    }
+
+    fun onActionDeleteClick() {
+        event?.let {
+            eventsSource.delete(it)
+                    .compose(rxUtil.singleSchedulersTransformer())
+                    .subscribe { _ -> screen.navigateBack() }
+        }
     }
 
     fun addParticipant(participant: Participant) {
@@ -93,15 +105,5 @@ class EventViewModel @Inject constructor(
                 .compose(rxUtil.observableSchedulersTransformer())
                 .doOnComplete({ (activity as MainRouter).navigateBack() })
                 .subscribe()*/
-    }
-
-    private fun deleteEvent() {
-        /*if (arguments.containsKey(EventFragment.ARG_EVENT)) {
-            eventsSource.delete(Event(arguments.getLong(EventFragment.ARG_EVENT)))
-                    .compose(rxUtil.singleSchedulersTransformer())
-                    .subscribe { _ -> (activity as MainRouter).navigateBack() }
-        } else {
-            //(activity as MainRouter).navigateBack()
-        }*/
     }
 }
