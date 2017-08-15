@@ -62,6 +62,11 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
         viewModel.onViewCreated()
     }
 
+    override fun onDestroyView() {
+        viewModel.onDestroyView()
+        super.onDestroyView()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu_event, menu)
         deleteMenuItem = menu?.findItem(R.id.action_delete)
@@ -77,7 +82,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
                     true
                 }
                 R.id.action_save -> {
-                    //adapter.getParticipants()?.let { saveEvent(it) }
+                    viewModel.onActionSaveClick()
                     true
                 }
                 R.id.action_delete -> {
@@ -94,7 +99,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PARTICIPANT && resultCode == Activity.RESULT_OK && data != null) {
-            viewModel.addParticipant(data.getParcelableExtra<Participant>(ParticipantActivity.EXTRA_PARTICIPANT))
+            viewModel.addParticipant(data.getParcelableExtra(ParticipantActivity.EXTRA_PARTICIPANT))
         }
     }
 
@@ -147,8 +152,6 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
             return fragment
         }
 
-        fun newInstance(): EventFragment {
-            return EventFragment()
-        }
+        fun newInstance(): EventFragment = EventFragment()
     }
 }
