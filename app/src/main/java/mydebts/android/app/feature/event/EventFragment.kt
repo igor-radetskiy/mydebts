@@ -26,7 +26,7 @@ import mydebts.android.app.feature.participant.ParticipantActivity
 
 class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListener {
 
-    @Inject lateinit var viewModel: EventViewModel
+    @Inject lateinit var presenter: EventPresenter
 
     private var deleteMenuItem: MenuItem? = null
     private val adapter = ParticipantsAdapter()
@@ -42,7 +42,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
                 .build()
                 .inject(this)
 
-        adapter.setOnParticipantClickListener { viewModel.onParticipantClick(it) }
+        adapter.setOnParticipantClickListener { presenter.onParticipantClick(it) }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,17 +53,17 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
         listParticipants.adapter = adapter
 
         rootView.findViewById(R.id.button_add_participant)
-                .setOnClickListener { viewModel.onAddNewParticipantClick() }
+                .setOnClickListener { presenter.onAddNewParticipantClick() }
 
         return rootView
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        viewModel.onViewCreated()
+        presenter.onViewCreated()
     }
 
     override fun onDestroyView() {
-        viewModel.onDestroyView()
+        presenter.onDestroyView()
         super.onDestroyView()
     }
 
@@ -71,22 +71,22 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
         inflater?.inflate(R.menu.menu_event, menu)
         deleteMenuItem = menu?.findItem(R.id.action_delete)
 
-        viewModel.onCreateOptionsMenu()
+        presenter.onCreateOptionsMenu()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         item?.let {
             return when (it.itemId) {
                 R.id.action_set_date -> {
-                    viewModel.onSetDateClick()
+                    presenter.onSetDateClick()
                     true
                 }
                 R.id.action_save -> {
-                    viewModel.onActionSaveClick()
+                    presenter.onActionSaveClick()
                     true
                 }
                 R.id.action_delete -> {
-                    viewModel.onActionDeleteClick()
+                    presenter.onActionDeleteClick()
                     true
                 }
                 else -> {
@@ -99,7 +99,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PARTICIPANT && resultCode == Activity.RESULT_OK && data != null) {
-            viewModel.addParticipant(data.getParcelableExtra(ParticipantActivity.EXTRA_PARTICIPANT))
+            presenter.addParticipant(data.getParcelableExtra(ParticipantActivity.EXTRA_PARTICIPANT))
         }
     }
 
@@ -137,7 +137,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        viewModel.setDate(year, month, dayOfMonth)
+        presenter.setDate(year, month, dayOfMonth)
     }
 
     companion object {

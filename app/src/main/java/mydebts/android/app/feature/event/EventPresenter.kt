@@ -15,7 +15,7 @@ import mydebts.android.app.rx.RxUtil
 import java.util.Calendar
 import javax.inject.Inject
 
-class EventViewModel @Inject constructor(
+class EventPresenter @Inject constructor(
         private var event: Event?,
         private val screen: EventScreen,
         private val resources: Resources,

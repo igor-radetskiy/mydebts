@@ -5,7 +5,5 @@ import dagger.Provides
 
 @Module
 class EventModule {
-    @Provides fun provideScreen(fragment: EventFragment): EventScreen {
-        return fragment
-    }
+    @Provides fun provideScreen(fragment: EventFragment): EventScreen = fragment
 }
