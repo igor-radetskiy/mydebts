@@ -5,11 +5,12 @@ import android.content.Context;
 import dagger.BindsInstance;
 import dagger.Component;
 import mydebts.android.app.data.DataModule;
+import mydebts.android.app.res.ResourcesModule;
 
 import javax.inject.Singleton;
 
 @Singleton
-@Component(modules = { DataModule.class, MyDebtsBindingModule.class } )
+@Component(modules = { DataModule.class, ResourcesModule.class, MyDebtsBindingModule.class } )
 interface MyDebtsComponent {
 
     void inject(MyDebtsApplication application);
@@ -19,7 +20,6 @@ interface MyDebtsComponent {
 
         MyDebtsComponent build();
 
-        @BindsInstance
-        Builder applicationContext(Context context);
+        @BindsInstance Builder applicationContext(Context context);
     }
 }

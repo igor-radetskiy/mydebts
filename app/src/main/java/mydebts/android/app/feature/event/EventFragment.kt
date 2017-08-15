@@ -1,6 +1,7 @@
 package mydebts.android.app.feature.event
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,35 +13,21 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-
-import java.util.Date
+import android.widget.DatePicker
 
 import javax.inject.Inject
 
-import io.reactivex.Observable
-import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Consumer
 import mydebts.android.app.R
-import mydebts.android.app.data.EventsSource
-import mydebts.android.app.data.ParticipantsSource
-import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.di.SubcomponentBuilderResolver
-import mydebts.android.app.feature.main.MainRouter
 import mydebts.android.app.feature.participant.ParticipantActivity
-import mydebts.android.app.rx.RxUtil
 
-class EventFragment : Fragment() {
+class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListener {
 
-    @Inject lateinit var rxUtil: RxUtil
-    @Inject lateinit var eventsSource: EventsSource
-    @Inject lateinit var personsSource: PersonsSource
-    @Inject lateinit var participantsSource: ParticipantsSource
+    @Inject lateinit var viewModel: EventViewModel
 
-    private lateinit var event: Event
-
-    private lateinit var adapter: ParticipantsAdapter
+    private val adapter = ParticipantsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +35,12 @@ class EventFragment : Fragment() {
         setHasOptionsMenu(true)
 
         (SubcomponentBuilderResolver.resolve(this) as EventSubcomponent.Builder)
+                .event(arguments?.getParcelable(ARG_EVENT))
+                .fragment(this)
                 .build()
                 .inject(this)
+
+        adapter.setOnParticipantClickListener { viewModel.onParticipantClick(it) }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,42 +48,35 @@ class EventFragment : Fragment() {
 
         val listParticipants = rootView.findViewById(R.id.list_participants) as RecyclerView
         listParticipants.layoutManager = LinearLayoutManager(listParticipants.context)
-
-        adapter = ParticipantsAdapter()
         listParticipants.adapter = adapter
 
-        val buttonAddParticipant = rootView.findViewById(R.id.button_add_participant)
-        buttonAddParticipant.setOnClickListener {
-            startActivityForResult(ParticipantActivity.newIntent(activity), REQUEST_CODE_PARTICIPANT)
-        }
-
-        if (arguments != null && arguments.containsKey(ARG_EVENT)) {
-            event = arguments.getParcelable(ARG_EVENT)
-            activity.title = event.name
-            participantsSource.getByEventId(event.id!!)
-                    .compose(rxUtil.singleSchedulersTransformer())
-                    .subscribe(Consumer { adapter.setParticipants(it) })
-        } else {
-            activity.setTitle(R.string.title_new_event)
-        }
+        rootView.findViewById(R.id.button_add_participant)
+                .setOnClickListener { viewModel.onAddNewParticipantClick() }
 
         return rootView
     }
 
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        viewModel.onViewCreated()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.menu_event, menu)
+        inflater?.inflate(R.menu.menu_event, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         item?.let {
             when (it.itemId) {
-                R.id.action_set_date -> return true
+                R.id.action_set_date -> {
+                    viewModel.onSetDateClick()
+                    return true
+                }
                 R.id.action_save -> {
-                    adapter.getParticipants()?.let { saveEvent(it) }
+                    //adapter.getParticipants()?.let { saveEvent(it) }
                     return true
                 }
                 R.id.action_delete -> {
-                    deleteEvent()
+                    //deleteEvent()
                     return true
                 }
                 else -> { return false }
@@ -103,47 +87,37 @@ class EventFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PARTICIPANT && resultCode == Activity.RESULT_OK && data != null) {
-            adapter.addParticipant(data.getParcelableExtra<Participant>(ParticipantActivity.EXTRA_PARTICIPANT))
+            viewModel.addParticipant(data.getParcelableExtra<Participant>(ParticipantActivity.EXTRA_PARTICIPANT))
         }
     }
 
-    private fun saveEvent(participants: List<Participant>) {
-        val date = Date()
-        date.time = System.currentTimeMillis()
-
-        val eventObservable = eventsSource.insert(Event(name = date.toString(), date = date))
-                .toObservable()
-
-        val participantObservable = Observable.fromIterable(participants)
-
-        Observable.combineLatest(eventObservable, participantObservable,
-                BiFunction { event: Event, participant: Participant ->
-                    Participant(participant.id, event, participant.person, participant.debt)
-                })
-                .flatMap({ participant ->
-                    personsSource.insert(participant.person!!)
-                            .map { person ->
-                                Participant(participant.id, participant.event, person, participant.debt)
-                            }
-                            .toObservable()
-                })
-                .flatMap({ participant ->
-                    participantsSource.insert(participant)
-                            .toObservable()
-                })
-                .compose(rxUtil.observableSchedulersTransformer())
-                .doOnComplete({ (activity as MainRouter).navigateBack() })
-                .subscribe()
+    override fun showTitle(title: CharSequence) {
+        activity.title = title
     }
 
-    private fun deleteEvent() {
-        if (arguments.containsKey(ARG_EVENT)) {
-            eventsSource.delete(Event(arguments.getLong(ARG_EVENT)))
-                    .compose(rxUtil.singleSchedulersTransformer())
-                    .subscribe { _ -> (activity as MainRouter).navigateBack() }
-        } else {
-            (activity as MainRouter).navigateBack()
-        }
+    override fun showDatePicker(year: Int, month: Int, day: Int) {
+        val datePickerDialog = DatePickerDialog(activity, 0, this, year, month, day)
+        datePickerDialog.show()
+    }
+
+    override fun showParticipants(participants: List<Participant>) {
+        adapter.setParticipants(participants)
+    }
+
+    override fun showAddedParticipantAt(position: Int) {
+        adapter.notifyItemInserted(position)
+    }
+
+    override fun showParticipant(participant: Participant) {
+        startActivityForResult(ParticipantActivity.newIntent(activity, participant), REQUEST_CODE_PARTICIPANT)
+    }
+
+    override fun showNewParticipant() {
+        startActivityForResult(ParticipantActivity.newIntent(activity), REQUEST_CODE_PARTICIPANT)
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        viewModel.setDate(year, month, dayOfMonth)
     }
 
     companion object {

@@ -13,17 +13,22 @@ import mydebts.android.app.R
 import mydebts.android.app.data.model.Participant
 
 internal class ParticipantsAdapter : RecyclerView.Adapter<ParticipantsAdapter.EventViewHolder>() {
-    private var participants: MutableList<Participant>? = null
+    private var participants: List<Participant>? = null
+    private var onParticipantClickListener: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        return EventViewHolder.create(parent)
+        val holder = EventViewHolder.create(parent)
+
+        holder.itemView.setOnClickListener {
+            onParticipantClickListener?.let { it(holder.adapterPosition) }
+        }
+
+        return holder
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         participants?.get(position)?.let {
-
             holder.name.text = it.person?.name.takeUnless { TextUtils.isEmpty(it) } ?: "Unknown"
-
             holder.debt.text = it.debt?.takeUnless { Math.abs(it) < 0.001 }
                     ?.let { String.format(Locale.getDefault(), "%f", it) } ?: "0"
         }
@@ -33,33 +38,13 @@ internal class ParticipantsAdapter : RecyclerView.Adapter<ParticipantsAdapter.Ev
         return participants?.size ?: 0
     }
 
-    fun getParticipants(): List<Participant>? {
-        return participants
-    }
-
-    fun getParticipant(position: Int): Participant? {
-        return participants?.get(position)
-    }
-
     fun setParticipants(participants: List<Participant>) {
-        this.participants = participants.toMutableList()
+        this.participants = participants
         notifyDataSetChanged()
     }
 
-    fun removeParticipantAt(position: Int) {
-        participants?.let {
-            it.removeAt(position)
-            notifyItemRemoved(position)
-        }
-    }
-
-    fun addParticipant(participant: Participant) {
-        val list = participants ?: ArrayList()
-
-        list.add(participant)
-        notifyItemInserted(list.size - 1)
-
-        participants = list
+    fun setOnParticipantClickListener(l: (Int) -> Unit) {
+        onParticipantClickListener = l
     }
 
     internal class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
