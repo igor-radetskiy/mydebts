@@ -1,38 +1,62 @@
 package mydebts.android.app.feature.participant
 
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import mydebts.android.app.data.ParticipantsSource
+import io.reactivex.disposables.CompositeDisposable
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.data.model.Person
+import mydebts.android.app.rx.RxUtil
 import javax.inject.Inject
 
 class ParticipantViewModel @Inject constructor(
-        val participant: Participant,
-        val personsSource: PersonsSource,
-        val participantsSource: ParticipantsSource)
+        private val screen: ParticipantScreen,
+        private val participant: Participant?,
+        private val personsSource: PersonsSource,
+        private val rxUtil: RxUtil)
 {
 
-    private val participantSubject = PublishSubject.create<Participant>()
+    private var person = Person()
+    private var debt = .0
 
-    fun setName(name: CharSequence) {
-        setPerson(Person(name = name.toString()))
+    private val persons = ArrayList<Person>()
+    private val disposables = CompositeDisposable()
+
+    fun onCreate() {
+        participant?.person?.also {
+            it.name?.let {
+                screen.showName(it)
+                screen.setNameEnabled(false)
+            }
+            person = it
+        }
+        participant?.debt?.let { debt = it }
+        screen.showDebt(debt)
+
+        disposables.add(personsSource.getAll()
+                .compose(rxUtil.singleSchedulersTransformer())
+                .doOnSuccess { persons.addAll(it) }
+                .map { it.map { it.name ?: "" } }
+                .subscribe { persons -> screen.setPersonsSuggestions(persons) })
     }
 
-    fun setPerson(person: Person) {
-        participant.person = person
+    fun onDestroy() {
+        disposables.clear()
     }
 
-    fun setDebt(debt: CharSequence) {
-        participant.debt = debt.toString().toDoubleOrNull() ?: .0
+    fun onSuggestionItemClick(position: Int) {
+        person = persons[position]
     }
 
-    fun observeParticipant(): Observable<Participant> {
-        return participantSubject
+    fun onNameChanged(name: CharSequence?) {
+        person = Person(name = name.toString())
+    }
+
+    fun onDebtChanged(debt: CharSequence?) {
+        this.debt = debt.toString().toDoubleOrNull() ?: .0
     }
 
     fun onDoneClick() {
-        participantSubject.onNext(participant)
+        val result = participant?.also { it.debt = debt } ?: Participant(person = person, debt = debt)
+        screen.setResult(result)
+        screen.finish()
     }
 }

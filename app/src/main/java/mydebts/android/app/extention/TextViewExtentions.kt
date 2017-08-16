@@ -6,3 +6,7 @@ import java.text.DecimalFormat
 fun TextView.setCurrencyText(value: Double) {
     this.text = DecimalFormat("₴#.##").format(value)
 }
+
+fun TextView.setDoubleText(value: Double) {
+    this.text = DecimalFormat("#.##").format(value)
+}

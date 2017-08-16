@@ -7,16 +7,17 @@ import mydebts.android.app.di.SingleIn
 import mydebts.android.app.di.SubcomponentBuilder
 
 @SingleIn(ParticipantActivity::class)
-@Subcomponent
+@Subcomponent(modules = arrayOf(ParticipantModule::class))
 interface ParticipantSubcomponent {
     fun inject(activity: ParticipantActivity)
 
     @Subcomponent.Builder
     interface Builder : SubcomponentBuilder {
 
-        @BindsInstance
-        fun participant(participant: Participant) : Builder
+        @BindsInstance fun participant(participant: Participant?): Builder
 
-        fun build() : ParticipantSubcomponent
+        @BindsInstance fun activity(participantActivity: ParticipantActivity): Builder
+
+        fun build(): ParticipantSubcomponent
     }
 }
