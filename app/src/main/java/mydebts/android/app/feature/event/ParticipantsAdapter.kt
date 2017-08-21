@@ -11,8 +11,9 @@ import mydebts.android.app.R
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.extention.toCurrencyString
 
-internal class ParticipantsAdapter : RecyclerView.Adapter<ParticipantsAdapter.EventViewHolder>() {
-    private var participants: List<Participant>? = null
+internal class ParticipantsAdapter(
+        private val participants: List<Participant> ) : RecyclerView.Adapter<ParticipantsAdapter.EventViewHolder>() {
+
     private var onParticipantClickListener: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -26,18 +27,13 @@ internal class ParticipantsAdapter : RecyclerView.Adapter<ParticipantsAdapter.Ev
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        participants?.get(position)?.let {
+        participants[position].let {
             holder.name.text = it.person?.name.takeUnless { TextUtils.isEmpty(it) } ?: "Unknown"
             holder.debt.text = it.debt?.toCurrencyString()  ?: .0.toCurrencyString()
         }
     }
 
-    override fun getItemCount(): Int = participants?.size ?: 0
-
-    fun setParticipants(participants: List<Participant>) {
-        this.participants = participants
-        notifyDataSetChanged()
-    }
+    override fun getItemCount(): Int = participants.size
 
     fun setOnParticipantClickListener(l: (Int) -> Unit) {
         onParticipantClickListener = l

@@ -26,21 +26,19 @@ class EventPresenter @Inject constructor(
     private val calendar = Calendar.getInstance()
     private val disposables = CompositeDisposable()
 
-    private lateinit var participants: MutableList<Participant>
+    private val participants = ArrayList<Participant>()
 
     fun onViewCreated() {
         screen.showTitle(event?.name ?: calendar.time.toEventDateString())
 
         event?.date?.let { calendar.time = it }
 
-        val participantsSingle = event?.id?.let {
-            participantsSource.getByEventId(it)
+        event?.id?.let {
+            disposables.add(participantsSource.getByEventId(it)
                     .compose(rxUtil.singleSchedulersTransformer())
-                    .map { it.toMutableList() }
-        } ?: Single.just(ArrayList())
-
-        disposables.add(participantsSingle.doOnSuccess { participants = it }
-                .subscribe { _ -> handleParticipants() })
+                    .doOnSuccess { participants.clear(); participants.addAll(it) }
+                    .subscribe{ _ -> handleParticipants() })
+        }
     }
 
     fun onCreateOptionsMenu() {
@@ -74,9 +72,13 @@ class EventPresenter @Inject constructor(
         }
     }
 
+    fun getParticipants(): MutableList<Participant> = participants
+
     fun addParticipant(participant: Participant) {
         participants.add(participant)
-        screen.showAddedParticipantAt(participants.size - 1)
+        screen.setEmptyViewVisibility(View.GONE)
+        screen.setParticipantsViewVisibility(View.VISIBLE)
+        screen.notifyParticipantInserted(participants.size - 1)
     }
 
     fun setDate(year: Int, month: Int, day: Int) {
@@ -113,7 +115,7 @@ class EventPresenter @Inject constructor(
         } else {
             screen.setParticipantsViewVisibility(View.VISIBLE)
             screen.setEmptyViewVisibility(View.GONE)
-            screen.showParticipants(participants)
+            screen.notifyParticipantsChanged()
         }
     }
 

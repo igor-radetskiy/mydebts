@@ -5,9 +5,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
@@ -15,16 +17,17 @@ import mydebts.android.app.R
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.di.SubcomponentBuilderResolver
 import mydebts.android.app.extention.addSimpleOnTextChangeListener
-import mydebts.android.app.extention.setCurrencyText
 import mydebts.android.app.extention.setDoubleText
 import javax.inject.Inject
 
 class ParticipantActivity : AppCompatActivity(), ParticipantScreen {
 
-    @Inject lateinit var viewModel: ParticipantViewModel
+    @Inject lateinit var presenter: ParticipantPresenter
 
+    private lateinit var nameTextInputLayout: TextInputLayout
     private lateinit var nameEditText: AutoCompleteTextView
-    private lateinit var priceEditText: EditText
+    private lateinit var amountTextInputLayout: TextInputLayout
+    private lateinit var amountEditText: EditText
 
     private lateinit var suggestionsAdapter: ArrayAdapter<String>
 
@@ -36,25 +39,30 @@ class ParticipantActivity : AppCompatActivity(), ParticipantScreen {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.abc_ic_clear_material)
 
+        nameTextInputLayout = findViewById(R.id.text_input_layout_name) as TextInputLayout
         nameEditText = findViewById(R.id.name) as AutoCompleteTextView
         suggestionsAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line)
         nameEditText.setAdapter(suggestionsAdapter)
-        nameEditText.setOnItemClickListener { _, _, position, _ -> viewModel.onSuggestionItemClick(position) }
-        nameEditText.addSimpleOnTextChangeListener { text -> viewModel.onNameChanged(text) }
+        nameEditText.setOnItemClickListener { _, _, position, _ -> presenter.onSuggestionItemClick(position) }
+        nameEditText.addSimpleOnTextChangeListener { text -> presenter.onNameChanged(text) }
 
-        priceEditText = findViewById(R.id.price) as EditText
-        priceEditText.addSimpleOnTextChangeListener { text -> viewModel.onDebtChanged(text) }
+        amountTextInputLayout = findViewById(R.id.text_input_layout_amount) as TextInputLayout
+        amountEditText = findViewById(R.id.amount) as EditText
+        amountEditText.addSimpleOnTextChangeListener { text -> presenter.onDebtChanged(text) }
+        amountEditText.setOnEditorActionListener { _, actionId, _ ->
+            actionId.takeIf { it == EditorInfo.IME_ACTION_DONE }?.let { presenter.onDoneClick(); true } ?: false
+        }
 
         (SubcomponentBuilderResolver.resolve(this) as ParticipantSubcomponent.Builder)
                 .participant(intent.getParcelableExtra(EXTRA_PARTICIPANT))
                 .activity(this)
                 .build().inject(this)
 
-        viewModel.onCreate()
+        presenter.onCreate()
     }
 
     override fun onDestroy() {
-        viewModel.onDestroy()
+        presenter.onDestroy()
         super.onDestroy()
     }
 
@@ -70,7 +78,7 @@ class ParticipantActivity : AppCompatActivity(), ParticipantScreen {
                     onBackPressed()
                 }
                 R.id.action_save -> {
-                    viewModel.onDoneClick()
+                    presenter.onDoneClick()
                 }
             }
         }
@@ -81,12 +89,24 @@ class ParticipantActivity : AppCompatActivity(), ParticipantScreen {
         nameEditText.setText(name)
     }
 
+    override fun showNameError(error: CharSequence?) {
+        nameTextInputLayout.error = error
+    }
+
     override fun setNameEnabled(enabled: Boolean) {
         nameEditText.isEnabled = enabled
     }
 
+    override fun requestFocusOnDebtInput() {
+        amountEditText.requestFocus()
+    }
+
     override fun showDebt(debt: Double) {
-        priceEditText.setDoubleText(debt)
+        amountEditText.setDoubleText(debt)
+    }
+
+    override fun showDebtError(error: CharSequence?) {
+        amountTextInputLayout.error = error
     }
 
     override fun setPersonsSuggestions(persons: List<String>) {

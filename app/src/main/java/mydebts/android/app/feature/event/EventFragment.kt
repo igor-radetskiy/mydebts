@@ -30,9 +30,9 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     private lateinit var emptyView: View
     private lateinit var participantsRecyclerView: RecyclerView
+    private lateinit var adapter: ParticipantsAdapter
 
     private var deleteMenuItem: MenuItem? = null
-    private val adapter = ParticipantsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +45,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
                 .build()
                 .inject(this)
 
+        adapter = ParticipantsAdapter(presenter.getParticipants())
         adapter.setOnParticipantClickListener { presenter.onParticipantClick(it) }
     }
 
@@ -128,11 +129,11 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
         participantsRecyclerView.visibility = visibility
     }
 
-    override fun showParticipants(participants: List<Participant>) {
-        adapter.setParticipants(participants)
+    override fun notifyParticipantsChanged() {
+        adapter.notifyDataSetChanged()
     }
 
-    override fun showAddedParticipantAt(position: Int) {
+    override fun notifyParticipantInserted(position: Int) {
         adapter.notifyItemInserted(position)
     }
 

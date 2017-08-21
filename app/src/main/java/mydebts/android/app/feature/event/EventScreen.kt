@@ -14,9 +14,9 @@ interface EventScreen {
 
     fun setParticipantsViewVisibility(visibility: Int)
 
-    fun showParticipants(participants: List<Participant>)
+    fun notifyParticipantsChanged()
 
-    fun showAddedParticipantAt(position:Int)
+    fun notifyParticipantInserted(position:Int)
 
     fun showParticipant(participant: Participant)
 

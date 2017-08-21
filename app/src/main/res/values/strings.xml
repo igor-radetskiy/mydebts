@@ -15,8 +15,10 @@
 
     <!-- Event -->
     <string name="set_date">Set Date</string>
-    <string name="hint_name"><i>Name</i></string>
-    <string name="hint_amount"><i>$0.00</i></string>
+    <string name="hint_name">Name</string>
+    <string name="error_no_name">You need to enter the name</string>
+    <string name="error_no_amount">You need to enter the amount</string>
+    <string name="hint_amount">Amount</string>
     <string name="menu_event_save">Save</string>
     <string name="menu_event_delete">Delete</string>
     <string name="event_no_participants">No participants yet…</string>
