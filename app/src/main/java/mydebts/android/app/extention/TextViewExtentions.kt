@@ -4,9 +4,9 @@ import android.widget.TextView
 import java.text.DecimalFormat
 
 fun TextView.setCurrencyText(value: Double) {
-    this.text = DecimalFormat("₴#.##").format(value)
+    this.text = value.toCurrencyString()
 }
 
 fun TextView.setDoubleText(value: Double) {
-    this.text = DecimalFormat("#.##").format(value)
+    this.text = value.toSimpleString()
 }

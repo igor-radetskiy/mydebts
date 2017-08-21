@@ -28,6 +28,9 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     @Inject lateinit var presenter: EventPresenter
 
+    private lateinit var emptyView: View
+    private lateinit var participantsRecyclerView: RecyclerView
+
     private var deleteMenuItem: MenuItem? = null
     private val adapter = ParticipantsAdapter()
 
@@ -45,18 +48,21 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
         adapter.setOnParticipantClickListener { presenter.onParticipantClick(it) }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater!!.inflate(R.layout.activity_event, container, false)
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater?.let {
+                val rootView = it.inflate(R.layout.activity_event, container, false)
 
-        val listParticipants = rootView.findViewById(R.id.list_participants) as RecyclerView
-        listParticipants.layoutManager = LinearLayoutManager(listParticipants.context)
-        listParticipants.adapter = adapter
+                emptyView = rootView.findViewById(R.id.text_no_participants)
 
-        rootView.findViewById(R.id.button_add_participant)
-                .setOnClickListener { presenter.onAddNewParticipantClick() }
+                participantsRecyclerView = rootView.findViewById(R.id.list_participants) as RecyclerView
+                participantsRecyclerView.layoutManager = LinearLayoutManager(participantsRecyclerView.context)
+                participantsRecyclerView.adapter = adapter
 
-        return rootView
-    }
+                rootView.findViewById(R.id.button_add_participant)
+                        .setOnClickListener { presenter.onAddNewParticipantClick() }
+
+                rootView
+            }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         presenter.onViewCreated()
@@ -74,7 +80,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
         presenter.onCreateOptionsMenu()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean =
         item?.let {
             return when (it.itemId) {
                 R.id.action_set_date -> {
@@ -93,9 +99,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
                     false
                 }
             }
-        }
-        return false
-    }
+        } ?: false
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PARTICIPANT && resultCode == Activity.RESULT_OK && data != null) {
@@ -114,6 +118,14 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
     override fun showDatePicker(year: Int, month: Int, day: Int) {
         val datePickerDialog = DatePickerDialog(activity, 0, this, year, month, day)
         datePickerDialog.show()
+    }
+
+    override fun setEmptyViewVisibility(visibility: Int) {
+        emptyView.visibility = visibility
+    }
+
+    override fun setParticipantsViewVisibility(visibility: Int) {
+        participantsRecyclerView.visibility = visibility
     }
 
     override fun showParticipants(participants: List<Participant>) {

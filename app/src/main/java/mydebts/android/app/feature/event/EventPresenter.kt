@@ -1,16 +1,16 @@
 package mydebts.android.app.feature.event
 
+import android.view.View
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
-import mydebts.android.app.R
 import mydebts.android.app.data.EventsSource
 import mydebts.android.app.data.ParticipantsSource
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
-import mydebts.android.app.res.Resources
+import mydebts.android.app.extention.toEventDateString
 import mydebts.android.app.rx.RxUtil
 import java.util.Calendar
 import javax.inject.Inject
@@ -18,7 +18,6 @@ import javax.inject.Inject
 class EventPresenter @Inject constructor(
         private var event: Event?,
         private val screen: EventScreen,
-        private val resources: Resources,
         private val eventsSource: EventsSource,
         private val personsSource: PersonsSource,
         private val participantsSource: ParticipantsSource,
@@ -30,7 +29,7 @@ class EventPresenter @Inject constructor(
     private lateinit var participants: MutableList<Participant>
 
     fun onViewCreated() {
-        screen.showTitle(event?.name ?: resources.string(R.string.title_new_event))
+        screen.showTitle(event?.name ?: calendar.time.toEventDateString())
 
         event?.date?.let { calendar.time = it }
 
@@ -41,7 +40,7 @@ class EventPresenter @Inject constructor(
         } ?: Single.just(ArrayList())
 
         disposables.add(participantsSingle.doOnSuccess { participants = it }
-                .subscribe { _ -> screen.showParticipants(participants) })
+                .subscribe { _ -> handleParticipants() })
     }
 
     fun onCreateOptionsMenu() {
@@ -82,7 +81,7 @@ class EventPresenter @Inject constructor(
 
     fun setDate(year: Int, month: Int, day: Int) {
         calendar.set(year, month, day)
-        screen.showTitle(calendar.time.toString())
+        screen.showTitle(calendar.time.toEventDateString())
     }
 
     fun onActionSaveClick() {
@@ -107,10 +106,21 @@ class EventPresenter @Inject constructor(
                 .subscribe())
     }
 
+    private fun handleParticipants() {
+        if (participants.isEmpty()) {
+            screen.setParticipantsViewVisibility(View.GONE)
+            screen.setEmptyViewVisibility(View.VISIBLE)
+        } else {
+            screen.setParticipantsViewVisibility(View.VISIBLE)
+            screen.setEmptyViewVisibility(View.GONE)
+            screen.showParticipants(participants)
+        }
+    }
+
     private fun eventObservable(): Observable<Event> {
         val date = calendar.time
 
-        val eventSingle = event?.let { it.name = date.toString(); it.date = date; it }
+        val eventSingle = event?.let { it.name = date.toEventDateString(); it.date = date; it }
                 ?.let { eventsSource.update(it) }
                 ?: eventsSource.insert(Event( name = date.toString(), date = date))
 

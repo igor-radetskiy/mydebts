@@ -9,6 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <TextView
+        android:id="@+id/text_no_participants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:text="@string/event_no_participants"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/button_add_participant"
         android:layout_width="wrap_content"

@@ -10,6 +10,10 @@ interface EventScreen {
 
     fun showDatePicker(year: Int, month: Int, day: Int)
 
+    fun setEmptyViewVisibility(visibility: Int)
+
+    fun setParticipantsViewVisibility(visibility: Int)
+
     fun showParticipants(participants: List<Participant>)
 
     fun showAddedParticipantAt(position:Int)
