@@ -8,6 +8,7 @@ import android.widget.TextView
 
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Event
+import mydebts.android.app.extention.toEventDateString
 
 internal class EventsAdapter(
         private val events: List<Event>,
@@ -24,7 +25,7 @@ internal class EventsAdapter(
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.date.text = events[position].date.toString()
+        holder.date.text = events[position].date?.toEventDateString()
         holder.itemView.isSelected = selections.contains(position)
     }
 

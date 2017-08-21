@@ -29,7 +29,7 @@ class EventPresenter @Inject constructor(
     private val participants = ArrayList<Participant>()
 
     fun onViewCreated() {
-        screen.showTitle(event?.name ?: calendar.time.toEventDateString())
+        screen.showTitle(event?.date?.toEventDateString() ?: calendar.time.toEventDateString())
 
         event?.date?.let { calendar.time = it }
 
