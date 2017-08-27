@@ -9,7 +9,7 @@ import mydebts.android.app.feature.event.EventFragment
 import mydebts.android.app.feature.event.EventSubcomponent
 import mydebts.android.app.feature.events.EventsFragment
 import mydebts.android.app.feature.events.EventsSubcomponent
-import mydebts.android.app.feature.participant.ParticipantActivity
+import mydebts.android.app.feature.participant.ParticipantDialogFragment
 import mydebts.android.app.feature.participant.ParticipantSubcomponent
 import mydebts.android.app.feature.person.PersonFragment
 import mydebts.android.app.feature.person.PersonSubcomonent
@@ -45,6 +45,6 @@ internal interface MyDebtsBindingModule {
 
     @Binds
     @IntoMap
-    @SubcomponentBuilderKey(ParticipantActivity::class)
+    @SubcomponentBuilderKey(ParticipantDialogFragment::class)
     fun participantSubcomponentBuilder(impl: ParticipantSubcomponent.Builder): SubcomponentBuilder
 }

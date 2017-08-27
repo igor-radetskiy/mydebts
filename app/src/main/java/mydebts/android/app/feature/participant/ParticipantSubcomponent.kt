@@ -6,17 +6,17 @@ import mydebts.android.app.data.model.Participant
 import mydebts.android.app.di.SingleIn
 import mydebts.android.app.di.SubcomponentBuilder
 
-@SingleIn(ParticipantActivity::class)
+@SingleIn(ParticipantScreen::class)
 @Subcomponent(modules = arrayOf(ParticipantModule::class))
 interface ParticipantSubcomponent {
-    fun inject(activity: ParticipantActivity)
+    fun inject(dialogFragment: ParticipantDialogFragment)
 
     @Subcomponent.Builder
     interface Builder : SubcomponentBuilder {
 
         @BindsInstance fun participant(participant: Participant?): Builder
 
-        @BindsInstance fun activity(participantActivity: ParticipantActivity): Builder
+        @BindsInstance fun dialogFragment(participantDialogFragment: ParticipantDialogFragment): Builder
 
         fun build(): ParticipantSubcomponent
     }

@@ -1,8 +1,6 @@
 package mydebts.android.app.feature.event
 
-import android.app.Activity
 import android.app.DatePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -22,9 +20,9 @@ import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.di.SubcomponentBuilderResolver
 import mydebts.android.app.feature.main.MainRouter
-import mydebts.android.app.feature.participant.ParticipantActivity
+import mydebts.android.app.feature.participant.ParticipantDialogFragment
 
-class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListener {
+class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListener, ParticipantDialogFragment.Callback {
 
     @Inject lateinit var presenter: EventPresenter
 
@@ -102,10 +100,8 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
             }
         } ?: false
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_PARTICIPANT && resultCode == Activity.RESULT_OK && data != null) {
-            presenter.addParticipant(data.getParcelableExtra(ParticipantActivity.EXTRA_PARTICIPANT))
-        }
+    override fun onParticipantResult(participant: Participant) {
+        presenter.addParticipant(participant)
     }
 
     override fun showTitle(title: CharSequence) {
@@ -138,11 +134,11 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
     }
 
     override fun showParticipant(participant: Participant) {
-        startActivityForResult(ParticipantActivity.newIntent(activity, participant), REQUEST_CODE_PARTICIPANT)
+        ParticipantDialogFragment.newInstance(participant).show(childFragmentManager, null)
     }
 
     override fun showNewParticipant() {
-        startActivityForResult(ParticipantActivity.newIntent(activity), REQUEST_CODE_PARTICIPANT)
+        ParticipantDialogFragment.newInstance().show(childFragmentManager, null)
     }
 
     override fun navigateBack() {
@@ -155,8 +151,6 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     companion object {
         private val ARG_EVENT = "ARG_EVENT"
-
-        private val REQUEST_CODE_PARTICIPANT = 0
 
         fun newInstance(event: Event): EventFragment {
             val fragment = newInstance()
