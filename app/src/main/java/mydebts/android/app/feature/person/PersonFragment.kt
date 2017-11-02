@@ -43,7 +43,7 @@ class PersonFragment : Fragment() {
         person = arguments.getParcelable(ARG_PERSON)
         activity.title = person.name
 
-        eventsListView = view!!.findViewById(R.id.list_events) as RecyclerView
+        eventsListView = view!!.findViewById(R.id.list_events)
         emptyView = view.findViewById(R.id.text_no_events)
 
         eventsListView.layoutManager = LinearLayoutManager(activity.applicationContext)
@@ -68,7 +68,7 @@ class PersonFragment : Fragment() {
         private val ARG_PERSON = "ARG_PERSON"
 
         fun newInstance(person: Person): PersonFragment {
-            val fragment: PersonFragment = PersonFragment()
+            val fragment = PersonFragment()
             fragment.arguments = Bundle()
             fragment.arguments.putParcelable(ARG_PERSON, person)
             return fragment

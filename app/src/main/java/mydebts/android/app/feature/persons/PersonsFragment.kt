@@ -36,14 +36,16 @@ class PersonsFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         activity.setTitle(R.string.title_people)
 
-        val recyclerView = view!!.findViewById(R.id.list_persons) as RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(activity.applicationContext)
-        adapter.setOnPersonClickListener(object: PersonsAdapter.OnPersonClickListener {
-            override fun onPersonClick(person: Person) {
-                (activity as MainRouter).navigateToPerson(person)
-            }
-        })
-        recyclerView.adapter = adapter
+        view?.let {
+            val recyclerView: RecyclerView = view.findViewById(R.id.list_persons)
+            recyclerView.layoutManager = LinearLayoutManager(activity.applicationContext)
+            adapter.setOnPersonClickListener(object: PersonsAdapter.OnPersonClickListener {
+                override fun onPersonClick(person: Person) {
+                    (activity as MainRouter).navigateToPerson(person)
+                }
+            })
+            recyclerView.adapter = adapter
+        }
 
         personsSource.getAll()
                 .compose(rxUtil.singleSchedulersTransformer())

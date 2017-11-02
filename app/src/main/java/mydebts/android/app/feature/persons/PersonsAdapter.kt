@@ -45,7 +45,7 @@ internal class PersonsAdapter : RecyclerView.Adapter<PersonsAdapter.ViewHolder>(
 
     internal class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        var name: TextView = itemView.findViewById(R.id.text1) as TextView
+        var name: TextView = itemView.findViewById(R.id.text1)
 
         companion object {
 

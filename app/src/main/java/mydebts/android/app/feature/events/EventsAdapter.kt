@@ -40,7 +40,7 @@ internal class EventsAdapter(
     }
 
     internal class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var date: TextView = itemView.findViewById(R.id.text1) as TextView
+        var date: TextView = itemView.findViewById(R.id.text1)
 
         companion object {
 

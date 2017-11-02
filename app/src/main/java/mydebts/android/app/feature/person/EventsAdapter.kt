@@ -34,8 +34,8 @@ class EventsAdapter : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val eventName: TextView = itemView.findViewById(R.id.text1) as TextView
-        val price: TextView = itemView.findViewById(R.id.text2) as TextView
+        val eventName: TextView = itemView.findViewById(R.id.text1)
+        val price: TextView = itemView.findViewById(R.id.text2)
 
         companion object {
             fun create(parent: ViewGroup?) : ViewHolder {

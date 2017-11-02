@@ -41,8 +41,8 @@ internal class ParticipantsAdapter(
 
     internal class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val name: TextView = itemView.findViewById(R.id.text1) as TextView
-        val debt: TextView = itemView.findViewById(R.id.text2) as TextView
+        val name: TextView = itemView.findViewById(R.id.text1)
+        val debt: TextView = itemView.findViewById(R.id.text2)
 
         companion object {
 

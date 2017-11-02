@@ -48,15 +48,15 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialogView = View.inflate(activity, R.layout.fragment_participant, null)
 
-        nameTextInputLayout = dialogView.findViewById(R.id.text_input_layout_name) as TextInputLayout
-        nameEditText = dialogView.findViewById(R.id.name) as AutoCompleteTextView
+        nameTextInputLayout = dialogView.findViewById(R.id.text_input_layout_name)
+        nameEditText = dialogView.findViewById(R.id.name)
         suggestionsAdapter = ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line)
         nameEditText.setAdapter(suggestionsAdapter)
         nameEditText.setOnItemClickListener { _, _, position, _ -> presenter.onSuggestionItemClick(position) }
         nameEditText.addSimpleOnTextChangeListener { text -> presenter.onNameChanged(text) }
 
-        amountTextInputLayout = dialogView.findViewById(R.id.text_input_layout_amount) as TextInputLayout
-        amountEditText = dialogView.findViewById(R.id.amount) as EditText
+        amountTextInputLayout = dialogView.findViewById(R.id.text_input_layout_amount)
+        amountEditText = dialogView.findViewById(R.id.amount)
         amountEditText.addSimpleOnTextChangeListener { text -> presenter.onDebtChanged(text) }
         amountEditText.setOnEditorActionListener { _, actionId, _ ->
             actionId.takeIf { it == EditorInfo.IME_ACTION_DONE }?.let { presenter.onDoneClick(); true } ?: false
