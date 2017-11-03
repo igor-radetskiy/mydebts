@@ -79,7 +79,7 @@ internal constructor(private val db: SQLiteDatabase) {
             return 0
         }
 
-        val whereClause: StringBuilder = StringBuilder(EventContract._ID + " IN (")
+        val whereClause = StringBuilder(EventContract._ID + " IN (")
         for (i in 1..events.size) {
             whereClause.append("?,")
         }

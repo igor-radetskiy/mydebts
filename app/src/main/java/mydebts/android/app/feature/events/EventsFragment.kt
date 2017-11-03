@@ -54,7 +54,7 @@ class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
                 presenter.onSelectEvent(position)
                 actionMode = activity.startActionMode(this)
                 true
-            } ?: false
+            } == true
         }
     }
 
@@ -95,7 +95,7 @@ class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
             }
             else -> false
         }
-    } ?: false
+    } == true
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean = item?.let {
         when (it.itemId) {
@@ -106,7 +106,7 @@ class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
             }
             else -> false
         }
-    } ?: false
+    } == true
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         mode?.menuInflater?.inflate(R.menu.context_menu_event, menu)

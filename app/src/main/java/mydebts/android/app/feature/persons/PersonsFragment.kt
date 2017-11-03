@@ -57,12 +57,12 @@ class PersonsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item!!.itemId) {
+        return when(item!!.itemId) {
             R.id.action_switch_to_events -> {
                 (activity as MainRouter).navigateToEvents()
-                return true
+                true
             }
-            else -> return false
+            else -> false
         }
     }
 }

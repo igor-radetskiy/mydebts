@@ -7,8 +7,6 @@ import dagger.Provides
 
 @Module
 class DbModule {
-    @Provides
-    internal fun provideSqliteDatabase(dbOpenHelper: MyDebtsDbOpenHelper): SQLiteDatabase {
-        return dbOpenHelper.writableDatabase
-    }
+    @Provides internal fun provideSqliteDatabase(dbOpenHelper: MyDebtsDbOpenHelper): SQLiteDatabase
+            = dbOpenHelper.writableDatabase
 }

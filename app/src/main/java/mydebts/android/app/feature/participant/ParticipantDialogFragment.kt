@@ -59,7 +59,7 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
         amountEditText = dialogView.findViewById(R.id.amount)
         amountEditText.addSimpleOnTextChangeListener { text -> presenter.onDebtChanged(text) }
         amountEditText.setOnEditorActionListener { _, actionId, _ ->
-            actionId.takeIf { it == EditorInfo.IME_ACTION_DONE }?.let { presenter.onDoneClick(); true } ?: false
+            actionId.takeIf { it == EditorInfo.IME_ACTION_DONE }?.let { presenter.onDoneClick(); true } == true
         }
 
         (SubcomponentBuilderResolver.resolve(this) as ParticipantSubcomponent.Builder)
@@ -89,9 +89,7 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
 
         val dialog = dialog
 
-        if (dialog is AlertDialog) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { presenter.onDoneClick() }
-        }
+        (dialog as? AlertDialog)?.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener { presenter.onDoneClick() }
     }
 
     override fun showName(name: CharSequence) {

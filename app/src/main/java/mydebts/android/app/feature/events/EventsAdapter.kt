@@ -20,7 +20,7 @@ internal class EventsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val viewHolder = EventViewHolder.create(parent)
         viewHolder.itemView.setOnClickListener { onItemClickListener?.invoke(viewHolder.adapterPosition) }
-        viewHolder.itemView.setOnLongClickListener { onItemLongClickListener?.invoke(viewHolder.adapterPosition) ?: false }
+        viewHolder.itemView.setOnLongClickListener { onItemLongClickListener?.invoke(viewHolder.adapterPosition) == true }
         return viewHolder
     }
 
