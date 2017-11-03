@@ -1,6 +1,5 @@
 package mydebts.android.app.feature.person
 
-import android.app.Activity
 import dagger.BindsInstance
 import dagger.Subcomponent
 import mydebts.android.app.data.model.Person
@@ -16,7 +15,7 @@ interface PersonSubcomonent {
     @Subcomponent.Builder
     interface Builder : SubcomponentBuilder {
 
-        @BindsInstance fun activity(activity: Activity): Builder
+        @BindsInstance fun activity(activity: PersonActivity): Builder
         @BindsInstance fun person(person: Person): Builder
 
         fun build(): PersonSubcomonent
