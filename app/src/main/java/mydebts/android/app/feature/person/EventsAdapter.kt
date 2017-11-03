@@ -8,6 +8,7 @@ import android.widget.TextView
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.extention.setCurrencyText
+import mydebts.android.app.extention.toEventDateString
 
 class EventsAdapter : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
     private var _participants: List<Participant>? = null
@@ -24,7 +25,7 @@ class EventsAdapter : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val participant: Participant? = _participants?.get(position)
-        holder?.eventName?.text = participant?.event?.name
+        holder?.eventName?.text = participant?.event?.date?.toEventDateString()
         holder?.price?.setCurrencyText(participant?.debt!!)
     }
 

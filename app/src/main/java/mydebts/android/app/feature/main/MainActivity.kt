@@ -9,7 +9,7 @@ import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Person
 import mydebts.android.app.feature.event.EventFragment
 import mydebts.android.app.feature.events.EventsFragment
-import mydebts.android.app.feature.person.PersonFragment
+import mydebts.android.app.feature.person.PersonActivity
 import mydebts.android.app.feature.persons.PersonsFragment
 
 class MainActivity : AppCompatActivity(), MainRouter {
@@ -23,12 +23,12 @@ class MainActivity : AppCompatActivity(), MainRouter {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
+        return when(item?.itemId) {
             android.R.id.home -> {
                 onBackPressed()
-                return true
+                true
             }
-            else -> return false
+            else -> false
         }
     }
 
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), MainRouter {
     }
 
     override fun navigateToPerson(person: Person) {
-        replaceFragment(PersonFragment.newInstance(person), true)
+        startActivity(PersonActivity.newIntent(this, person))
     }
 
     override fun navigateToNewEvent() {

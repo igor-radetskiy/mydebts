@@ -39,6 +39,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.android.support:design:26.1.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    implementation "android.arch.lifecycle:extensions:1.0.0-rc1"
 }
 
 kapt {
@@ -49,3 +51,4 @@ repositories {
     mavenCentral()
     google()
 }
+apply plugin: 'kotlin-android-extensions'
