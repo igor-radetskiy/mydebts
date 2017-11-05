@@ -1,14 +1,16 @@
 package mydebts.android.app
 
+import android.app.Activity
 import android.app.Application
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 
 import javax.inject.Inject
 
-import mydebts.android.app.di.SubcomponentBuilder
+class MyDebtsApplication : Application(), HasActivityInjector {
 
-class MyDebtsApplication : Application() {
-
-    @Inject lateinit var subcomponentBuilders: Map<Class<*>, @JvmSuppressWildcards SubcomponentBuilder>
+    @Inject lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
     override fun onCreate() {
         super.onCreate()
@@ -18,7 +20,5 @@ class MyDebtsApplication : Application() {
                 .build().inject(this)
     }
 
-    fun subcomponentBuilder(keyClass: Class<*>): SubcomponentBuilder {
-        return subcomponentBuilders[keyClass]!!
-    }
+    override fun activityInjector(): AndroidInjector<Activity> = activityInjector
 }

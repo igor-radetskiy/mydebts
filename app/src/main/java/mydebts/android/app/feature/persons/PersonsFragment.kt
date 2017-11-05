@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
+import dagger.android.support.AndroidSupportInjection
 import mydebts.android.app.R
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.model.Person
-import mydebts.android.app.di.SubcomponentBuilderResolver
 import mydebts.android.app.feature.main.MainRouter
 import mydebts.android.app.rx.RxUtil
 import javax.inject.Inject
@@ -24,14 +24,12 @@ class PersonsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         setHasOptionsMenu(true)
-
-        (SubcomponentBuilderResolver.resolve(this) as PersonsSubcomponent.Builder)
-                .build().inject(this)
+        AndroidSupportInjection.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater!!.inflate(R.layout.fragment_persons, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View
+            = inflater!!.inflate(R.layout.fragment_persons, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         activity.setTitle(R.string.title_people)

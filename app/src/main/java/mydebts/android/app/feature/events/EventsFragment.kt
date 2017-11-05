@@ -11,12 +11,12 @@ import android.view.ViewGroup
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MenuInflater
+import dagger.android.support.AndroidSupportInjection
 
 import javax.inject.Inject
 
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Event
-import mydebts.android.app.di.SubcomponentBuilderResolver
 import mydebts.android.app.feature.main.MainRouter
 
 class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
@@ -35,9 +35,7 @@ class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
         retainInstance = true
         setHasOptionsMenu(true)
 
-        (SubcomponentBuilderResolver.resolve(this) as EventsSubcomponent.Builder)
-                .fragent(this)
-                .build().inject(this)
+        AndroidSupportInjection.inject(this)
 
         adapter = EventsAdapter(presenter.getEvents(), presenter.getSelections())
 

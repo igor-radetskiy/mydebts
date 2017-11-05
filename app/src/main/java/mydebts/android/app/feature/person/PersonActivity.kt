@@ -9,10 +9,10 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import dagger.android.AndroidInjection
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.data.model.Person
-import mydebts.android.app.di.SubcomponentBuilderResolver
 import javax.inject.Inject
 
 class PersonActivity : AppCompatActivity() {
@@ -42,10 +42,7 @@ class PersonActivity : AppCompatActivity() {
     }
 
     private fun injectMembers() {
-        (SubcomponentBuilderResolver.resolve(this) as PersonSubcomonent.Builder)
-                .activity(this)
-                .person(intent.getParcelableExtra(EXTRA_PERSON))
-                .build().inject(this)
+        AndroidInjection.inject(this)
     }
 
     private fun initViewModel() {
@@ -67,7 +64,7 @@ class PersonActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val EXTRA_PERSON = "mydebts.android.app.feature.person.extras.EXTRA_PERSON"
+        internal val EXTRA_PERSON = "mydebts.android.app.feature.person.extras.EXTRA_PERSON"
 
         fun newIntent(context: Context, person: Person): Intent {
             return Intent(context, PersonActivity::class.java)

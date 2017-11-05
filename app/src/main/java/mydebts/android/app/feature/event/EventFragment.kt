@@ -12,13 +12,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
+import dagger.android.support.AndroidSupportInjection
 
 import javax.inject.Inject
 
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
-import mydebts.android.app.di.SubcomponentBuilderResolver
 import mydebts.android.app.feature.main.MainRouter
 import mydebts.android.app.feature.participant.ParticipantDialogFragment
 
@@ -37,11 +37,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
         retainInstance = true
         setHasOptionsMenu(true)
 
-        (SubcomponentBuilderResolver.resolve(this) as EventSubcomponent.Builder)
-                .event(arguments?.getParcelable(ARG_EVENT))
-                .fragment(this)
-                .build()
-                .inject(this)
+        AndroidSupportInjection.inject(this)
 
         adapter = ParticipantsAdapter(presenter.getParticipants())
         adapter.setOnParticipantClickListener { presenter.onParticipantClick(it) }
@@ -150,7 +146,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
     }
 
     companion object {
-        private val ARG_EVENT = "ARG_EVENT"
+        internal val ARG_EVENT = "ARG_EVENT"
 
         fun newInstance(event: Event): EventFragment {
             val fragment = newInstance()

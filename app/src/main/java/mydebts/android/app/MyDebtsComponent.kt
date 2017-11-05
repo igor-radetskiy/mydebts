@@ -8,9 +8,14 @@ import mydebts.android.app.data.DataModule
 import mydebts.android.app.res.ResourcesModule
 
 import javax.inject.Singleton
+import dagger.android.AndroidInjectionModule
 
 @Singleton
-@Component(modules = arrayOf(DataModule::class, ResourcesModule::class, MyDebtsBindingModule::class))
+@Component(modules = arrayOf(
+        AndroidInjectionModule::class,
+        DataModule::class,
+        ResourcesModule::class,
+        MyDebtsBindingModule::class))
 internal interface MyDebtsComponent {
 
     fun inject(application: MyDebtsApplication)
@@ -20,7 +25,6 @@ internal interface MyDebtsComponent {
 
         fun build(): MyDebtsComponent
 
-        @BindsInstance
-        fun applicationContext(context: Context): Builder
+        @BindsInstance fun applicationContext(context: Context): Builder
     }
 }

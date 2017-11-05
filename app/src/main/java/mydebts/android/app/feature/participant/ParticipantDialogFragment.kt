@@ -13,9 +13,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
+import dagger.android.support.AndroidSupportInjection
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Participant
-import mydebts.android.app.di.SubcomponentBuilderResolver
 import mydebts.android.app.extention.addSimpleOnTextChangeListener
 import mydebts.android.app.extention.setDoubleText
 import javax.inject.Inject
@@ -62,10 +62,7 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
             actionId.takeIf { it == EditorInfo.IME_ACTION_DONE }?.let { presenter.onDoneClick(); true } == true
         }
 
-        (SubcomponentBuilderResolver.resolve(this) as ParticipantSubcomponent.Builder)
-                .participant(arguments?.getParcelable(ARG_PARTICIPANT))
-                .dialogFragment(this)
-                .build().inject(this)
+        AndroidSupportInjection.inject(this)
 
         presenter.onCreate()
 
@@ -134,7 +131,7 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
     }
 
     companion object {
-        private val ARG_PARTICIPANT = "ARG_PARTICIPANT"
+        internal val ARG_PARTICIPANT = "ARG_PARTICIPANT"
 
         fun newInstance() : ParticipantDialogFragment = ParticipantDialogFragment()
 
