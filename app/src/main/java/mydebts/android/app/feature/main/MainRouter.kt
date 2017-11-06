@@ -7,10 +7,6 @@ interface MainRouter {
 
     fun navigateToEvents()
 
-    fun navigateToPersons()
-
-    fun navigateToPerson(person: Person)
-
     fun navigateToNewEvent()
 
     fun navigateToEvent(event: Event)

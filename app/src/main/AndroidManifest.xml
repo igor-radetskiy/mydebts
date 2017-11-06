@@ -19,6 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".feature.person.PersonActivity"/>
+        <activity android:name=".feature.persons.PersonsActivity"
+                  android:label="@string/title_people"/>
     </application>
 
 </manifest>

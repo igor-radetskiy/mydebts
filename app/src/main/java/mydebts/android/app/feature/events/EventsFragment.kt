@@ -18,6 +18,7 @@ import javax.inject.Inject
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.feature.main.MainRouter
+import mydebts.android.app.feature.persons.PersonsActivity
 
 class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
 
@@ -88,7 +89,7 @@ class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean = item?.let {
         when (it.itemId) {
             R.id.action_switch_to_persons -> {
-                (activity as MainRouter).navigateToPersons()
+                startActivity(PersonsActivity.newIntent(activity))
                 true
             }
             else -> false

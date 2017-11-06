@@ -10,11 +10,8 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 
 import mydebts.android.app.data.model.Event
-import mydebts.android.app.data.model.Person
 import mydebts.android.app.feature.event.EventFragment
 import mydebts.android.app.feature.events.EventsFragment
-import mydebts.android.app.feature.person.PersonActivity
-import mydebts.android.app.feature.persons.PersonsFragment
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), MainRouter, HasSupportFragmentInjector {
@@ -44,14 +41,6 @@ class MainActivity : AppCompatActivity(), MainRouter, HasSupportFragmentInjector
 
     override fun navigateToEvents() {
         replaceFragment(EventsFragment(), false)
-    }
-
-    override fun navigateToPersons() {
-        replaceFragment(PersonsFragment(), false)
-    }
-
-    override fun navigateToPerson(person: Person) {
-        startActivity(PersonActivity.newIntent(this, person))
     }
 
     override fun navigateToNewEvent() {

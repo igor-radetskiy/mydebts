@@ -18,16 +18,11 @@ internal class PersonsAdapter : RecyclerView.Adapter<PersonsAdapter.ViewHolder>(
             notifyDataSetChanged()
         }
 
-    private var onPersonClickListener: OnPersonClickListener? = null
+    private var _onPersonClick: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val viewHolder = ViewHolder.create(parent)
-        viewHolder.itemView.setOnClickListener { _ ->
-            val position = viewHolder.adapterPosition
-            if (position >= 0) {
-                onPersonClickListener?.onPersonClick(_persons!![position])
-            }
-        }
+        viewHolder.itemView.setOnClickListener { _ -> _onPersonClick?.invoke(viewHolder.adapterPosition) }
         return viewHolder
     }
 
@@ -39,8 +34,8 @@ internal class PersonsAdapter : RecyclerView.Adapter<PersonsAdapter.ViewHolder>(
         return _persons?.size ?: 0
     }
 
-    fun setOnPersonClickListener(onPersonClickListener: OnPersonClickListener) {
-        this.onPersonClickListener = onPersonClickListener
+    fun setOnPersonClick(callback: ((Int) -> Unit)) {
+        _onPersonClick = callback
     }
 
     internal class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -54,9 +49,5 @@ internal class PersonsAdapter : RecyclerView.Adapter<PersonsAdapter.ViewHolder>(
                         .inflate(R.layout.item_one_line, parent, false))
             }
         }
-    }
-
-    interface OnPersonClickListener {
-        fun onPersonClick(person: Person)
     }
 }

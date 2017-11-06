@@ -11,7 +11,9 @@ import javax.inject.Inject
 class PersonViewModel(
         private val person: Person,
         private val participantsSource: ParticipantsSource,
-        private val rxUtil: RxUtil) : ViewModel() {
+        private val rxUtil: RxUtil) : ViewModel()
+{
+    private val disposables = CompositeDisposable()
 
     private var _name: MutableLiveData<String>? = null
     val name: LiveData<String>
@@ -33,12 +35,10 @@ class PersonViewModel(
             return _participants!!
         }
 
-    private val disposables = CompositeDisposable()
-
     private fun loadEvents() {
-        participantsSource.getByPersonId(person.id!!)
+        disposables.add(participantsSource.getByPersonId(person.id!!)
                 .compose(rxUtil.singleSchedulersTransformer())
-                .subscribe { participants -> _participants!!.value = participants }
+                .subscribe { participants -> _participants!!.value = participants })
     }
 
     override fun onCleared() {

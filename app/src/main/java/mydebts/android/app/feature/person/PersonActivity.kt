@@ -1,13 +1,13 @@
 package mydebts.android.app.feature.person
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.MenuItem
 import android.view.View
 import dagger.android.AndroidInjection
 import mydebts.android.app.R
@@ -27,12 +27,17 @@ class PersonActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initUi()
-        injectMembers()
+        AndroidInjection.inject(this)
         initViewModel()
     }
 
     private fun initUi() {
         setContentView(R.layout.activity_person)
+
+        supportActionBar?.let {
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setHomeButtonEnabled(true)
+        }
 
         eventsListView = findViewById(R.id.list_events)
         emptyView = findViewById(R.id.text_no_events)
@@ -41,13 +46,7 @@ class PersonActivity : AppCompatActivity() {
         eventsListView.adapter = adapter
     }
 
-    private fun injectMembers() {
-        AndroidInjection.inject(this)
-    }
-
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this)[PersonViewModel::class.java]
-
         viewModel.name.observe(this, Observer<String> { title = it })
         viewModel.participants.observe(this, Observer<List<Participant>> { handleParticipants(it) })
     }
@@ -62,6 +61,15 @@ class PersonActivity : AppCompatActivity() {
             adapter.participants = participants
         }
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean =
+            when(item?.itemId) {
+                android.R.id.home -> {
+                    onBackPressed()
+                    true
+                }
+                else -> false
+            }
 
     companion object {
         internal val EXTRA_PERSON = "mydebts.android.app.feature.person.extras.EXTRA_PERSON"

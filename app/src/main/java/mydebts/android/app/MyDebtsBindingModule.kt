@@ -11,7 +11,8 @@ import mydebts.android.app.feature.participant.ParticipantDialogFragment
 import mydebts.android.app.feature.participant.ParticipantModule
 import mydebts.android.app.feature.person.PersonActivity
 import mydebts.android.app.feature.person.PersonModule
-import mydebts.android.app.feature.persons.PersonsFragment
+import mydebts.android.app.feature.persons.PersonsActivity
+import mydebts.android.app.feature.persons.PersonsModule
 
 @Module
 internal interface MyDebtsBindingModule {
@@ -24,7 +25,8 @@ internal interface MyDebtsBindingModule {
     @ContributesAndroidInjector(modules = arrayOf(EventModule::class))
     fun bindEventFragment(): EventFragment
 
-    @ContributesAndroidInjector fun bindPersonsFragment(): PersonsFragment
+    @ContributesAndroidInjector(modules = arrayOf(PersonsModule::class))
+    fun bindPersonsActivity(): PersonsActivity
 
     @ContributesAndroidInjector(modules = arrayOf(PersonModule::class))
     fun bindPersonActivity(): PersonActivity
