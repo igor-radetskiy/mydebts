@@ -11,12 +11,12 @@ android {
             storePassword 'igor21rad90'
         }
     }
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "mydebts.android.app"
-        minSdkVersion 17
-        targetSdkVersion 26
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
     }
     buildTypes {
         release {
@@ -28,22 +28,23 @@ android {
 }
 
 dependencies {
-    compile "com.google.dagger:dagger:2.11"
-    kapt "com.google.dagger:dagger-compiler:2.11"
-    compile 'com.google.dagger:dagger-android-support:2.11'
-    kapt 'com.google.dagger:dagger-android-processor:2.11'
+    implementation "com.google.dagger:dagger:${rootProject.ext.daggerVersion}"
+    kapt "com.google.dagger:dagger-compiler:${rootProject.ext.daggerVersion}"
+    implementation "com.google.dagger:dagger-android-support:${rootProject.ext.daggerVersion}"
+    kapt "com.google.dagger:dagger-android-processor:${rootProject.ext.daggerVersion}"
 
-    provided 'javax.annotation:jsr250-api:1.0'
+    provided "javax.annotation:jsr250-api:${rootProject.ext.jsr250Version}"
 
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
+    implementation "io.reactivex.rxjava2:rxandroid:${rootProject.ext.rxjavaVersion}"
+    implementation "io.reactivex.rxjava2:rxjava:${rootProject.ext.rxjavaVersion}"
 
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
 
-    implementation "android.arch.lifecycle:extensions:1.0.0-rc1"
+    implementation "android.arch.lifecycle:extensions:${rootProject.ext.androidArchVersion}"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 kapt {
