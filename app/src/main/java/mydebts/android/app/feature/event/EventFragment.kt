@@ -50,7 +50,6 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
                 emptyView = rootView.findViewById(R.id.text_no_participants)
 
                 participantsRecyclerView = rootView.findViewById(R.id.list_participants)
-                participantsRecyclerView.layoutManager = LinearLayoutManager(participantsRecyclerView.context)
                 participantsRecyclerView.adapter = adapter
 
                 val addParticipantButton: View = rootView.findViewById(R.id.button_add_participant)

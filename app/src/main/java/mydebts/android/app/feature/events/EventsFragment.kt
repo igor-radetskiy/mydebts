@@ -65,7 +65,6 @@ class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
 
         view?.let {
             eventsRecyclerView = view.findViewById(R.id.list_events)
-            eventsRecyclerView?.layoutManager = LinearLayoutManager(view.context)
             eventsRecyclerView?.adapter = adapter
 
             emptyView = view.findViewById(R.id.text_no_events)
