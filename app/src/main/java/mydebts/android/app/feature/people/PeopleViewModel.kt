@@ -1,4 +1,4 @@
-package mydebts.android.app.feature.persons
+package mydebts.android.app.feature.people
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
@@ -10,20 +10,20 @@ import mydebts.android.app.data.model.Person
 import mydebts.android.app.rx.RxUtil
 import javax.inject.Inject
 
-class PersonsViewModel constructor(
+class PeopleViewModel constructor(
         private val personsSource: PersonsSource,
         private val rxUtil: RxUtil) : ViewModel()
 {
     private val disposables = CompositeDisposable()
 
-    private var _persons: MutableLiveData<List<Person>>? = null
-    internal val persons: LiveData<List<Person>>
+    private var _people: MutableLiveData<List<Person>>? = null
+    internal val people: LiveData<List<Person>>
         get() {
-            if (_persons == null) {
-                _persons = MutableLiveData()
+            if (_people == null) {
+                _people = MutableLiveData()
                 loadPersons()
             }
-            return _persons!!
+            return _people!!
         }
 
     private val _selectedPerson = MutableLiveData<Person>()
@@ -33,11 +33,11 @@ class PersonsViewModel constructor(
     private fun loadPersons() {
         disposables.add(personsSource.getAll()
                 .compose(rxUtil.singleSchedulersTransformer())
-                .subscribe { persons -> _persons?.value = persons})
+                .subscribe { persons -> _people?.value = persons})
     }
 
     internal fun onPersonClick(position: Int) {
-        _selectedPerson.value = _persons?.value?.get(position)
+        _selectedPerson.value = _people?.value?.get(position)
         // Prevent handling of selected person after Activity re-creation
         _selectedPerson.value = null
     }
@@ -52,7 +52,7 @@ class PersonsViewModel constructor(
     {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")
-            return PersonsViewModel(personsSource, rxUtil) as T
+            return PeopleViewModel(personsSource, rxUtil) as T
         }
     }
 }

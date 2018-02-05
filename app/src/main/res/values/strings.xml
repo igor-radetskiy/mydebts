@@ -8,9 +8,7 @@
     <string name="events_text_no_events">No events yet…</string>
     <string name="menu_events_switch_to_persons">Persons</string>
 
-    <!-- Persons -->
-    <string name="title_people">People</string>
-    <string name="menu_persons_switch_to_events">Events</string>
+    <!-- Person -->
     <string name="person_no_events">No events yet…</string>
 
     <!-- Event -->
@@ -22,4 +20,8 @@
     <string name="menu_event_save">Save</string>
     <string name="menu_event_delete">Delete</string>
     <string name="event_no_participants">No participants yet…</string>
+
+    <!-- People -->
+    <string name="people_title">People</string>
+    <string name="people_empty_text">No people yet…</string>
 </resources>

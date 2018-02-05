@@ -1,4 +1,4 @@
-package mydebts.android.app.feature.persons
+package mydebts.android.app.feature.people
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -8,13 +8,13 @@ import android.widget.TextView
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Person
 
-internal class PersonsAdapter : RecyclerView.Adapter<PersonsAdapter.ViewHolder>() {
+internal class PeopleAdapter : RecyclerView.Adapter<PeopleAdapter.ViewHolder>() {
 
-    private var _persons: List<Person>? = null
-    var persons: List<Person>?
-        get() = _persons
+    private var _people: List<Person>? = null
+    var people: List<Person>?
+        get() = _people
         set(value) {
-            _persons = value
+            _people = value
             notifyDataSetChanged()
         }
 
@@ -27,11 +27,11 @@ internal class PersonsAdapter : RecyclerView.Adapter<PersonsAdapter.ViewHolder>(
     }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        holder?.name?.text = _persons?.get(position)?.name
+        holder?.name?.text = _people?.get(position)?.name
     }
 
     override fun getItemCount(): Int {
-        return _persons?.size ?: 0
+        return _people?.size ?: 0
     }
 
     fun setOnPersonClick(callback: ((Int) -> Unit)) {
