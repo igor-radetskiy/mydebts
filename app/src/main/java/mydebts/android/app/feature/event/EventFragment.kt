@@ -3,7 +3,6 @@ package mydebts.android.app.feature.event
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
@@ -22,7 +21,7 @@ import mydebts.android.app.data.model.Participant
 import mydebts.android.app.feature.main.MainRouter
 import mydebts.android.app.feature.participant.ParticipantDialogFragment
 
-class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListener, ParticipantDialogFragment.Callback {
+class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListener {
 
     @Inject lateinit var presenter: EventPresenter
 
@@ -95,10 +94,6 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
             }
         } ?: false
 
-    override fun onParticipantResult(participant: Participant) {
-        presenter.addParticipant(participant)
-    }
-
     override fun showTitle(title: CharSequence) {
         activity.title = title
     }
@@ -126,6 +121,10 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
     override fun notifyParticipantInserted(position: Int) {
         adapter.notifyItemInserted(position)
+    }
+
+    override fun notifyParticipantChanged(position: Int) {
+        adapter.notifyItemChanged(position)
     }
 
     override fun showParticipant(participant: Participant) {

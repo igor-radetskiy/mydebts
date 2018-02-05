@@ -1,10 +1,12 @@
 package mydebts.android.app.feature.participant
 
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
 import mydebts.android.app.R
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.data.model.Person
+import mydebts.android.app.di.ParticipantUi
 import mydebts.android.app.res.Resources
 import mydebts.android.app.rx.RxUtil
 import javax.inject.Inject
@@ -14,7 +16,8 @@ class ParticipantPresenter @Inject constructor(
         private val participant: Participant?,
         private val personsSource: PersonsSource,
         private val rxUtil: RxUtil,
-        private val res: Resources)
+        private val res: Resources,
+        private @ParticipantUi val participantUiSubject: PublishSubject<Participant>)
 {
 
     private var person = Person()
@@ -83,7 +86,7 @@ class ParticipantPresenter @Inject constructor(
         }
 
         val result = participant?.also { it.debt = debt } ?: Participant(person = person, debt = debt)
-        screen.setResult(result)
+        participantUiSubject.onNext(result)
         screen.finish()
     }
 }

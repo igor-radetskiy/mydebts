@@ -18,6 +18,8 @@ interface EventScreen {
 
     fun notifyParticipantInserted(position:Int)
 
+    fun notifyParticipantChanged(position:Int)
+
     fun showParticipant(participant: Participant)
 
     fun showNewParticipant()

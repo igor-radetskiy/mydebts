@@ -1,7 +1,6 @@
 package mydebts.android.app.feature.participant
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
@@ -30,20 +29,6 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
     private lateinit var amountEditText: EditText
 
     private lateinit var suggestionsAdapter: ArrayAdapter<String>
-
-    private var callback: Callback? = null
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        val parentFragment = parentFragment
-
-        callback = when {
-            context is Callback -> context
-            parentFragment is Callback -> parentFragment
-            else -> null
-        }
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialogView = View.inflate(activity, R.layout.fragment_participant, null)
@@ -117,17 +102,8 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
         suggestionsAdapter.addAll(persons)
     }
 
-    override fun setResult(result: Participant) {
-        callback?.onParticipantResult(result)
-    }
-
     override fun finish() {
         dismiss()
-    }
-
-    interface Callback {
-
-        fun onParticipantResult(participant: Participant)
     }
 
     companion object {

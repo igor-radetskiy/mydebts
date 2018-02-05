@@ -10,6 +10,7 @@ import mydebts.android.app.data.ParticipantsSource
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
+import mydebts.android.app.di.ParticipantUi
 import mydebts.android.app.extention.toEventDateString
 import mydebts.android.app.rx.RxUtil
 import java.util.Calendar
@@ -21,8 +22,9 @@ class EventPresenter @Inject constructor(
         private val eventsSource: EventsSource,
         private val personsSource: PersonsSource,
         private val participantsSource: ParticipantsSource,
-        private val rxUtil: RxUtil) {
-
+        private val rxUtil: RxUtil,
+        private @ParticipantUi val participantUiObservable: Observable<Participant>)
+{
     private val calendar = Calendar.getInstance()
     private val disposables = CompositeDisposable()
 
@@ -39,6 +41,8 @@ class EventPresenter @Inject constructor(
                     .doOnSuccess { participants.clear(); participants.addAll(it) }
                     .subscribe{ _ -> handleParticipants() })
         }
+
+        disposables.add(participantUiObservable.subscribe { addParticipant(it) })
     }
 
     fun onCreateOptionsMenu() {
@@ -74,13 +78,6 @@ class EventPresenter @Inject constructor(
 
     fun getParticipants(): MutableList<Participant> = participants
 
-    fun addParticipant(participant: Participant) {
-        participants.add(participant)
-        screen.setEmptyViewVisibility(View.GONE)
-        screen.setParticipantsViewVisibility(View.VISIBLE)
-        screen.notifyParticipantInserted(participants.size - 1)
-    }
-
     fun setDate(year: Int, month: Int, day: Int) {
         calendar.set(year, month, day)
         screen.showTitle(calendar.time.toEventDateString())
@@ -106,6 +103,21 @@ class EventPresenter @Inject constructor(
                 .compose(rxUtil.observableSchedulersTransformer())
                 .doOnComplete { screen.navigateBack() }
                 .subscribe())
+    }
+
+    private fun addParticipant(participant: Participant) {
+        participants.indexOfFirst { it.id == participant.id }
+                .let {
+                    if (it > -1) {
+                        participants[it].debt = participant.debt
+                        screen.notifyParticipantChanged(it)
+                    } else {
+                        participants.add(participant)
+                        screen.setEmptyViewVisibility(View.GONE)
+                        screen.setParticipantsViewVisibility(View.VISIBLE)
+                        screen.notifyParticipantInserted(participants.size - 1)
+                    }
+                }
     }
 
     private fun handleParticipants() {

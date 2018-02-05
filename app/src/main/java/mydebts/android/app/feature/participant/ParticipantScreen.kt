@@ -1,7 +1,5 @@
 package mydebts.android.app.feature.participant
 
-import mydebts.android.app.data.model.Participant
-
 interface ParticipantScreen {
 
     fun showName(name: CharSequence)
@@ -17,8 +15,6 @@ interface ParticipantScreen {
     fun showDebtError(error: CharSequence?)
 
     fun setPersonsSuggestions(persons: List<String>)
-
-    fun setResult(result: Participant)
 
     fun finish()
 }
