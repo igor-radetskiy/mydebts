@@ -2,6 +2,8 @@ package mydebts.android.app
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import mydebts.android.app.feature.event.EventActivity
+import mydebts.android.app.feature.event.EventActivityModule
 import mydebts.android.app.feature.event.EventFragment
 import mydebts.android.app.feature.event.EventModule
 import mydebts.android.app.feature.events.EventsFragment
@@ -19,18 +21,21 @@ internal interface MyDebtsBindingModule {
 
     @ContributesAndroidInjector fun bindMainActivity() : MainActivity
 
-    @ContributesAndroidInjector(modules = arrayOf(EventsModule::class))
+    @ContributesAndroidInjector(modules = [EventsModule::class])
     fun bindEventsFragment(): EventsFragment
 
-    @ContributesAndroidInjector(modules = arrayOf(EventModule::class))
+    @ContributesAndroidInjector(modules = [EventModule::class])
     fun bindEventFragment(): EventFragment
 
-    @ContributesAndroidInjector(modules = arrayOf(PeopleModule::class))
+    @ContributesAndroidInjector(modules = [PeopleModule::class])
     fun bindPeopleActivity(): PeopleActivity
 
-    @ContributesAndroidInjector(modules = arrayOf(PersonModule::class))
+    @ContributesAndroidInjector(modules = [PersonModule::class])
     fun bindPersonActivity(): PersonActivity
 
-    @ContributesAndroidInjector(modules = arrayOf(ParticipantModule::class))
+    @ContributesAndroidInjector(modules = [ParticipantModule::class])
     fun bindParticipantDialogFragment(): ParticipantDialogFragment
+
+    @ContributesAndroidInjector(modules = [EventActivityModule::class])
+    fun bindEventActivity(): EventActivity
 }

@@ -2,7 +2,6 @@ package mydebts.android.app.feature.events
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.ActionMode
 import android.view.LayoutInflater
@@ -17,7 +16,7 @@ import javax.inject.Inject
 
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Event
-import mydebts.android.app.feature.main.MainRouter
+import mydebts.android.app.feature.event.EventActivity
 import mydebts.android.app.feature.people.PeopleActivity
 
 class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
@@ -70,7 +69,7 @@ class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
             emptyView = view.findViewById(R.id.text_no_events)
 
             val addEventButton: View = view.findViewById(R.id.button_add_event)
-            addEventButton.setOnClickListener { (activity as MainRouter).navigateToNewEvent() }
+            addEventButton.setOnClickListener { startActivity(EventActivity.newIntent(activity)) }
         }
 
         presenter.onViewCreated()
@@ -119,7 +118,7 @@ class EventsFragment : Fragment(), ActionMode.Callback, EventsScreen {
     }
 
     override fun showEvent(event: Event) {
-        (activity as MainRouter).navigateToEvent(event)
+        startActivity(EventActivity.newIntent(activity, event))
     }
 
     override fun setEventsVisibility(visibility: Int) {

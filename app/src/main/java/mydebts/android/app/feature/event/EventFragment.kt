@@ -38,7 +38,7 @@ class EventFragment : Fragment(), EventScreen, DatePickerDialog.OnDateSetListene
 
         AndroidSupportInjection.inject(this)
 
-        adapter = ParticipantsAdapter(presenter.getParticipants())
+        adapter = ParticipantsAdapter()
         adapter.setOnParticipantClickListener { presenter.onParticipantClick(it) }
     }
 
