@@ -47,10 +47,25 @@ class EventViewModel constructor(
     private val _participants = MutableLiveData<Triple<List<Participant>?, ListEvent, Int?>>()
     val participants: LiveData<Triple<List<Participant>?, ListEvent, Int?>>
         get() {
+            _participants.value = Triple<MutableList<Participant>?, ListEvent, Int?>(__participants, ListEvent.LIST_CHANGED, null)
             loadParticipants()
             disposables.add(participantUiObservable.subscribe { addParticipant(it) })
             return _participants
         }
+
+    private val _navigation = MutableLiveData<Navigation>()
+    internal val navigation: LiveData<Navigation?>
+        get() = _navigation
+
+    internal fun onParticipantClick(position: Int) {
+        _navigation.value = Navigation(__participants[position])
+        _navigation.value = null
+    }
+
+    internal fun onAddNewParticipantClick() {
+        _navigation.value = Navigation(null)
+        _navigation.value = null
+    }
 
     private fun loadParticipants() {
         event?.id?.let {
@@ -63,7 +78,7 @@ class EventViewModel constructor(
     }
 
     private fun addParticipant(participant: Participant) {
-        __participants.indexOfFirst { it.id == participant.id }
+        __participants.indexOfFirst { it.person == participant.person }
                 .let {
                     if (it > -1) {
                         __participants[it].debt = participant.debt

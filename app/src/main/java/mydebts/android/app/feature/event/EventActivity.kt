@@ -6,20 +6,26 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
+import mydebts.android.app.feature.participant.ParticipantDialogFragment
 import mydebts.android.app.ui.ListEvent
 import javax.inject.Inject
 
-class EventActivity : AppCompatActivity() {
+class EventActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject lateinit var viewModel: EventViewModel
+    @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
     private val adapter = ParticipantsAdapter()
 
@@ -35,6 +41,8 @@ class EventActivity : AppCompatActivity() {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeButtonEnabled(true)
         }
+
+        adapter.setOnParticipantClickListener { viewModel.onParticipantClick(it) }
 
         bindViews()
 
@@ -73,11 +81,14 @@ class EventActivity : AppCompatActivity() {
                 else -> false
             }
 
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+
     private fun bindViews() {
         emptyView = findViewById(R.id.text_no_participants)
         participantsRecyclerView = findViewById(R.id.list_participants)
         participantsRecyclerView.adapter = adapter
         addParticipantButton = findViewById(R.id.button_add_participant)
+        addParticipantButton.setOnClickListener { viewModel.onAddNewParticipantClick() }
     }
 
     private fun bindViewModel() {
@@ -87,6 +98,15 @@ class EventActivity : AppCompatActivity() {
                 ListEvent.LIST_CHANGED -> adapter.participants = it.first
                 ListEvent.ITEM_INSERTED -> it.third?.let { adapter.notifyItemInserted(it) }
                 ListEvent.ITEM_CHANGED -> it.third?.let { adapter.notifyItemChanged(it) }
+            }
+        })
+        viewModel.navigation.observe(this, Observer {
+            it?.let {
+                if (it.participant != null) {
+                    ParticipantDialogFragment.newInstance(it.participant).show(supportFragmentManager, null)
+                } else {
+                    ParticipantDialogFragment.newInstance().show(supportFragmentManager, null)
+                }
             }
         })
     }
