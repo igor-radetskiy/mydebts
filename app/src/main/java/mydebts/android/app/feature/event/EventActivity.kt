@@ -105,6 +105,9 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePicke
                 ListEvent.ITEM_INSERTED -> it.third?.let { adapter.notifyItemInserted(it) }
                 ListEvent.ITEM_CHANGED -> it.third?.let { adapter.notifyItemChanged(it) }
             }
+            val isEmpty = adapter.itemCount == 0
+            emptyView.visibility = if (isEmpty) View.VISIBLE else View.GONE
+            participantsRecyclerView.visibility = if (!isEmpty) View.VISIBLE else View.GONE
         })
         viewModel.participantNavigation.observe(this, Observer {
             it?.let {
