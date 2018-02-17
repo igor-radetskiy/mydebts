@@ -5,7 +5,9 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import mydebts.android.app.data.EventsSource
 import mydebts.android.app.data.ParticipantsSource
 import mydebts.android.app.data.PersonsSource
@@ -62,6 +64,14 @@ class EventViewModel constructor(
     internal val participantNavigation: LiveData<ParticipantNavigation>
         get() = _participantNavigation
 
+    private val _backNavigation = MutableLiveData<BackNavigation>()
+    internal val backNavigation: LiveData<BackNavigation>
+        get() = _backNavigation
+
+    override fun onCleared() {
+        disposables.clear()
+    }
+
     internal fun onParticipantClick(position: Int) {
         _participantNavigation.value = ParticipantNavigation(__participants[position])
         _participantNavigation.value = null
@@ -83,6 +93,28 @@ class EventViewModel constructor(
     internal fun setDate(year: Int, month: Int, dayOfMonth: Int) {
         calendar.set(year, month, dayOfMonth)
         _title.value = calendar.time.toEventDateString()
+    }
+
+    internal fun onSaveEventClick() {
+        disposables.add(Observable.combineLatest(eventObservable(), participantObservable(),
+                BiFunction { event: Event, (id, _, person, debt): Participant ->
+                    Participant(id, event, person, debt) })
+                .flatMap {
+                    val personSingle = it.person?.let {
+                        it.takeIf { it.id != null }?.let { Single.just(it) }
+                                ?: personsSource.insert(it)
+                    } ?: Single.just(it.person)
+
+                    val participant = it
+                    personSingle.flatMap {
+                        participant.person = it
+                        participant.takeIf { it.id != null }?.let { participantsSource.update(it) }
+                                ?: participantsSource.insert(participant)
+                    }.toObservable()
+                }
+                .compose(rxUtil.observableSchedulersTransformer())
+                .doOnComplete { _backNavigation.value = BackNavigation() }
+                .subscribe())
     }
 
     private fun loadParticipants() {
@@ -107,6 +139,19 @@ class EventViewModel constructor(
                     }
                 }
     }
+
+    private fun eventObservable(): Observable<Event> {
+        val date = calendar.time
+
+        val eventSingle = event?.let { it.name = date.toEventDateString(); it.date = date; it }
+                ?.let { eventsSource.update(it) }
+                ?: eventsSource.insert(Event( name = date.toString(), date = date))
+
+        return eventSingle.toObservable()
+    }
+
+    private fun participantObservable(): Observable<Participant> =
+            Observable.fromIterable(__participants)
 
     class Factory @Inject constructor(
             private var event: Event?,

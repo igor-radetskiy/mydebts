@@ -73,7 +73,7 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePicke
                     true
                 }
                 R.id.action_save -> {
-                    //viewModel.onActionSaveClick()
+                    viewModel.onSaveEventClick()
                     true
                 }
                 R.id.action_delete -> {
@@ -122,6 +122,7 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePicke
                 datePickerDialog.show()
             }
         })
+        viewModel.backNavigation.observe(this, Observer { it?.let { finish() } })
     }
 
     companion object {
