@@ -1,5 +1,6 @@
 package mydebts.android.app.feature.event
 
+import android.app.DatePickerDialog
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.DatePicker
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -22,7 +24,7 @@ import mydebts.android.app.feature.participant.ParticipantDialogFragment
 import mydebts.android.app.ui.ListEvent
 import javax.inject.Inject
 
-class EventActivity : AppCompatActivity(), HasSupportFragmentInjector {
+class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePickerDialog.OnDateSetListener {
 
     @Inject lateinit var viewModel: EventViewModel
     @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -67,7 +69,7 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector {
                     true
                 }
                 R.id.action_set_date -> {
-                    //viewModel.onSetDateClick()
+                    viewModel.onSetDateClick()
                     true
                 }
                 R.id.action_save -> {
@@ -82,6 +84,10 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector {
             }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        viewModel.setDate(year, month, dayOfMonth)
+    }
 
     private fun bindViews() {
         emptyView = findViewById(R.id.text_no_participants)
@@ -100,13 +106,20 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 ListEvent.ITEM_CHANGED -> it.third?.let { adapter.notifyItemChanged(it) }
             }
         })
-        viewModel.navigation.observe(this, Observer {
+        viewModel.participantNavigation.observe(this, Observer {
             it?.let {
                 if (it.participant != null) {
                     ParticipantDialogFragment.newInstance(it.participant).show(supportFragmentManager, null)
                 } else {
                     ParticipantDialogFragment.newInstance().show(supportFragmentManager, null)
                 }
+            }
+        })
+        viewModel.dateNavigation.observe(this, Observer {
+            it?.let {
+                val datePickerDialog = DatePickerDialog(this, 0, this,
+                        it.year, it.month, it.dayOfMonth)
+                datePickerDialog.show()
             }
         })
     }

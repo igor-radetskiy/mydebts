@@ -32,9 +32,14 @@ class EventViewModel constructor(
     private val _title = MutableLiveData<CharSequence>()
     val title: LiveData<CharSequence>
         get() {
-            _title.value = event?.date?.toEventDateString() ?: calendar.time.toEventDateString()
+            event?.date?.let { calendar.time = it }
+            _title.value = calendar.time.toEventDateString()
             return _title
         }
+
+    private val _dateNavigation = MutableLiveData<DateNavigation>()
+    internal val dateNavigation: LiveData<DateNavigation>
+        get() = _dateNavigation
 
     private val _deleteMenuItemVisible = MutableLiveData<Boolean>()
     val deleteMenuItemVisible: LiveData<Boolean>
@@ -53,18 +58,31 @@ class EventViewModel constructor(
             return _participants
         }
 
-    private val _navigation = MutableLiveData<Navigation>()
-    internal val navigation: LiveData<Navigation?>
-        get() = _navigation
+    private val _participantNavigation = MutableLiveData<ParticipantNavigation>()
+    internal val participantNavigation: LiveData<ParticipantNavigation>
+        get() = _participantNavigation
 
     internal fun onParticipantClick(position: Int) {
-        _navigation.value = Navigation(__participants[position])
-        _navigation.value = null
+        _participantNavigation.value = ParticipantNavigation(__participants[position])
+        _participantNavigation.value = null
     }
 
     internal fun onAddNewParticipantClick() {
-        _navigation.value = Navigation(null)
-        _navigation.value = null
+        _participantNavigation.value = ParticipantNavigation(null)
+        _participantNavigation.value = null
+    }
+
+    internal fun onSetDateClick() {
+        _dateNavigation.value = DateNavigation(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH))
+        _dateNavigation.value = null
+    }
+
+    internal fun setDate(year: Int, month: Int, dayOfMonth: Int) {
+        calendar.set(year, month, dayOfMonth)
+        _title.value = calendar.time.toEventDateString()
     }
 
     private fun loadParticipants() {
