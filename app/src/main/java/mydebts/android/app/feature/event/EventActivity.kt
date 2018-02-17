@@ -77,7 +77,7 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePicke
                     true
                 }
                 R.id.action_delete -> {
-                    //viewModel.onActionDeleteClick()
+                    viewModel.onDeleteEventClick()
                     true
                 }
                 else -> false

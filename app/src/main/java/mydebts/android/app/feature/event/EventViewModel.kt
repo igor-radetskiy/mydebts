@@ -113,8 +113,15 @@ class EventViewModel constructor(
                     }.toObservable()
                 }
                 .compose(rxUtil.observableSchedulersTransformer())
-                .doOnComplete { _backNavigation.value = BackNavigation() }
-                .subscribe())
+                .subscribe { _ -> _backNavigation.value = BackNavigation() })
+    }
+
+    internal fun onDeleteEventClick() {
+        event?.let {
+            disposables.add(eventsSource.delete(it)
+                    .compose(rxUtil.singleSchedulersTransformer())
+                    .subscribe { _ -> _backNavigation.value = BackNavigation() })
+        }
     }
 
     private fun loadParticipants() {
