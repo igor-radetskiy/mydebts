@@ -6,7 +6,6 @@ import mydebts.android.app.R
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.data.model.Person
-import mydebts.android.app.di.ParticipantUi
 import mydebts.android.app.res.Resources
 import mydebts.android.app.rx.RxUtil
 import javax.inject.Inject

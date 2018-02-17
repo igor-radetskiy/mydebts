@@ -7,9 +7,9 @@ import io.reactivex.subjects.PublishSubject
 import mydebts.android.app.data.EventsSource
 import mydebts.android.app.data.db.EventTable
 import mydebts.android.app.data.model.Event
-import mydebts.android.app.di.DeleteSubject
-import mydebts.android.app.di.InsertSubject
-import mydebts.android.app.di.UpdateSubject
+import mydebts.android.app.data.DeleteSubject
+import mydebts.android.app.data.InsertSubject
+import mydebts.android.app.data.UpdateSubject
 
 class EventsSourceImpl @Inject
 internal constructor(private val eventTable: EventTable, @param:InsertSubject private val insertedEventSubject: PublishSubject<Event>,

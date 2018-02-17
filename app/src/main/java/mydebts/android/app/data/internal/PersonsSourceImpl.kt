@@ -7,9 +7,9 @@ import io.reactivex.subjects.PublishSubject
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.db.PersonTable
 import mydebts.android.app.data.model.Person
-import mydebts.android.app.di.DeleteSubject
-import mydebts.android.app.di.InsertSubject
-import mydebts.android.app.di.UpdateSubject
+import mydebts.android.app.data.DeleteSubject
+import mydebts.android.app.data.InsertSubject
+import mydebts.android.app.data.UpdateSubject
 
 class PersonsSourceImpl @Inject
 internal constructor(private val personTable: PersonTable, @param:InsertSubject private val insertedPersonSubject: PublishSubject<Person>,

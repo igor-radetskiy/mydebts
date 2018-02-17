@@ -1,8 +1,8 @@
-package mydebts.android.app.di
+package mydebts.android.app.feature.participant
 
 import javax.inject.Qualifier
 
 @Qualifier
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
-annotation class UpdateSubject
+annotation class ParticipantUi

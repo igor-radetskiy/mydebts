@@ -13,7 +13,7 @@ import mydebts.android.app.data.ParticipantsSource
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
-import mydebts.android.app.di.ParticipantUi
+import mydebts.android.app.feature.participant.ParticipantUi
 import mydebts.android.app.extention.toEventDateString
 import mydebts.android.app.rx.RxUtil
 import mydebts.android.app.ui.ListEvent
