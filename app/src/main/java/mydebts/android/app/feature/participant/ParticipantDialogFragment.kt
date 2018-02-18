@@ -1,7 +1,7 @@
 package mydebts.android.app.feature.participant
 
 import android.app.Dialog
-import android.content.DialogInterface
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.DialogFragment
@@ -19,9 +19,9 @@ import mydebts.android.app.extention.addSimpleOnTextChangeListener
 import mydebts.android.app.extention.setDoubleText
 import javax.inject.Inject
 
-class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
+class ParticipantDialogFragment : DialogFragment() {
 
-    @Inject lateinit var presenter: ParticipantPresenter
+    @Inject lateinit var viewModel: ParticipantViewModel
 
     private lateinit var nameTextInputLayout: TextInputLayout
     private lateinit var nameEditText: AutoCompleteTextView
@@ -33,23 +33,11 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialogView = View.inflate(activity, R.layout.fragment_participant, null)
 
-        nameTextInputLayout = dialogView.findViewById(R.id.text_input_layout_name)
-        nameEditText = dialogView.findViewById(R.id.name)
-        suggestionsAdapter = ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line)
-        nameEditText.setAdapter(suggestionsAdapter)
-        nameEditText.setOnItemClickListener { _, _, position, _ -> presenter.onSuggestionItemClick(position) }
-        nameEditText.addSimpleOnTextChangeListener { text -> presenter.onNameChanged(text) }
-
-        amountTextInputLayout = dialogView.findViewById(R.id.text_input_layout_amount)
-        amountEditText = dialogView.findViewById(R.id.amount)
-        amountEditText.addSimpleOnTextChangeListener { text -> presenter.onDebtChanged(text) }
-        amountEditText.setOnEditorActionListener { _, actionId, _ ->
-            actionId.takeIf { it == EditorInfo.IME_ACTION_DONE }?.let { presenter.onDoneClick(); true } == true
-        }
+        bindViews(dialogView)
 
         AndroidSupportInjection.inject(this)
 
-        presenter.onCreate()
+        bindViewModel()
 
         val dialog = AlertDialog.Builder(activity)
                 .setView(dialogView)
@@ -61,53 +49,64 @@ class ParticipantDialogFragment : DialogFragment(), ParticipantScreen {
         return dialog
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
-        presenter.onDestroy()
-        super.onDismiss(dialog)
-    }
-
     override fun onResume() {
         super.onResume()
 
-        val dialog = dialog
-
-        (dialog as? AlertDialog)?.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener { presenter.onDoneClick() }
+        (dialog as? AlertDialog)?.getButton(AlertDialog.BUTTON_POSITIVE)
+                ?.setOnClickListener { viewModel.onDoneClick() }
     }
 
-    override fun showName(name: CharSequence) {
-        nameEditText.setText(name)
+    private fun bindViews(dialogView: View) {
+        nameTextInputLayout = dialogView.findViewById(R.id.text_input_layout_name)
+        nameEditText = dialogView.findViewById(R.id.name)
+        suggestionsAdapter = ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line)
+        nameEditText.setAdapter(suggestionsAdapter)
+        nameEditText.setOnItemClickListener { _, _, position, _ -> viewModel.onSuggestionItemClick(position) }
+        nameEditText.addSimpleOnTextChangeListener {
+            it?.let { viewModel.onNameChanged(it) }
+        }
+
+        amountTextInputLayout = dialogView.findViewById(R.id.text_input_layout_amount)
+        amountEditText = dialogView.findViewById(R.id.amount)
+        amountEditText.addSimpleOnTextChangeListener {
+            it?.let { viewModel.onDebtChanged(it) }
+        }
+        amountEditText.setOnEditorActionListener { _, actionId, _ ->
+            actionId.takeIf { it == EditorInfo.IME_ACTION_DONE }
+                    ?.let { viewModel.onDoneClick(); true } == true
+        }
     }
 
-    override fun showNameError(error: CharSequence?) {
-        nameTextInputLayout.error = error
+    private fun bindViewModel() {
+        viewModel.name.observe(this, Observer { nameEditText.setText(it) })
+        viewModel.nameEditEnabled.observe(this, Observer {
+            it.let { it == null || !it }
+                    .let { setNameEditEnabled(it) }
+        })
+        viewModel.isNameValid.observe(this, Observer {
+            nameTextInputLayout.error = if (it == null || !it)
+                getString(R.string.error_no_name) else null
+        })
+        viewModel.nameSuggestions.observe(this, Observer { suggestionsAdapter.addAll(it) })
+        viewModel.debt.observe(this, Observer {
+            it?.let { amountEditText.setDoubleText(it) } }
+        )
+        viewModel.isDebtValid.observe(this, Observer {
+            amountTextInputLayout.error = if (it == null || !it)
+                getString(R.string.error_no_amount) else null
+        })
+        viewModel.backNavigation.observe(this, Observer { it?.let { dismiss() } })
     }
 
-    override fun setNameEnabled(enabled: Boolean) {
+    private fun setNameEditEnabled(enabled: Boolean) {
         nameEditText.isEnabled = enabled
-    }
-
-    override fun requestFocusOnDebtInput() {
-        amountEditText.requestFocus()
-    }
-
-    override fun showDebt(debt: Double) {
-        amountEditText.setDoubleText(debt)
-    }
-
-    override fun showDebtError(error: CharSequence?) {
-        amountTextInputLayout.error = error
-    }
-
-    override fun setPersonsSuggestions(persons: List<String>) {
-        suggestionsAdapter.addAll(persons)
-    }
-
-    override fun finish() {
-        dismiss()
+        if (!enabled) {
+            amountEditText.requestFocus()
+        }
     }
 
     companion object {
-        internal val ARG_PARTICIPANT = "ARG_PARTICIPANT"
+        internal const val ARG_PARTICIPANT = "ARG_PARTICIPANT"
 
         fun newInstance() : ParticipantDialogFragment = ParticipantDialogFragment()
 
