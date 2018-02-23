@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProvider
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import mydebts.android.app.data.EventsSource
 import mydebts.android.app.data.ParticipantsSource
@@ -15,6 +16,7 @@ import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.feature.participant.ParticipantUi
 import mydebts.android.app.extention.toEventDateString
+import mydebts.android.app.feature.date.Date
 import mydebts.android.app.rx.RxUtil
 import mydebts.android.app.ui.ListEvent
 import java.util.Calendar
@@ -26,10 +28,13 @@ class EventViewModel constructor(
         private val personsSource: PersonsSource,
         private val participantsSource: ParticipantsSource,
         private val rxUtil: RxUtil,
-        private @ParticipantUi val participantUiObservable: Observable<Participant>): ViewModel()
+        @ParticipantUi private val participantUiObservable: Observable<Participant>,
+        private val dateObservable: Observable<Triple<Int, Int, Int>>): ViewModel()
 {
     private val calendar = Calendar.getInstance()
     private val disposables = CompositeDisposable()
+    private var participantDisposable: Disposable? = null
+    private var dateDisposable: Disposable? = null
 
     private val _title = MutableLiveData<CharSequence>()
     val title: LiveData<CharSequence>
@@ -56,7 +61,6 @@ class EventViewModel constructor(
         get() {
             _participants.value = Triple<MutableList<Participant>?, ListEvent, Int?>(__participants, ListEvent.LIST_CHANGED, null)
             loadParticipants()
-            disposables.add(participantUiObservable.subscribe { addParticipant(it) })
             return _participants
         }
 
@@ -70,29 +74,41 @@ class EventViewModel constructor(
 
     override fun onCleared() {
         disposables.clear()
+        participantDisposable?.dispose()
+        dateDisposable?.dispose()
     }
 
     internal fun onParticipantClick(position: Int) {
+        if (participantDisposable == null) {
+            participantDisposable = participantUiObservable.subscribe { addParticipant(it) }
+        }
+
         _participantNavigation.value = ParticipantNavigation(__participants[position])
         _participantNavigation.value = null
     }
 
     internal fun onAddNewParticipantClick() {
+        if (participantDisposable == null) {
+            participantDisposable = participantUiObservable.subscribe { addParticipant(it) }
+        }
+
         _participantNavigation.value = ParticipantNavigation(null)
         _participantNavigation.value = null
     }
 
     internal fun onSetDateClick() {
+        if (dateDisposable == null) {
+            dateDisposable = dateObservable.subscribe {
+                calendar.set(it.first, it.second, it.third)
+                _title.value = calendar.time.toEventDateString()
+            }
+        }
+
         _dateNavigation.value = DateNavigation(
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH))
         _dateNavigation.value = null
-    }
-
-    internal fun setDate(year: Int, month: Int, dayOfMonth: Int) {
-        calendar.set(year, month, dayOfMonth)
-        _title.value = calendar.time.toEventDateString()
     }
 
     internal fun onSaveEventClick() {
@@ -166,11 +182,12 @@ class EventViewModel constructor(
             private val personsSource: PersonsSource,
             private val participantsSource: ParticipantsSource,
             private val rxUtil: RxUtil,
-            private @ParticipantUi val participantUiObservable: Observable<Participant>) : ViewModelProvider.Factory
+            @ParticipantUi private val participantUiObservable: Observable<Participant>,
+            @Date private val dateObservable: Observable<Triple<Int, Int, Int>>) : ViewModelProvider.Factory
     {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T
-                = EventViewModel(event, eventsSource, personsSource, participantsSource,
-                    rxUtil, participantUiObservable) as T
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T =
+                EventViewModel(event, eventsSource, personsSource, participantsSource,
+                    rxUtil, participantUiObservable, dateObservable) as T
     }
 }

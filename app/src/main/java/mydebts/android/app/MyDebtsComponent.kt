@@ -8,11 +8,12 @@ import mydebts.android.app.data.DataModule
 
 import javax.inject.Singleton
 import dagger.android.AndroidInjectionModule
+import mydebts.android.app.feature.date.DateModule
 import mydebts.android.app.feature.participant.ParticipantUiModule
 
 @Singleton
 @Component(modules = [AndroidInjectionModule::class, DataModule::class,
-    ParticipantUiModule::class, MyDebtsBindingModule::class])
+    ParticipantUiModule::class, DateModule::class, MyDebtsBindingModule::class])
 internal interface MyDebtsComponent {
 
     fun inject(application: MyDebtsApplication)

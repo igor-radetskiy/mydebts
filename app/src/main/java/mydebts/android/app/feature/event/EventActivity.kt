@@ -1,6 +1,5 @@
 package mydebts.android.app.feature.event
 
-import android.app.DatePickerDialog
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
@@ -12,7 +11,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.DatePicker
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -22,9 +20,10 @@ import mydebts.android.app.data.model.Event
 import mydebts.android.app.data.model.Participant
 import mydebts.android.app.feature.participant.ParticipantDialogFragment
 import mydebts.android.app.ui.ListEvent
+import mydebts.android.app.ui.date.DatePickerFragment
 import javax.inject.Inject
 
-class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePickerDialog.OnDateSetListener {
+class EventActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject lateinit var viewModel: EventViewModel
     @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -85,10 +84,6 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePicke
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
 
-    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        viewModel.setDate(year, month, dayOfMonth)
-    }
-
     private fun bindViews() {
         emptyView = findViewById(R.id.text_no_participants)
         participantsRecyclerView = findViewById(R.id.list_participants)
@@ -120,9 +115,8 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePicke
         })
         viewModel.dateNavigation.observe(this, Observer {
             it?.let {
-                val datePickerDialog = DatePickerDialog(this, 0, this,
-                        it.year, it.month, it.dayOfMonth)
-                datePickerDialog.show()
+                DatePickerFragment.newInstance(it.year, it.month, it.dayOfMonth)
+                        .show(supportFragmentManager, null)
             }
         })
         viewModel.backNavigation.observe(this, Observer { it?.let { finish() } })
@@ -130,7 +124,7 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector, DatePicke
 
     companion object {
 
-        val EXTRA_EVENT = "EXTRA_EVENT"
+        internal const val EXTRA_EVENT = "EXTRA_EVENT"
 
         fun newIntent(context: Context): Intent = Intent(context, EventActivity::class.java)
 

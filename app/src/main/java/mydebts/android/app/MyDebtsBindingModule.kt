@@ -13,11 +13,12 @@ import mydebts.android.app.feature.person.PersonActivity
 import mydebts.android.app.feature.person.PersonModule
 import mydebts.android.app.feature.people.PeopleActivity
 import mydebts.android.app.feature.people.PeopleModule
+import mydebts.android.app.ui.date.DatePickerFragment
 
 @Module
 internal interface MyDebtsBindingModule {
 
-    @ContributesAndroidInjector fun bindMainActivity() : MainActivity
+    @ContributesAndroidInjector fun bindMainActivity(): MainActivity
 
     @ContributesAndroidInjector(modules = [EventsModule::class])
     fun bindEventsFragment(): EventsFragment
@@ -33,4 +34,6 @@ internal interface MyDebtsBindingModule {
 
     @ContributesAndroidInjector(modules = [EventActivityModule::class])
     fun bindEventActivity(): EventActivity
+
+    @ContributesAndroidInjector fun bindDatePickerFragment(): DatePickerFragment
 }
