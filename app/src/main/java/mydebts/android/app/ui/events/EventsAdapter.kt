@@ -1,5 +1,6 @@
-package mydebts.android.app.feature.events
+package mydebts.android.app.ui.events
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,34 +10,37 @@ import android.widget.TextView
 import mydebts.android.app.R
 import mydebts.android.app.data.model.Event
 import mydebts.android.app.extention.toEventDateString
+import java.util.ArrayList
 
-internal class EventsAdapter(
-        private val events: List<Event>,
-        private val selections: List<Int>) : RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
+internal class EventsAdapter: RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
     private var onItemClickListener: ((Int) -> Unit)? = null
-    private var onItemLongClickListener: ((Int) -> Boolean)? = null
+
+    private var _items = ArrayList<Event>()
+    internal var items: List<Event>
+        get() = _items
+        set(value) {
+            val diffResult = DiffUtil.calculateDiff(EventsDiffCallback(_items, value))
+            _items.clear()
+            _items.addAll(value)
+            diffResult.dispatchUpdatesTo(this)
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val viewHolder = EventViewHolder.create(parent)
         viewHolder.itemView.setOnClickListener { onItemClickListener?.invoke(viewHolder.adapterPosition) }
-        viewHolder.itemView.setOnLongClickListener { onItemLongClickListener?.invoke(viewHolder.adapterPosition) == true }
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.date.text = events[position].date?.toEventDateString()
-        holder.itemView.isSelected = selections.contains(position)
+        _items.takeIf { position >= 0 && position < it.size }
+                ?.let{ holder.date.text = it[position].date?.toEventDateString() }
     }
 
-    override fun getItemCount(): Int = events.size
+    override fun getItemCount(): Int = _items.size
 
     fun setOnItemClickListener(listener: ((Int) -> Unit)) {
         onItemClickListener = listener
-    }
-
-    fun setOnItemLongClickListener(listener: ((Int) -> Boolean)) {
-        onItemLongClickListener = listener
     }
 
     internal class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
