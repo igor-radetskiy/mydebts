@@ -7,14 +7,15 @@ import io.reactivex.subjects.PublishSubject
 import mydebts.android.app.data.PersonsSource
 import mydebts.android.app.data.db.PersonTable
 import mydebts.android.app.data.model.Person
-import mydebts.android.app.data.DeleteSubject
-import mydebts.android.app.data.InsertSubject
-import mydebts.android.app.data.UpdateSubject
+import mydebts.android.app.data.Delete
+import mydebts.android.app.data.Insert
+import mydebts.android.app.data.Update
 
 class PersonsSourceImpl @Inject
-internal constructor(private val personTable: PersonTable, @param:InsertSubject private val insertedPersonSubject: PublishSubject<Person>,
-                     @param:UpdateSubject private val updatedPersonSubject: PublishSubject<Person>,
-                     @param:DeleteSubject private val deletedPersonSubject: PublishSubject<Person>) : PersonsSource {
+internal constructor(private val personTable: PersonTable,
+                     @Insert private val insertedPersonSubject: PublishSubject<Person>,
+                     @Update private val updatedPersonSubject: PublishSubject<Person>,
+                     @Delete private val deletedPersonSubject: PublishSubject<Person>) : PersonsSource {
 
     override fun getAll(): Single<List<Person>> {
         return Single.fromCallable { personTable.queryAll() }

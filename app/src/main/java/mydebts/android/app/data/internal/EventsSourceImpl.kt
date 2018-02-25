@@ -7,15 +7,15 @@ import io.reactivex.subjects.PublishSubject
 import mydebts.android.app.data.EventsSource
 import mydebts.android.app.data.db.EventTable
 import mydebts.android.app.data.model.Event
-import mydebts.android.app.data.DeleteSubject
-import mydebts.android.app.data.InsertSubject
-import mydebts.android.app.data.UpdateSubject
+import mydebts.android.app.data.Delete
+import mydebts.android.app.data.Insert
+import mydebts.android.app.data.Update
 
-class EventsSourceImpl @Inject
-internal constructor(private val eventTable: EventTable, @param:InsertSubject private val insertedEventSubject: PublishSubject<Event>,
-                     @param:UpdateSubject private val updatedEventSubject: PublishSubject<Event>,
-                     @param:DeleteSubject private val deletedEventSubject: PublishSubject<Event>) : EventsSource {
-
+class EventsSourceImpl @Inject internal constructor(private val eventTable: EventTable,
+                     @Insert private val insertedEventSubject: PublishSubject<Event>,
+                     @Update private val updatedEventSubject: PublishSubject<Event>,
+                     @Delete private val deletedEventSubject: PublishSubject<Event>) : EventsSource
+{
     override fun getAll(): Single<List<Event>> {
         return Single.fromCallable { eventTable.queryAll() }
                 .map(FROMDB_LIST_MAPPER)
