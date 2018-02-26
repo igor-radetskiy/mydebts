@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -41,6 +42,9 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector {
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeButtonEnabled(true)
+
+            findViewById<Toolbar>(R.id.action_bar).getChildAt(0)
+                    .setOnClickListener { viewModel.onSetDateClick() }
         }
 
         adapter.setOnParticipantClickListener { viewModel.onParticipantClick(it) }
@@ -65,10 +69,6 @@ class EventActivity : AppCompatActivity(), HasSupportFragmentInjector {
             when(item?.itemId) {
                 android.R.id.home -> {
                     onBackPressed()
-                    true
-                }
-                R.id.action_set_date -> {
-                    viewModel.onSetDateClick()
                     true
                 }
                 R.id.action_save -> {

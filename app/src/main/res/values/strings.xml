@@ -12,7 +12,6 @@
     <string name="person_no_events">No events yet…</string>
 
     <!-- Event -->
-    <string name="set_date">Set Date</string>
     <string name="hint_name">Name</string>
     <string name="error_no_name">You need to enter the name</string>
     <string name="error_no_amount">You need to enter the amount</string>
