@@ -22,7 +22,7 @@ constructor(private val db: SQLiteDatabase) {
 
     fun queryById(id: Long): Cursor {
         val cursor = db.query(PersonContract.TABLE_NAME, null,
-                PersonContract._ID + " = ?", arrayOf(id.toString()), null, null, null)
+                PersonContract.COLUMN_ID + " = ?", arrayOf(id.toString()), null, null, null)
 
         Log.d(TAG, "Query person by id = " + id + "; number of rows = " + cursor.count)
 
@@ -45,7 +45,7 @@ constructor(private val db: SQLiteDatabase) {
         contentValues.put(PersonContract.COLUMN_NAME, person.name)
 
         val affectedRows = db.update(PersonContract.TABLE_NAME, contentValues,
-                PersonContract._ID + " = ?", arrayOf(person.id!!.toString()))
+                PersonContract.COLUMN_ID + " = ?", arrayOf(person.id!!.toString()))
 
         if (affectedRows == 1) {
             Log.d(TAG, "Update person " + person)
@@ -58,7 +58,7 @@ constructor(private val db: SQLiteDatabase) {
 
     fun delete(person: Person): Int {
         val affectedRows = db.delete(PersonContract.TABLE_NAME,
-                PersonContract._ID + " = ?", arrayOf(person.id!!.toString()))
+                PersonContract.COLUMN_ID + " = ?", arrayOf(person.id!!.toString()))
 
         if (affectedRows == 1) {
             Log.d(TAG, "Delete person " + person)

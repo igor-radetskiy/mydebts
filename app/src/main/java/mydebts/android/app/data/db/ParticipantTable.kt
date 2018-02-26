@@ -50,7 +50,7 @@ constructor(private val db: SQLiteDatabase) {
         contentValues.put(ParticipantContract.COLUMN_DEBT, participant.debt)
 
         val affectedRows = db.update(ParticipantContract.TABLE_NAME, contentValues,
-                ParticipantContract._ID + " = ?", arrayOf(participant.id!!.toString()))
+                ParticipantContract.COLUMN_ID + " = ?", arrayOf(participant.id!!.toString()))
 
         if (affectedRows == 1) {
             Log.d(TAG, "Update participant " + participant)
@@ -63,7 +63,7 @@ constructor(private val db: SQLiteDatabase) {
 
     fun delete(participant: Participant): Int {
         val affectedRows = db.delete(ParticipantContract.TABLE_NAME,
-                ParticipantContract._ID + " = ?", arrayOf(participant.id!!.toString()))
+                ParticipantContract.COLUMN_ID + " = ?", arrayOf(participant.id!!.toString()))
 
         if (affectedRows == 1) {
             Log.d(TAG, "Delete participant " + participant)
@@ -77,9 +77,9 @@ constructor(private val db: SQLiteDatabase) {
     @SuppressLint("Recycle")
     private fun query(selection: String, selectionArgs: Array<String>): Cursor {
         val joinTables = ParticipantContract.TABLE_NAME + " INNER JOIN " + EventContract.TABLE_NAME + " ON " +
-                ParticipantContract.COLUMN_EVENT_ID + " = " + EventContract.TABLE_NAME + "." + EventContract._ID +
+                ParticipantContract.COLUMN_EVENT_ID + " = " + EventContract.TABLE_NAME + "." + EventContract.COLUMN_ID +
                 " INNER JOIN " + PersonContract.TABLE_NAME + " ON " +
-                ParticipantContract.COLUMN_PERSON_ID + " = " + PersonContract.TABLE_NAME + "." + PersonContract._ID
+                ParticipantContract.COLUMN_PERSON_ID + " = " + PersonContract.TABLE_NAME + "." + PersonContract.COLUMN_ID
 
         return db.query(joinTables, null, selection, selectionArgs, null, null, null)
     }

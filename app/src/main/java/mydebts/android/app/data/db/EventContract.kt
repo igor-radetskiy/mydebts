@@ -2,9 +2,9 @@ package mydebts.android.app.data.db
 
 interface EventContract {
     companion object {
-        val TABLE_NAME = "Events"
-        val _ID = "_id"
-        val COLUMN_NAME = "event_name"
-        val COLUMN_DATE = "date"
+        const val TABLE_NAME = "Events"
+        const val COLUMN_ID = "_id"
+        const val COLUMN_NAME = "event_name"
+        const val COLUMN_DATE = "date"
     }
 }

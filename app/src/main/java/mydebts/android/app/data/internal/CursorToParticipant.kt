@@ -10,7 +10,7 @@ internal class CursorToParticipant : Function<Cursor, Participant> {
 
     @Throws(Exception::class)
     override fun apply(cursor: Cursor): Participant {
-        return Participant(cursor.getLong(cursor.getColumnIndex(ParticipantContract._ID)),
+        return Participant(cursor.getLong(cursor.getColumnIndex(ParticipantContract.COLUMN_ID)),
                 CURSOR_TO_EVENT.apply(cursor),
                 CURSOR_TO_PERSON.apply(cursor),
                 cursor.getDouble(cursor.getColumnIndex(ParticipantContract.COLUMN_DEBT)))

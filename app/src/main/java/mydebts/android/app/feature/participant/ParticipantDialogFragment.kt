@@ -39,7 +39,7 @@ class ParticipantDialogFragment : DialogFragment() {
 
         bindViewModel()
 
-        val dialog = AlertDialog.Builder(activity)
+        val dialog = AlertDialog.Builder(activity!!)
                 .setView(dialogView)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, null)
@@ -110,13 +110,10 @@ class ParticipantDialogFragment : DialogFragment() {
 
         fun newInstance() : ParticipantDialogFragment = ParticipantDialogFragment()
 
-        fun newInstance(participant: Participant) : ParticipantDialogFragment {
-            val  fragment = ParticipantDialogFragment()
-
-            fragment.arguments = Bundle()
-            fragment.arguments.putParcelable(ARG_PARTICIPANT, participant)
-
-            return fragment
-        }
+        fun newInstance(participant: Participant) : ParticipantDialogFragment =
+                ParticipantDialogFragment()
+                        .also {
+                            it.arguments = Bundle()
+                                    .also { it.putParcelable(ARG_PARTICIPANT, participant) } }
     }
 }

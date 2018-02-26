@@ -18,12 +18,12 @@ class EventsSourceImpl @Inject internal constructor(private val eventTable: Even
 {
     override fun getAll(): Single<List<Event>> {
         return Single.fromCallable { eventTable.queryAll() }
-                .map(FROMDB_LIST_MAPPER)
+                .map(FROM_DB_LIST_MAPPER)
     }
 
     override fun get(id: Long): Single<Event> {
         return Single.fromCallable { eventTable.queryById(id) }
-                .map(FROMD_MAPPER)
+                .map(FROM_DB_MAPPER)
     }
 
     override fun insert(event: Event): Single<Event> {
@@ -52,7 +52,7 @@ class EventsSourceImpl @Inject internal constructor(private val eventTable: Even
 
     companion object {
         private val ITEM_MAPPER = CursorToEvent()
-        private val FROMD_MAPPER = ClosableCursorToEntity(ITEM_MAPPER)
-        private val FROMDB_LIST_MAPPER = ClosableCursorToList(ITEM_MAPPER)
+        private val FROM_DB_MAPPER = ClosableCursorToEntity(ITEM_MAPPER)
+        private val FROM_DB_LIST_MAPPER = ClosableCursorToList(ITEM_MAPPER)
     }
 }

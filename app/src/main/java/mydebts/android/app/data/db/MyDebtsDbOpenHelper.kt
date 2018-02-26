@@ -16,22 +16,22 @@ constructor(context: Context) : SQLiteOpenHelper(context, MyDebtsDbOpenHelper.DB
 
         sqLiteDatabase.execSQL(
                 "CREATE TABLE " + EventContract.TABLE_NAME + " ( " +
-                        EventContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        EventContract.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         EventContract.COLUMN_NAME + " TEXT, " +
                         EventContract.COLUMN_DATE + " INTEGER NOT NULL)")
 
         sqLiteDatabase.execSQL(
                 "CREATE TABLE " + PersonContract.TABLE_NAME + " ( " +
-                        PersonContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        PersonContract.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         PersonContract.COLUMN_NAME + " TEXT NOT NULL)")
 
         sqLiteDatabase.execSQL(
                 "CREATE TABLE " + ParticipantContract.TABLE_NAME + " ( " +
-                        ParticipantContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        ParticipantContract.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         ParticipantContract.COLUMN_EVENT_ID + " INTEGER NOT NULL " +
-                        "REFERENCES " + EventContract.TABLE_NAME + " ( " + EventContract._ID + " ) ON DELETE CASCADE, " +
+                        "REFERENCES " + EventContract.TABLE_NAME + " ( " + EventContract.COLUMN_ID + " ) ON DELETE CASCADE, " +
                         ParticipantContract.COLUMN_PERSON_ID + " INTEGER NOT NULL " +
-                        "REFERENCES " + PersonContract.TABLE_NAME + " ( " + PersonContract._ID + " ) ON DELETE CASCADE, " +
+                        "REFERENCES " + PersonContract.TABLE_NAME + " ( " + PersonContract.COLUMN_ID + " ) ON DELETE CASCADE, " +
                         ParticipantContract.COLUMN_DEBT + " REAL NOT NULL)")
     }
 
@@ -44,7 +44,7 @@ constructor(context: Context) : SQLiteOpenHelper(context, MyDebtsDbOpenHelper.DB
     }
 
     companion object {
-        private val DB_NAME = "my_debts.db"
-        private val DB_VERSION = 2
+        private const val DB_NAME = "my_debts.db"
+        private const val DB_VERSION = 2
     }
 }

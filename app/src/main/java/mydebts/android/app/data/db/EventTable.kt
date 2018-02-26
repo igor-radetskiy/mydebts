@@ -24,7 +24,7 @@ internal constructor(private val db: SQLiteDatabase) {
 
     fun queryById(id: Long): Cursor {
         val cursor = db.query(EventContract.TABLE_NAME, null,
-                EventContract._ID + " = ?", arrayOf(id.toString()), null, null, null)
+                EventContract.COLUMN_ID + " = ?", arrayOf(id.toString()), null, null, null)
 
         Log.d(TAG, "Query event by id = " + id + "; number of rows = " + cursor.count)
 
@@ -49,7 +49,7 @@ internal constructor(private val db: SQLiteDatabase) {
         contentValues.put(EventContract.COLUMN_DATE, event.date!!.time)
 
         val affectedRows = db.update(EventContract.TABLE_NAME, contentValues,
-                EventContract._ID + " = ?", arrayOf(event.id!!.toString()))
+                EventContract.COLUMN_ID + " = ?", arrayOf(event.id!!.toString()))
 
         if (affectedRows == 1) {
             Log.d(TAG, "Update event " + event)
@@ -62,7 +62,7 @@ internal constructor(private val db: SQLiteDatabase) {
 
     fun delete(event: Event): Int {
         val affectedRows = db.delete(EventContract.TABLE_NAME,
-                EventContract._ID + " = ?", arrayOf(event.id!!.toString()))
+                EventContract.COLUMN_ID + " = ?", arrayOf(event.id!!.toString()))
 
         if (affectedRows == 1) {
             Log.d(TAG, "Delete event " + event)
@@ -79,7 +79,7 @@ internal constructor(private val db: SQLiteDatabase) {
             return 0
         }
 
-        val whereClause = StringBuilder(EventContract._ID + " IN (")
+        val whereClause = StringBuilder(EventContract.COLUMN_ID + " IN (")
         for (i in 1..events.size) {
             whereClause.append("?,")
         }
@@ -97,6 +97,6 @@ internal constructor(private val db: SQLiteDatabase) {
     }
 
     companion object {
-        private val TAG = "EventTable"
+        private const val TAG = "EventTable"
     }
 }

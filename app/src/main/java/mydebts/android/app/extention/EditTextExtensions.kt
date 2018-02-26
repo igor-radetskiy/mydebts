@@ -4,7 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 
-fun EditText.addSimpleOnTextChangeListener(onTextChaned: (CharSequence?) -> Unit) {
+fun EditText.addSimpleOnTextChangeListener(onTextChanged: (CharSequence?) -> Unit) {
     this.addTextChangedListener(object: TextWatcher {
 
         override fun afterTextChanged(s: Editable?) { }
@@ -12,7 +12,7 @@ fun EditText.addSimpleOnTextChangeListener(onTextChaned: (CharSequence?) -> Unit
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            onTextChaned(s)
+            onTextChanged(s)
         }
     })
 }

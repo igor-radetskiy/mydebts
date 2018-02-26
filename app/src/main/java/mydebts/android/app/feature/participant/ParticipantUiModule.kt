@@ -10,11 +10,15 @@ import javax.inject.Singleton
 @Module
 class ParticipantUiModule {
 
-    @Provides @ParticipantUi
-    @Singleton internal fun provideParticipantUiSubject(): PublishSubject<Participant>
+    @Provides
+    @ParticipantUi
+    @Singleton
+    internal fun provideParticipantUiSubject(): PublishSubject<Participant>
             = PublishSubject.create<Participant>()
 
-    @Provides @ParticipantUi
-    @Singleton internal fun provideParticipantUiObservable(
+    @Provides
+    @ParticipantUi
+    @Singleton
+    internal fun provideParticipantUiObservable(
             @ParticipantUi publishSubject: PublishSubject<Participant>): Observable<Participant> = publishSubject
 }

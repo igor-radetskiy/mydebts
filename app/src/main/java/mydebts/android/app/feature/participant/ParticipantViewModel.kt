@@ -20,7 +20,7 @@ class ParticipantViewModel(
         @ParticipantUi private val participantUiSubject: PublishSubject<Participant>) : ViewModel()
 {
     private var person = participant?.person ?: Person()
-    private var __debt = participant?.debt ?: .0
+    private var debtAmount = participant?.debt ?: .0
 
     private val personSuggestions = ArrayList<Person>()
     private val disposables = CompositeDisposable()
@@ -55,7 +55,7 @@ class ParticipantViewModel(
     private val _debt = MutableLiveData<Double>()
     internal val debt: LiveData<Double>
         get() {
-            participant?.run { _debt.value = __debt }
+            participant?.run { _debt.value = debtAmount }
             return _debt
         }
 
@@ -82,7 +82,7 @@ class ParticipantViewModel(
 
     internal fun onDebtChanged(text: CharSequence) {
         try {
-            __debt = text.toString().toDouble()
+            debtAmount = text.toString().toDouble()
             _isDebtValid.value = true
         } catch (e: NumberFormatException) {
             _isDebtValid.value = false
@@ -108,8 +108,8 @@ class ParticipantViewModel(
         _isNameValid.value?.takeIf { it }
                 ?.let { _isDebtValid.value }?.takeIf { it }
                 ?.run {
-                    val result = participant?.also { it.debt = __debt }
-                            ?: Participant(person = person, debt = __debt)
+                    val result = participant?.also { it.debt = debtAmount }
+                            ?: Participant(person = person, debt = debtAmount)
                     participantUiSubject.onNext(result)
 
                     _backNavigation.value = BackNavigation()

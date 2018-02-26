@@ -31,5 +31,6 @@ internal interface MyDebtsBindingModule {
     @ContributesAndroidInjector(modules = [EventActivityModule::class])
     fun bindEventActivity(): EventActivity
 
-    @ContributesAndroidInjector fun bindDatePickerFragment(): DatePickerFragment
+    @ContributesAndroidInjector
+    fun bindDatePickerFragment(): DatePickerFragment
 }

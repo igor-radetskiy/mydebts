@@ -72,7 +72,7 @@ class PersonActivity : AppCompatActivity() {
             }
 
     companion object {
-        internal val EXTRA_PERSON = "mydebts.android.app.feature.person.extras.EXTRA_PERSON"
+        internal const val EXTRA_PERSON = "mydebts.android.app.feature.person.extras.EXTRA_PERSON"
 
         fun newIntent(context: Context, person: Person): Intent {
             return Intent(context, PersonActivity::class.java)

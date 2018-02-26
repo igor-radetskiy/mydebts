@@ -15,7 +15,7 @@ internal class CursorToEvent : Function<Cursor, Event> {
         val idColumnIndex = if (cursor.getColumnIndex(ParticipantContract.COLUMN_EVENT_ID) >= 0)
             cursor.getColumnIndex(ParticipantContract.COLUMN_EVENT_ID)
         else
-            cursor.getColumnIndex(EventContract._ID)
+            cursor.getColumnIndex(EventContract.COLUMN_ID)
 
         return Event(cursor.getLong(idColumnIndex),
                 cursor.getString(cursor.getColumnIndex(EventContract.COLUMN_NAME)),

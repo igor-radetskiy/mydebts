@@ -13,7 +13,7 @@ internal class CursorToPerson : Function<Cursor, Person> {
         val idColumnIndex = if (cursor.getColumnIndex(ParticipantContract.COLUMN_PERSON_ID) >= 0)
             cursor.getColumnIndex(ParticipantContract.COLUMN_PERSON_ID)
         else
-            cursor.getColumnIndex(PersonContract._ID)
+            cursor.getColumnIndex(PersonContract.COLUMN_ID)
 
         return Person(cursor.getLong(idColumnIndex), cursor.getString(cursor.getColumnIndex(PersonContract.COLUMN_NAME)))
     }

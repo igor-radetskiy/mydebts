@@ -9,7 +9,9 @@ data class Participant(
         var person: Person? = null,
         var debt: Double? = null) : Parcelable{
     companion object {
-        @JvmField val CREATOR: Parcelable.Creator<Participant> = object : Parcelable.Creator<Participant> {
+        @Suppress("unused")
+        @JvmField
+        val CREATOR: Parcelable.Creator<Participant> = object : Parcelable.Creator<Participant> {
             override fun createFromParcel(source: Parcel): Participant = Participant(source)
             override fun newArray(size: Int): Array<Participant?> = arrayOfNulls(size)
         }

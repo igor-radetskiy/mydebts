@@ -55,11 +55,11 @@ class EventViewModel constructor(
             return _deleteMenuItemVisible
         }
 
-    private val __participants = ArrayList<Participant>()
+    private val participantsList = ArrayList<Participant>()
     private val _participants = MutableLiveData<Triple<List<Participant>?, ListEvent, Int?>>()
     val participants: LiveData<Triple<List<Participant>?, ListEvent, Int?>>
         get() {
-            _participants.value = Triple<MutableList<Participant>?, ListEvent, Int?>(__participants, ListEvent.LIST_CHANGED, null)
+            _participants.value = Triple<MutableList<Participant>?, ListEvent, Int?>(participantsList, ListEvent.LIST_CHANGED, null)
             loadParticipants()
             return _participants
         }
@@ -83,7 +83,7 @@ class EventViewModel constructor(
             participantDisposable = participantUiObservable.subscribe { addParticipant(it) }
         }
 
-        _participantNavigation.value = ParticipantNavigation(__participants[position])
+        _participantNavigation.value = ParticipantNavigation(participantsList[position])
         _participantNavigation.value = null
     }
 
@@ -144,21 +144,21 @@ class EventViewModel constructor(
         event?.id?.let {
             disposables.add(participantsSource.getByEventId(it)
                     .compose(rxUtil.singleSchedulersTransformer())
-                    .doOnSuccess { __participants.clear(); __participants.addAll(it) }
-                    .map { Triple<MutableList<Participant>?, ListEvent, Int?>(__participants, ListEvent.LIST_CHANGED, null) }
+                    .doOnSuccess { participantsList.clear(); participantsList.addAll(it) }
+                    .map { Triple<MutableList<Participant>?, ListEvent, Int?>(participantsList, ListEvent.LIST_CHANGED, null) }
                     .subscribe { triple -> _participants.value = triple })
         }
     }
 
     private fun addParticipant(participant: Participant) {
-        __participants.indexOfFirst { it.person == participant.person }
+        participantsList.indexOfFirst { it.person == participant.person }
                 .let {
                     if (it > -1) {
-                        __participants[it].debt = participant.debt
+                        participantsList[it].debt = participant.debt
                         _participants.value = Triple(null, ListEvent.ITEM_CHANGED, it)
                     } else {
-                        __participants.add(participant)
-                        _participants.value = Triple(null, ListEvent.ITEM_INSERTED, __participants.size - 1)
+                        participantsList.add(participant)
+                        _participants.value = Triple(null, ListEvent.ITEM_INSERTED, participantsList.size - 1)
                     }
                 }
     }
@@ -174,7 +174,7 @@ class EventViewModel constructor(
     }
 
     private fun participantObservable(): Observable<Participant> =
-            Observable.fromIterable(__participants)
+            Observable.fromIterable(participantsList)
 
     class Factory @Inject constructor(
             private var event: Event?,

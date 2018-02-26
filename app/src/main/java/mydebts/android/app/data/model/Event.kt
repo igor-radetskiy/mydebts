@@ -9,7 +9,9 @@ data class Event(
         var name: String? = null,
         var date: Date? = null) : Parcelable {
     companion object {
-        @JvmField val CREATOR: Parcelable.Creator<Event> = object : Parcelable.Creator<Event> {
+        @Suppress("unused")
+        @JvmField
+        val CREATOR: Parcelable.Creator<Event> = object : Parcelable.Creator<Event> {
             override fun createFromParcel(source: Parcel): Event = Event(source)
             override fun newArray(size: Int): Array<Event?> = arrayOfNulls(size)
         }

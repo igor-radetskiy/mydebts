@@ -30,7 +30,7 @@ ext {
     kotlinVersion = "1.2.21"
     daggerVersion = "2.11"
     rxjavaVersion = "2.0.1"
-    supportLibVersion = "26.1.0"
+    supportLibVersion = "27.0.2"
     androidArchVersion = "1.1.0"
     jsr250Version = "1.0"
 }

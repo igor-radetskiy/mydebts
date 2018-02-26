@@ -17,9 +17,9 @@ class DatePickerFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         AndroidSupportInjection.inject(this)
         return DatePickerDialog(activity, 0, this,
-                arguments.getInt(ARG_YEAR),
-                arguments.getInt(ARG_MONTH),
-                arguments.getInt(ARG_DAY_OF_MONTH))
+                arguments!!.getInt(ARG_YEAR),
+                arguments!!.getInt(ARG_MONTH),
+                arguments!!.getInt(ARG_DAY_OF_MONTH))
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
