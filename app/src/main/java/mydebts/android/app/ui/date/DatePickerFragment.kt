@@ -3,7 +3,7 @@ package mydebts.android.app.ui.date
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.widget.DatePicker
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.subjects.PublishSubject
@@ -16,7 +16,7 @@ class DatePickerFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         AndroidSupportInjection.inject(this)
-        return DatePickerDialog(activity, 0, this,
+        return DatePickerDialog(activity!!, 0, this,
                 arguments!!.getInt(ARG_YEAR),
                 arguments!!.getInt(ARG_MONTH),
                 arguments!!.getInt(ARG_DAY_OF_MONTH))
@@ -33,10 +33,13 @@ class DatePickerFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
 
         fun newInstance(year: Int, month: Int, dayOfMonth: Int): DatePickerFragment =
             DatePickerFragment()
-                    .also {
-                        it.arguments = Bundle()
-                                .also { it.putInt(ARG_YEAR, year) }
-                                .also { it.putInt(ARG_MONTH, month) }
-                                .also { it.putInt(ARG_DAY_OF_MONTH, dayOfMonth) } }
+                    .apply {
+                        arguments = Bundle()
+                                .apply {
+                                    putInt(ARG_YEAR, year)
+                                    putInt(ARG_MONTH, month)
+                                    putInt(ARG_DAY_OF_MONTH, dayOfMonth)
+                                }
+                    }
     }
 }

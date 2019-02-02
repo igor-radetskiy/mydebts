@@ -1,6 +1,9 @@
 package mydebts.android.app.feature.person
 
-import android.arch.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.reactivex.disposables.CompositeDisposable
 import mydebts.android.app.data.ParticipantsSource
 import mydebts.android.app.data.model.Participant
@@ -11,8 +14,7 @@ import javax.inject.Inject
 class PersonViewModel(
         private val person: Person,
         private val participantsSource: ParticipantsSource,
-        private val rxUtil: RxUtil) : ViewModel()
-{
+        private val rxUtil: RxUtil) : ViewModel() {
     private val disposables = CompositeDisposable()
 
     private var _name: MutableLiveData<String>? = null

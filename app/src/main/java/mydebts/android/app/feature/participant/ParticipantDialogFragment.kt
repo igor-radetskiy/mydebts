@@ -1,11 +1,11 @@
 package mydebts.android.app.feature.participant
 
 import android.app.Dialog
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
@@ -45,7 +45,7 @@ class ParticipantDialogFragment : DialogFragment() {
                 .setNegativeButton(android.R.string.cancel, null)
                 .create()
 
-        dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         return dialog
     }
 
@@ -59,17 +59,17 @@ class ParticipantDialogFragment : DialogFragment() {
     private fun bindViews(dialogView: View) {
         nameTextInputLayout = dialogView.findViewById(R.id.text_input_layout_name)
         nameEditText = dialogView.findViewById(R.id.name)
-        suggestionsAdapter = ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line)
+        suggestionsAdapter = ArrayAdapter(activity!!, android.R.layout.simple_dropdown_item_1line)
         nameEditText.setAdapter(suggestionsAdapter)
         nameEditText.setOnItemClickListener { _, _, position, _ -> viewModel.onSuggestionItemClick(position) }
-        nameEditText.addSimpleOnTextChangeListener {
-            it?.let { viewModel.onNameChanged(it) }
+        nameEditText.addSimpleOnTextChangeListener { text ->
+            text?.let { viewModel.onNameChanged(it) }
         }
 
         amountTextInputLayout = dialogView.findViewById(R.id.text_input_layout_amount)
         amountEditText = dialogView.findViewById(R.id.amount)
-        amountEditText.addSimpleOnTextChangeListener {
-            it?.let { viewModel.onDebtChanged(it) }
+        amountEditText.addSimpleOnTextChangeListener { text ->
+            text?.let { viewModel.onDebtChanged(it) }
         }
         amountEditText.setOnEditorActionListener { _, actionId, _ ->
             actionId.takeIf { it == EditorInfo.IME_ACTION_DONE }
@@ -79,18 +79,13 @@ class ParticipantDialogFragment : DialogFragment() {
 
     private fun bindViewModel() {
         viewModel.name.observe(this, Observer { nameEditText.setText(it) })
-        viewModel.nameEditEnabled.observe(this, Observer {
-            it.let { it == null || !it }
-                    .let { setNameEditEnabled(it) }
-        })
+        viewModel.nameEditEnabled.observe(this, Observer { setNameEditEnabled(it) })
         viewModel.isNameValid.observe(this, Observer {
             nameTextInputLayout.error = if (it == null || !it)
                 getString(R.string.error_no_name) else null
         })
         viewModel.nameSuggestions.observe(this, Observer { suggestionsAdapter.addAll(it) })
-        viewModel.debt.observe(this, Observer {
-            it?.let { amountEditText.setDoubleText(it) } }
-        )
+        viewModel.debt.observe(this, Observer { amountEditText.setDoubleText(it) })
         viewModel.isDebtValid.observe(this, Observer {
             amountTextInputLayout.error = if (it == null || !it)
                 getString(R.string.error_no_amount) else null
@@ -112,8 +107,8 @@ class ParticipantDialogFragment : DialogFragment() {
 
         fun newInstance(participant: Participant) : ParticipantDialogFragment =
                 ParticipantDialogFragment()
-                        .also {
-                            it.arguments = Bundle()
-                                    .also { it.putParcelable(ARG_PARTICIPANT, participant) } }
+                        .apply {
+                            arguments = Bundle()
+                                    .apply { putParcelable(ARG_PARTICIPANT, participant) } }
     }
 }

@@ -1,6 +1,6 @@
 package mydebts.android.app.ui.events
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 import mydebts.android.app.data.model.Event
 
 class EventsDiffCallback constructor(

@@ -1,6 +1,6 @@
 package mydebts.android.app.feature.person
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,14 +19,14 @@ class EventsAdapter : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.create(parent)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val participant: Participant? = _participants?.get(position)
-        holder?.eventName?.text = participant?.event?.date?.toEventDateString()
-        holder?.price?.setCurrencyText(participant?.debt!!)
+        holder.eventName.text = participant?.event?.date?.toEventDateString()
+        holder.price.setCurrencyText(participant?.debt!!)
     }
 
     override fun getItemCount(): Int {
