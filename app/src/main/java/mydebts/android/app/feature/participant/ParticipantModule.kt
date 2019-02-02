@@ -1,6 +1,6 @@
 package mydebts.android.app.feature.participant
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import dagger.Module
 import dagger.Provides
 import mydebts.android.app.data.model.Participant

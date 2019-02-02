@@ -1,6 +1,6 @@
 package mydebts.android.app.feature.people
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import dagger.Module
 import dagger.Provides
 

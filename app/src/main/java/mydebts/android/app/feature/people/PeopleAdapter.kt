@@ -1,6 +1,6 @@
 package mydebts.android.app.feature.people
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,14 +20,14 @@ internal class PeopleAdapter : RecyclerView.Adapter<PeopleAdapter.ViewHolder>() 
 
     private var _onPersonClick: ((Int) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val viewHolder = ViewHolder.create(parent)
-        viewHolder.itemView.setOnClickListener { _ -> _onPersonClick?.invoke(viewHolder.adapterPosition) }
+        viewHolder.itemView.setOnClickListener { _onPersonClick?.invoke(viewHolder.adapterPosition) }
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        holder?.name?.text = _people?.get(position)?.name
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.name.text = _people?.get(position)?.name
     }
 
     override fun getItemCount(): Int {
