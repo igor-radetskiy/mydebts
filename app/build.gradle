@@ -2,13 +2,19 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
+def keystorePropsFile = new File('keystore.properties')
+def keystoreProps = new Properties()
+keystorePropsFile.withInputStream {
+    keystoreProps.load(it)
+}
+
 android {
     signingConfigs {
-        config {
-            keyAlias 'AndroidKey'
-            keyPassword 'igor21rad90'
-            storeFile file('android.jks')
-            storePassword 'igor21rad90'
+        release {
+            keyAlias keystoreProps."key_alias"
+            keyPassword keystoreProps."key_password"
+            storeFile file(keystoreProps."store_file")
+            storePassword keystoreProps."store_password"
         }
     }
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -23,7 +29,7 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
 }
